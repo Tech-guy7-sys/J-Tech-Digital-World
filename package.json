@@ -1,0 +1,6 @@
+{
+  "name": "jt-digital-world-website",
+  "private": true,
+  "type": "module",
+  "description": "Static JT Digital World website and Cloudflare Pages Functions"
+}
