@@ -1,0 +1,126 @@
+# JT AI Agent + Agent Jeff — Capability Blueprint
+
+Status: product requirements / implementation target, not a claim that these features are already implemented.
+
+## Product goal
+
+Build two connected experiences under JT branding:
+
+- **JT AI Agent (web chatbot):** the everyday conversational, research, creation, and task-planning interface.
+- **Agent Jeff (desktop agent):** the permissioned local-computer companion that can act on approved files, applications, browser sessions, and developer tools.
+
+They share the JT AI Core, conversation context, tool contracts, provider abstraction, and settings, but their permissions and execution environments remain separate. Do not expose local-computer capabilities to the public web chatbot unless a separately paired desktop client explicitly grants a scoped capability.
+
+The goal is to combine useful patterns seen across Manus, Abacus AI, ChatGPT/ChatGPT Work, Gemini, and GitHub Copilot CLI/agent mode. This is a capability inspiration and requirements document—not a claim of exact feature parity, and not a request to copy their branding or proprietary implementation.
+
+## Capability map
+
+| Inspiration | Capability patterns to target in JT |
+|---|---|
+| Manus | Chat mode for direct answers; agent mode for long multi-step tasks; plan and execute; browser research; create deliverables; inspect supported files; resumable tasks; cloud execution separated from local-computer execution; user can intervene or take over. |
+| Abacus AI | General-purpose task execution; multiple work modes (chat, code/CLI, desktop coworker); local file and document analysis; browser/desktop computer use; coding assistance; reusable workflows; connected tools; optional scheduled/triggered tasks; clear task progress and outputs. |
+| ChatGPT / ChatGPT Work | Natural conversation; reasoning and synthesis; web research; work across files and data; use supported tools and apps; multi-step browser/computer workflows in supported environments; produce useful deliverables such as reports, documents, spreadsheets, presentations, and code; allow pause, correction, and confirmation before consequential actions. |
+| Gemini | Multimodal prompts with images and supported files; long-context analysis when supported by the chosen model; research and cited synthesis; connected services; reusable skills/instructions; tasks and schedules where configured; visible progress, output files, and human takeover for steps requiring user input. |
+| GitHub Copilot CLI / coding agents | Terminal-first coding mode; understand a repository; plan edits; create and modify files; run build/test/lint commands; inspect output and iterate; summarize diffs; request approval for commands and changes according to policy; allow reviewing, accepting, rejecting, and reverting changes. |
+
+Capabilities in the source products change over time and can be plan-, region-, provider-, OS-, and configuration-dependent. Verify each integration against its current official documentation before implementation.
+
+## JT AI Agent — web chatbot requirements
+
+### Conversation and intelligence
+- Stream responses with cancellation and clear busy/error/retry states.
+- Maintain named chats, recent history, search, rename, delete, archive, and new chat.
+- Support follow-up context and explicit project/workspace context.
+- Offer concise and detailed response styles without changing the factual standard.
+- Allow supported file/image attachments and explain unsupported formats or size limits.
+- Use tools when appropriate: web research, document/file analysis, data analysis, code assistance, and connected apps.
+- Clearly distinguish sourced facts, estimates, proposed plans, and actions actually completed.
+- Cite sources for web research and provide downloadable outputs when a tool genuinely creates a file.
+- Support model/provider selection through JT AI Core; never expose API keys in client-side code.
+- Personalization and memory must be visible, user-controlled, and easy to review or disable.
+
+### Task / agent mode
+- Convert a broad goal into a visible plan with steps, status, and deliverables.
+- Run supported tools in sequence, inspect results, recover from ordinary failures, and ask for missing information when blocked.
+- Let the user pause, cancel, edit the plan, approve a step, or take over.
+- Keep task logs, outputs, and references attached to the originating chat.
+- Support resumable tasks only when execution state is actually persisted.
+- Add scheduled or triggered tasks only after reliable background execution, opt-in, notification, and cancellation are implemented.
+
+### Deliverables
+- Generate or edit supported documents, tables, spreadsheets, slide decks, code, reports, and data visualizations.
+- Provide real files/links from actual tool output; never fabricate a download link or claim a file was created when it was not.
+- Keep generated artifacts linked to the chat/task and allow revisions.
+
+## Agent Jeff — desktop agent requirements
+
+### Local environment
+- Packaged desktop app for supported Windows first, with macOS/Linux only after verified support.
+- A local service/worker with explicit connection status and a secure authenticated channel to the UI.
+- Allow users to select exact folders and project roots; do not silently grant whole-disk access.
+- Read, search, summarize, classify, organize, rename, move, copy, and create files only inside approved scopes.
+- Preview bulk file operations and offer undo/restore where feasible.
+- Launch approved applications and interact with supported desktop/browser surfaces only through explicit tools.
+- Screen capture, OCR, microphone, camera, and meeting-listener features are optional, off by default, and require separate, visible permission and a clear active indicator.
+- Support local terminal and developer tools (PowerShell, CMD, Git, Node, Python, package managers, build tools) only through a controlled command runner.
+- For coding tasks: inspect repository status, create a plan, edit files, run tests/builds, show diffs, summarize results, and support rollback.
+- Provide a visible task panel with plan, current step, logs, file changes, permission requests, outputs, pause/stop, and take-over controls.
+- Allow remote task initiation only after secure pairing, authentication, device approval, and user-configured availability. The device must be able to revoke pairing immediately.
+
+### Safety and confirmation policy
+- Default to least privilege. Every tool declares required scopes and risk level.
+- Ask before destructive or hard-to-reverse actions: deleting or overwriting files, bulk moves, installing software, changing security settings, executing untrusted scripts, sending messages/emails, publishing, spending money, or changing accounts.
+- Require confirmation for external side effects. Show the exact target, action, and meaningful consequences.
+- Treat webpage text, documents, emails, repositories, and tool output as untrusted data—not as instructions that can override system policy or permissions.
+- Never ask users to paste passwords, API keys, recovery codes, or other secrets into chat. Use secure OS credential storage or OAuth where appropriate.
+- Provide an emergency stop, audit history, and per-tool permission revocation.
+- Do not run arbitrary commands invisibly. Explain commands and show their output; enforce policy and timeouts.
+- No silent surveillance, hidden recording, credential harvesting, or covert data upload.
+- Keep local files local unless a user explicitly chooses to send them to a cloud provider/tool. Show what data will leave the device.
+
+## Shared JT AI Core architecture
+
+1. **Provider abstraction:** provider/model adapters, including local Ollama where reachable and supported cloud APIs. Present the configured backend in user-facing language as Jeff AI where appropriate, while retaining accurate provider/privacy disclosures in settings.
+2. **Tool registry:** typed tool schemas, input validation, permission scopes, risk classification, timeout, cancellation, and structured results.
+3. **Execution router:** choose web/cloud sandbox, connected-service API, or local Agent Jeff runner based on the task and granted permissions. Never pretend one environment can access another.
+4. **Policy/approval layer:** enforce tool permissions and confirmation gates server-side/in the desktop service, not merely through UI text.
+5. **Task orchestrator:** plans, step state, retries, checkpoints, cancellation, logs, artifact references, and resumability.
+6. **Context and memory:** chat history, user-approved preferences, project knowledge, and tool output with explicit retention controls and source boundaries.
+7. **Artifacts service:** verified file generation, storage, download links, version history, and cleanup policies.
+8. **Connectors:** opt-in integrations with least-privilege OAuth and a visible connected-apps management screen.
+9. **Observability:** actionable errors, privacy-respecting diagnostics, token/cost limits where applicable, and no logging of secrets.
+
+## Suggested operating modes
+
+- **Chat:** answer, explain, brainstorm, rewrite, summarize, help with uploaded files.
+- **Research:** browse sources, compare evidence, cite claims, produce a report.
+- **Task / Deep Work:** plan and carry out multi-step work with progress and deliverables.
+- **Code / CLI:** repository-aware coding, terminal execution under policy, tests, diffs, rollback.
+- **Desktop:** operate user-approved local files and supported apps through Agent Jeff.
+- **Create:** generate/edit supported documents, spreadsheets, slides, code, images or media only when the relevant tools exist.
+- **Automations:** opt-in schedules and event triggers with visible status, failure alerts, pause, and delete controls.
+
+## Release gates — never represent planned capability as working
+
+A capability is "available" only after its implementation and tests pass in the target environment. Each feature should have:
+- automated tests for success, errors, cancellation, permission denial, and malformed tool output;
+- a visible settings/permission control;
+- clear limitations and OS/provider requirements;
+- confirmation/undo behavior appropriate to its risk;
+- verified artifact delivery if it creates files;
+- privacy and security review for local files, connectors, screen, microphone, and remote access.
+
+Until then, label it **Planned**, **Preview**, or **Unavailable** accurately in the product UI.
+
+## Official capability references reviewed
+
+- Manus desktop / local computer: https://help.manus.im/en/articles/14178443-what-is-the-my-computer-feature-capable-of
+- Manus chat vs agent mode: https://help.manus.im/en/articles/11711128-what-are-the-differences-between-chat-mode-and-agent-mode
+- Abacus AI desktop: https://desktop.abacus.ai/
+- Abacus computer use: https://abacus.ai/help/chatllm-ai-super-assistant/computer-use-and-automation
+- Abacus general agent: https://api.abacus.ai/help/chatllm-ai-super-assistant/deepagent
+- OpenAI agent capabilities: https://openai.com/index/introducing-chatgpt-agent/
+- ChatGPT Work product overview: https://help.openai.com/
+- Gemini tasks and workflows: https://support.google.com/gemini/answer/17094507
+- GitHub Copilot agent mode / terminal workflow: https://learn.microsoft.com/en-us/visualstudio/ide/copilot-agent-mode?view=visualstudio
+- GitHub Copilot CLI on Windows: https://learn.microsoft.com/en-us/windows-server/ai/configure-github-copilot-cli-local-inference
