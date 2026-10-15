@@ -67,6 +67,17 @@ Capabilities in the source products change over time and can be plan-, region-, 
 - Provide a visible task panel with plan, current step, logs, file changes, permission requests, outputs, pause/stop, and take-over controls.
 - Allow remote task initiation only after secure pairing, authentication, device approval, and user-configured availability. The device must be able to revoke pairing immediately.
 
+### Windows sign-in awareness and welcome experience (planned)
+
+- Detect whether Windows Hello is available on the current Windows device and explain which supported verification options Windows reports as configured; do not assume every PC has a compatible camera or fingerprint reader.
+- Use supported Windows Hello / Windows authentication APIs only for an explicit, user-initiated verification flow. Windows Hello performs the biometric match inside Windows; Agent Jeff must never collect, store, imitate, or inspect raw face or fingerprint data.
+- Do not attempt to intercept, replace, or draw over the Windows secure lock/sign-in screen. A normal third-party desktop app cannot display its own trusted greeting on top of that secure screen or receive a raw “face recognized” / “fingerprint recognized” event from it.
+- After Windows has successfully signed the user in and Agent Jeff starts in the user's session, it may show a welcome panel and, if the user opts in, say a greeting such as “Recognized. Welcome, [Windows account display name].” Only use the signed-in Windows account's display name; provide a preview/edit option and do not infer identity from a camera image.
+- During a separate Agent Jeff verification prompt, show accurate states such as “Waiting for Windows Hello…”, “Verification successful”, or “Verification cancelled/failed”. Never say “Recognized” or welcome a named user unless the OS-backed verification succeeded and the account identity is available.
+- The greeting must be optional, with speech off by default or explicitly enabled, a mute control, quiet-hours option, and no audio capture unless separately permitted. Do not speak private account details aloud in shared spaces without opt-in.
+- If Windows Hello is unavailable, cancelled, or fails, fall back to normal Windows sign-in and show a neutral status. Never bypass Windows lock, password, PIN, biometric policy, or other access controls.
+- Test on supported Windows versions and hardware, including no biometric hardware, Windows Hello disabled, failed/cancelled verification, multiple Windows accounts, locked/unlocked transitions, speech disabled, and accessibility settings. Treat this as **Planned** until a native Windows implementation and those tests exist.
+
 ### Safety and confirmation policy
 - Default to least privilege. Every tool declares required scopes and risk level.
 - Ask before destructive or hard-to-reverse actions: deleting or overwriting files, bulk moves, installing software, changing security settings, executing untrusted scripts, sending messages/emails, publishing, spending money, or changing accounts.
