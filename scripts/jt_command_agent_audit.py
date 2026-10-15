@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from urllib.parse import urlparse, unquote
 
-ROOT = Path.cwd()
+ROOT = Path.cwd().resolve()
 IGNORE_DIRS = {".git", "node_modules", ".wrangler", "dist", "build"}
 HTML_FILES, JS_FILES, CSS_FILES = [], [], []
 ERRORS, WARNINGS = [], []
@@ -40,6 +40,7 @@ def check_html(rel):
     try:
         parser = RefParser()
         parser.feed((ROOT / rel).read_text(encoding="utf-8"))
+        parser.close()
     except Exception as exc:
         ERRORS.append(f"{rel}: cannot parse/read HTML: {exc}")
         return
@@ -47,12 +48,18 @@ def check_html(rel):
         if external(value): continue
         local = unquote(value.split("#", 1)[0].split("?", 1)[0])
         if not local: continue
-        target = ((ROOT / rel).parent / local).resolve()
-        try: target.relative_to(ROOT.resolve())
+        # Leading slash is a site-root URL, not a filesystem path outside the repo.
+        target = (ROOT / local.lstrip("/")) if local.startswith("/") else ((ROOT / rel).parent / local)
+        target = target.resolve()
+        try: target.relative_to(ROOT)
         except ValueError:
             ERRORS.append(f"{rel}: {attr} escapes repository: {value}")
             continue
-        if not target.exists(): ERRORS.append(f"{rel}: missing local {attr} target '{value}'")
+        # Directory routes such as /jt-apps/ resolve to index.html.
+        if target.is_dir():
+            target = target / "index.html"
+        if not target.exists():
+            ERRORS.append(f"{rel}: missing local {attr} target '{value}'")
 
 def main():
     iter_files()
