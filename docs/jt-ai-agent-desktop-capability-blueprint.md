@@ -146,3 +146,15 @@ Until then, label it **Planned**, **Preview**, or **Unavailable** accurately in 
 - Gemini tasks and workflows: https://support.google.com/gemini/answer/17094507
 - GitHub Copilot agent mode / terminal workflow: https://learn.microsoft.com/en-us/visualstudio/ide/copilot-agent-mode?view=visualstudio
 - GitHub Copilot CLI on Windows: https://learn.microsoft.com/en-us/windows-server/ai/configure-github-copilot-cli-local-inference
+
+
+### Personal voice enrollment and speaker-gated replies (planned)
+
+- Provide a user-initiated **Enroll my voice** flow in the native Agent Jeff desktop app. Explain the purpose, what is stored, how to delete it, and whether any audio leaves the device before recording begins.
+- Record only a short enrollment sample after explicit microphone permission and consent. Prefer an on-device speaker-verification engine that converts the sample into a protected speaker embedding/template; do not keep the raw enrollment recording after processing unless the user separately opts in.
+- Store the voice template encrypted in the current Windows user's protected local storage, restrict access to the signed-in account, and provide **Re-enroll**, **Delete voice profile**, and **Disable voice matching** controls. Never upload a voice profile by default.
+- In **Only respond to my voice** mode, use voice-activity detection and speaker verification before processing a spoken command or speaking a private response. If confidence is low, the microphone is unavailable, or the verifier is missing, Jeff must not treat the speaker as verified; show “Voice not verified” and ask the user to use push-to-talk with an alternative verification step or turn voice-only mode off.
+- Do not silently capture or analyze nearby people. Listening must be opt-in with a persistent microphone indicator, an easy stop/mute control, and no background recording while disabled. Voice-only mode must not prevent the user from recovering access through the Windows account or app settings.
+- Speaker verification is probabilistic and can be fooled by replayed or synthesized audio. It must **not** be the sole authorization for sensitive actions, Windows sign-in, financial activity, account changes, file deletion, or sending/publishing content. Use Windows Hello or another strong OS-backed verification and the normal action-confirmation policy for those cases.
+- Do not claim that Jeff can detect the Windows lock-screen face/fingerprint result or speak over the secure lock screen. Voice verification runs only in the logged-in user session after explicit permission.
+- Test enrollment and deletion, wrong speaker, replay/synthetic audio, background noise, false accept/reject thresholds, microphone denial, locked session, template encryption/access control, and fallback/recovery. Keep this feature **Planned** until a native verifier is integrated and security-tested on supported Windows devices.
