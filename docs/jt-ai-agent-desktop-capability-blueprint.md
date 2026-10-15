@@ -67,6 +67,17 @@ Capabilities in the source products change over time and can be plan-, region-, 
 - Provide a visible task panel with plan, current step, logs, file changes, permission requests, outputs, pause/stop, and take-over controls.
 - Allow remote task initiation only after secure pairing, authentication, device approval, and user-configured availability. The device must be able to revoke pairing immediately.
 
+### Voice control and a user-selected assistant voice (planned)
+
+- Provide opt-in hands-free voice control for Agent Jeff with a visible microphone/listening indicator, push-to-talk mode, mute/stop control, and an obvious way to disable listening.
+- Let the user choose the assistant's spoken voice from supported installed or configured text-to-speech voices, with a preview, language/accent options where available, speaking-rate and volume controls, and a reset option. Present this as Jeff AI / Agent Jeff voice settings.
+- Distinguish **assistant output voice** (the voice Jeff speaks with) from **voice input** (the user's speech) and from **speaker verification** (checking who is speaking). Choosing an output voice does not identify or authenticate the user.
+- If a user means a particular real person's voice, only offer a voice clone when the person has explicitly authorized it and the chosen provider permits it. Otherwise use a licensed, built-in, or user-selected synthetic voice; do not imitate a real person without consent.
+- Use Windows speech recognition or another explicitly configured speech provider for voice commands. Show or confirm the transcribed command before consequential actions. Require the normal approval flow for deleting files, running risky commands, installing software, sending messages, changing security settings, or other external side effects.
+- Voice control must not bypass Windows Hello, the Windows lock screen, account permissions, or authentication. Voice recognition alone is not a secure substitute for Windows sign-in or biometric authentication.
+- Keep microphone access off until the user enables voice control; show a persistent listening state when active, avoid retaining recordings by default, and disclose whether audio is processed locally or sent to a provider.
+- Test microphone denied/unavailable, speech recognition errors, multiple languages, background noise, wake/listening controls, cancel/stop, speech output disabled, and confirmation gates. Label this feature **Planned** until native implementation and tests pass.
+
 ### Windows sign-in awareness and welcome experience (planned)
 
 - Detect whether Windows Hello is available on the current Windows device and explain which supported verification options Windows reports as configured; do not assume every PC has a compatible camera or fingerprint reader.
