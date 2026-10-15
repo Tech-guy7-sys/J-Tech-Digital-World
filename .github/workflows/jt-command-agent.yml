@@ -37,6 +37,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      - name: Check JavaScript syntax
+        run: |
+          set -euo pipefail
+          mapfile -d "" files < <(find . -type f -name "*.js" -not -path "./.git/*" -not -path "./node_modules/*" -print0)
+          if (( ${#files[@]} == 0 )); then echo "No JavaScript files found"; exit 1; fi
+          for file in "${files[@]}"; do echo "Checking $file"; node --check "$file"; done
       - name: Run static audit
         id: audit
         run: python scripts/jt_command_agent_audit.py
