@@ -102,6 +102,25 @@ public sealed class AntivirusEngine
         var findings = new List<string>();
         var risk = FileRisk.Clean;
 
+        // Exact-content test signature; EICAR is a harmless antivirus test file.
+        // Keep file reads bounded to avoid loading large untrusted files into memory.
+        var signatureDb = new ThreatSignatureDatabase();
+        if (new FileInfo(path).Length <= 2_000_000)
+        {
+            try
+            {
+                var bytes = File.ReadAllBytes(path);
+                var signatureMatch = signatureDb.MatchHash(hash) ?? signatureDb.MatchContent(bytes);
+                if (signatureMatch is not null)
+                {
+                    findings.Add("Signature match: " + signatureMatch);
+                    risk = FileRisk.Suspicious;
+                }
+            }
+            catch (IOException) { /* The file may have changed since hashing. */ }
+            catch (UnauthorizedAccessException) { /* Continue with available metadata checks. */ }
+        }
+
         var name = Path.GetFileName(path);
         var parts = name.Split('.');
         if (parts.Length >= 3 && ExecutableExtensions.Contains("." + parts[^1], StringComparer.OrdinalIgnoreCase)
