@@ -64,8 +64,20 @@ public partial class SecurityCenterWindow : Window
         try
         {
             var scanner = FindMpCmdRun() ?? throw new FileNotFoundException("Microsoft Defender scanner was not found.");
-            var args = $"/Create /F /SC DAILY /ST 02:00 /TN \"JT Agent Jeff Daily Defender Quick Scan\" /TR \"\\\"{scanner}\\\" -Scan -ScanType 1\"";
-            var psi = Hidden("schtasks.exe", args);
+            // Use ArgumentList so the task name and scanner path are passed as single arguments.
+            var psi = new ProcessStartInfo("schtasks.exe")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+            foreach (var arg in new[]
+            {
+                "/Create", "/F", "/SC", "DAILY", "/ST", "02:00",
+                "/TN", "JT Agent Jeff Daily Defender Quick Scan",
+                "/TR", $"\\\"{scanner}\\\" -Scan -ScanType 1"
+            }) psi.ArgumentList.Add(arg);
             using var p = Process.Start(psi) ?? throw new InvalidOperationException("Could not start Task Scheduler.");
             var stdoutTask = p.StandardOutput.ReadToEndAsync(); var stderrTask = p.StandardError.ReadToEndAsync();
             await p.WaitForExitAsync(); var output = await stdoutTask; var error = await stderrTask;
