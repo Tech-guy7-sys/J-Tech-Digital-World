@@ -40,14 +40,16 @@ public sealed class AntivirusEngine
         if (!Directory.Exists(root)) throw new DirectoryNotFoundException(root);
 
         // Bound resource use and avoid following reparse points into unrelated trees.
-        var files = EnumerateFilesSafe(root, cancellationToken).Take(20_000).ToList();
-        var results = new List<FileScanResult>(files.Count);
-        var index = 0;
-        foreach (var file in files)
+        // Stream paths instead of materializing the whole tree. The previous approach
+        // could traverse and allocate an arbitrarily large directory tree before applying
+        // the 20,000-file cap. The total is intentionally reported as unknown (0) while
+        // scanning; a hard cap takes priority over an expensive pre-count pass.
+        var results = new List<FileScanResult>();
+        foreach (var file in EnumerateFilesSafe(root, cancellationToken).Take(20_000))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            index++;
-            progress?.Report((index, files.Count, file));
+            var index = results.Count + 1;
+            progress?.Report((index, 0, file));
             try
             {
                 results.Add(await Task.Run(() => InspectFile(file, cancellationToken), cancellationToken));
@@ -79,8 +81,11 @@ public sealed class AntivirusEngine
             {
                 var info = new DirectoryInfo(current);
                 if ((info.Attributes & FileAttributes.ReparsePoint) != 0) continue;
-                dirs = info.EnumerateDirectories().ToArray();
-                files = info.EnumerateFiles().Where(f => (f.Attributes & FileAttributes.ReparsePoint) == 0).Select(f => f.FullName).ToArray();
+                // Keep enumeration lazy so Take(20_000) can stop traversal promptly.
+                dirs = info.EnumerateDirectories();
+                files = info.EnumerateFiles()
+                    .Where(f => (f.Attributes & FileAttributes.ReparsePoint) == 0)
+                    .Select(f => f.FullName);
             }
             catch { continue; }
             foreach (var file in files) yield return file;
