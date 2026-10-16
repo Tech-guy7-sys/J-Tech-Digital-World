@@ -52,6 +52,40 @@ public partial class SecurityCenterWindow : Window
         catch (Exception ex) { EngineStatus.Text = "File analysis failed: " + ex.Message; }
     }
 
+    private async void ScanFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var folderDialog = new OpenFolderDialog { Title = "Choose a folder for local file triage" };
+        if (folderDialog.ShowDialog(this) != true) return;
+        var folder = folderDialog.FolderName;
+        var approved = MessageBox.Show(this,
+            $"Analyze files under this folder?\\n\\nFolder: {folder}\\nLimit: 20,000 files. Reparse-point folders are skipped. This computes hashes and checks simple heuristics; it does not prove files are safe or replace Defender. No files will be changed.",
+            "Approve folder triage", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        if (approved != MessageBoxResult.Yes) { EngineStatus.Text = "Folder scan denied."; return; }
+
+        var saveDialog = new SaveFileDialog { Title = "Save local triage report", Filter = "CSV report (*.csv)|*.csv", FileName = "Jeff-File-Triage-Report.csv", AddExtension = true, DefaultExt = ".csv" };
+        if (saveDialog.ShowDialog(this) != true) { EngineStatus.Text = "Report save cancelled; no folder scan started."; return; }
+
+        EngineStatus.Text = "Scanning folder…";
+        try
+        {
+            var progress = new Progress<(int completed, int total, string current)>(p =>
+                EngineStatus.Text = $"Scanning {p.completed}/{p.total}: {Path.GetFileName(p.current)}");
+            var engine = new AntivirusEngine();
+            var results = await engine.ScanFolderAsync(folder, progress, CancellationToken.None);
+            static string Csv(string value) => "\"" + value.Replace("\"", "\"\"") + "\"";
+            var lines = new List<string> { "Path,SHA256,Risk,Summary" };
+            lines.AddRange(results.Select(x => string.Join(",", Csv(x.Path), Csv(x.Sha256), Csv(x.Risk.ToString()), Csv(x.Summary))));
+            await File.WriteAllLinesAsync(saveDialog.FileName, lines, new System.Text.UTF8Encoding(true));
+            var suspicious = results.Count(x => x.Risk == FileRisk.Suspicious);
+            var review = results.Count(x => x.Risk == FileRisk.Review);
+            var errors = results.Count(x => x.Risk == FileRisk.Error);
+            EngineStatus.Text = $"Folder triage finished: {results.Count} files; {suspicious} suspicious heuristic flags; {review} review flags; {errors} errors. Report: {saveDialog.FileName}";
+            MessageBox.Show(this, EngineStatus.Text + "\\n\\nThese are heuristic indicators only. Review flagged files and use Microsoft Defender for actual antivirus scanning.", "Folder triage report", MessageBoxButton.OK,
+                suspicious > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
+        }
+        catch (Exception ex) { EngineStatus.Text = "Folder scan failed: " + ex.Message; }
+    }
+
     private async void DefenderFileScan_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new OpenFileDialog { Title = "Choose a file for Microsoft Defender to scan", CheckFileExists = true, Multiselect = false, Filter = "All files (*.*)|*.*" };
