@@ -73,7 +73,7 @@ public sealed class AntivirusEngine
         {
             token.ThrowIfCancellationRequested();
             var current = pending.Pop();
-            IEnumerable<string> dirs;
+            IEnumerable<DirectoryInfo> dirs;
             IEnumerable<string> files;
             try
             {
