@@ -12,6 +12,7 @@ public partial class MainWindow : Window
     private SpeechRecognitionEngine? _recognizer;
     private bool _listening;
     private readonly List<InstalledVoice> _voices = new();
+    private VoiceCompanionWindow? _companion;
 
     public MainWindow()
     {
@@ -125,5 +126,19 @@ public partial class MainWindow : Window
     }
     private void StopSpeaking_Click(object sender, RoutedEventArgs e) { _synth.SpeakAsyncCancelAll(); SetStatus(_listening ? "LISTENING · MICROPHONE ACTIVE" : "READY · MICROPHONE OFF"); }
     private void Clear_Click(object sender, RoutedEventArgs e) => TranscriptBox.Clear();
+
+    private void ShowCompanion_Click(object sender, RoutedEventArgs e)
+    {
+        if (_companion is null || !_companion.IsVisible)
+        {
+            _companion = new VoiceCompanionWindow();
+            _companion.Closed += (_, _) => _companion = null;
+            _companion.Show();
+        }
+        else
+        {
+            _companion.Activate();
+        }
+    }
     private void SetStatus(string status) => StatusText.Text = status.ToUpperInvariant();
 }
