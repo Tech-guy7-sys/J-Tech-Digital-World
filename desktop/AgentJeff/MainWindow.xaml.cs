@@ -12,7 +12,7 @@ public partial class MainWindow : Window
     private SpeechRecognitionEngine? _recognizer;
     private bool _listening;
     private readonly List<InstalledVoice> _voices = new();
-    private VoiceCompanionWindow? _companion;
+    private VoiceCompanionWindow? _companion;\n    private SecurityCenterWindow? _securityCenter;
 
     public MainWindow()
     {
@@ -140,5 +140,5 @@ public partial class MainWindow : Window
             _companion.Activate();
         }
     }
-    private void SetStatus(string status) => StatusText.Text = status.ToUpperInvariant();
+    private void OpenSecurity_Click(object sender, RoutedEventArgs e)\n    {\n        if (_securityCenter is null || !_securityCenter.IsVisible)\n        {\n            _securityCenter = new SecurityCenterWindow { Owner = this };\n            _securityCenter.Closed += (_, _) => _securityCenter = null;\n            _securityCenter.Show();\n        }\n        else _securityCenter.Activate();\n    }\n\n    private void SetStatus(string status) => StatusText.Text = status.ToUpperInvariant();
 }
