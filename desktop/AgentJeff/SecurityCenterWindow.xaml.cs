@@ -58,7 +58,7 @@ public partial class SecurityCenterWindow : Window
         if (folderDialog.ShowDialog(this) != true) return;
         var folder = folderDialog.FolderName;
         var approved = MessageBox.Show(this,
-            $"Analyze files under this folder?\\n\\nFolder: {folder}\\nLimit: 20,000 files. Reparse-point folders are skipped. This computes hashes and checks simple heuristics; it does not prove files are safe or replace Defender. No files will be changed.",
+            $"Analyze files under this folder?\n\nFolder: {folder}\nLimit: 20,000 files. Reparse-point folders are skipped. This computes hashes and checks simple heuristics; it does not prove files are safe or replace Defender. No files will be changed.",
             "Approve folder triage", MessageBoxButton.YesNo, MessageBoxImage.Warning);
         if (approved != MessageBoxResult.Yes) { EngineStatus.Text = "Folder scan denied."; return; }
 
@@ -82,7 +82,7 @@ public partial class SecurityCenterWindow : Window
             var review = results.Count(x => x.Risk == FileRisk.Review);
             var errors = results.Count(x => x.Risk == FileRisk.Error);
             EngineStatus.Text = $"Folder triage finished: {results.Count} files; {suspicious} suspicious heuristic flags; {review} review flags; {errors} errors. Report: {saveDialog.FileName}";
-            MessageBox.Show(this, EngineStatus.Text + "\\n\\nThese are heuristic indicators only. Review flagged files and use Microsoft Defender for actual antivirus scanning.", "Folder triage report", MessageBoxButton.OK,
+            MessageBox.Show(this, EngineStatus.Text + "\n\nThese are heuristic indicators only. Review flagged files and use Microsoft Defender for actual antivirus scanning.", "Folder triage report", MessageBoxButton.OK,
                 suspicious > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
         }
         catch (Exception ex) { EngineStatus.Text = "Folder scan failed: " + ex.Message; }
@@ -215,7 +215,7 @@ public partial class SecurityCenterWindow : Window
         var dialog = new OpenFileDialog { Title = "Choose a file for ClamAV scanning", CheckFileExists = true, Multiselect = false, Filter = "All files (*.*)|*.*" };
         if (dialog.ShowDialog(this) != true) return;
         var approved = MessageBox.Show(this,
-            $"Scan this file with the installed ClamAV engine?\\n\\nTarget: {dialog.FileName}\\n\\nClamAV signatures must already be installed and up to date. Jeff will not delete or quarantine anything.",
+            $"Scan this file with the installed ClamAV engine?\n\nTarget: {dialog.FileName}\n\nClamAV signatures must already be installed and up to date. Jeff will not delete or quarantine anything.",
             "Approve ClamAV file scan", MessageBoxButton.YesNo, MessageBoxImage.Warning);
         if (approved != MessageBoxResult.Yes) { EngineStatus.Text = "ClamAV file scan denied."; return; }
 
@@ -223,7 +223,7 @@ public partial class SecurityCenterWindow : Window
         try
         {
             var result = await new ClamAvScanner().ScanFileAsync(dialog.FileName);
-            var message = $"ClamAV result: {result.Status}\\nTarget: {result.TargetPath}\\nExit code: {result.ExitCode}\\nElapsed: {result.Duration:hh\\:mm\\:ss}\\n\\n{result.Output}";
+            var message = $"ClamAV result: {result.Status}\nTarget: {result.TargetPath}\nExit code: {result.ExitCode}\nElapsed: {result.Duration:hh\\:mm\\:ss}\n\n{result.Output}";
             EngineStatus.Text = message;
             MessageBox.Show(this, message, "ClamAV scan result", MessageBoxButton.OK,
                 result.Status == ClamAvScanStatus.ThreatFound ? MessageBoxImage.Warning :
@@ -241,7 +241,7 @@ public partial class SecurityCenterWindow : Window
         var dialog = new OpenFolderDialog { Title = "Choose a folder for recursive ClamAV scanning" };
         if (dialog.ShowDialog(this) != true) return;
         var approved = MessageBox.Show(this,
-            $"Recursively scan files under this folder with ClamAV?\\n\\nFolder: {dialog.FolderName}\\n\\nThis can take a long time and use substantial CPU and memory. The installed ClamAV database must be current. No files will be removed or quarantined.",
+            $"Recursively scan files under this folder with ClamAV?\n\nFolder: {dialog.FolderName}\n\nThis can take a long time and use substantial CPU and memory. The installed ClamAV database must be current. No files will be removed or quarantined.",
             "Approve ClamAV folder scan", MessageBoxButton.YesNo, MessageBoxImage.Warning);
         if (approved != MessageBoxResult.Yes) { EngineStatus.Text = "ClamAV folder scan denied."; return; }
 
@@ -249,7 +249,7 @@ public partial class SecurityCenterWindow : Window
         try
         {
             var result = await new ClamAvScanner().ScanFolderAsync(dialog.FolderName);
-            var message = $"ClamAV result: {result.Status}\\nTarget: {result.TargetPath}\\nExit code: {result.ExitCode}\\nElapsed: {result.Duration:hh\\:mm\\:ss}\\n\\n{result.Output}";
+            var message = $"ClamAV result: {result.Status}\nTarget: {result.TargetPath}\nExit code: {result.ExitCode}\nElapsed: {result.Duration:hh\\:mm\\:ss}\n\n{result.Output}";
             EngineStatus.Text = message;
             MessageBox.Show(this, message, "ClamAV folder scan result", MessageBoxButton.OK,
                 result.Status == ClamAvScanStatus.ThreatFound ? MessageBoxImage.Warning :
