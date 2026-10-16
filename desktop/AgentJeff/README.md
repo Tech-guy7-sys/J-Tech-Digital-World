@@ -17,8 +17,11 @@ To publish a self-contained Windows x64 folder:
 - Convert recognized speech into editable text using an installed Windows speech recognizer.
 - Speak reviewed text with Windows text-to-speech.
 - Stop speech and clear the transcript.
+- Open a stoppable, always-on-top desktop companion panel after Windows sign-in.
 
 ## Not implemented (do not treat as secure)
-Speaker verification / voice enrollment is deliberately not faked. Speech-to-text does not establish speaker identity. A real "only respond to my voice" feature requires a tested speaker-verification model, protected template storage, replay-attack evaluation and a secure fallback. Do not use voice matching alone to authorize sensitive actions. No voice samples are saved by this application.
+Speaker verification / voice enrollment is not implemented. Speech-to-text does not establish speaker identity. A real "only respond to my voice" feature still requires integrating and testing a speaker-verification model, protected template storage, replay-attack evaluation and a secure fallback. Do not use voice matching alone to authorize sensitive actions. No voice samples are saved by this application.
+
+The desktop companion is an ordinary topmost window shown after sign-in. Windows does not allow this app to overlay or replace the secure Windows lock/sign-in screen. The companion has Stop & Hide controls and remains visible in the taskbar.
 
 The app does not yet connect spoken requests to a configured Jeff AI backend. It is the native voice subsystem, not the complete Agent Jeff autonomous agent. Windows language/recognizer availability varies by device.
