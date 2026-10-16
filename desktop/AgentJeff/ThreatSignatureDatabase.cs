@@ -10,7 +10,7 @@ namespace AgentJeff;
 /// </summary>
 public sealed class ThreatSignatureDatabase
 {
-    private const string EicarTestString = "X5O!P%@AP[4\\\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*";
+    private const string EicarTestString = "X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*";
 
     private static readonly IReadOnlyDictionary<string, string> Sha256Signatures =
         new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
