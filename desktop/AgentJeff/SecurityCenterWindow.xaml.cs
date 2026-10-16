@@ -37,6 +37,42 @@ public partial class SecurityCenterWindow : Window
         catch (Exception ex) { ProtectionStatus.Text = "Could not verify Defender status"; ProtectionDetails.Text = ex.Message; }
     }
 
+    private async void AnalyzeFile_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog { Title = "Choose a file to analyze", CheckFileExists = true, Multiselect = false, Filter = "All files (*.*)|*.*" };
+        if (dialog.ShowDialog(this) != true) return;
+        EngineStatus.Text = "Analyzing selected file…";
+        try
+        {
+            var engine = new AntivirusEngine();
+            var result = await engine.ScanFileAsync(dialog.FileName);
+            EngineStatus.Text = $"Local triage: {result.Risk}\nSHA-256: {result.Sha256}\n{result.Summary}";
+            MessageBox.Show(this, $"File: {result.Path}\nTriage: {result.Risk}\nSHA-256: {result.Sha256}\n\n{result.Summary}\n\nHeuristic triage can miss malware and can flag harmless files. Use Defender for an antivirus scan.", "Jeff file analysis", MessageBoxButton.OK, result.Risk == FileRisk.Suspicious ? MessageBoxImage.Warning : MessageBoxImage.Information);
+        }
+        catch (Exception ex) { EngineStatus.Text = "File analysis failed: " + ex.Message; }
+    }
+
+    private async void DefenderFileScan_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog { Title = "Choose a file for Microsoft Defender to scan", CheckFileExists = true, Multiselect = false, Filter = "All files (*.*)|*.*" };
+        if (dialog.ShowDialog(this) != true) return;
+        var approved = MessageBox.Show(this,
+            $"Request a Microsoft Defender custom scan?\n\nTarget: {dialog.FileName}\n\nDefender will inspect the selected file using its installed security intelligence. This does not guarantee detection. Jeff will not delete or quarantine the file.",
+            "Approve Defender file scan", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        if (approved != MessageBoxResult.Yes) { EngineStatus.Text = "Defender file scan denied."; return; }
+        EngineStatus.Text = "Requesting Defender custom scan…";
+        try
+        {
+            var result = await AntivirusEngine.RequestDefenderCustomScanAsync(dialog.FileName);
+            EngineStatus.Text = result.ExitCode == 0
+                ? "Defender scan command completed. Review Windows Security for detections. " + result.Output.Trim()
+                : $"Defender scan returned exit code {result.ExitCode}. {result.Output.Trim()}";
+            MessageBox.Show(this, EngineStatus.Text, "Defender custom scan result", MessageBoxButton.OK,
+                result.ExitCode == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
+        }
+        catch (Exception ex) { EngineStatus.Text = "Defender scan failed: " + ex.Message; }
+    }
+
     private async void QuickScan_Click(object sender, RoutedEventArgs e)
     {
         var answer = MessageBox.Show(this, "Jeff will request a Microsoft Defender quick scan. It can use CPU while it checks common threat locations. Jeff will not disable protection or delete files. Continue?", "Approve Defender quick scan", MessageBoxButton.YesNo, MessageBoxImage.Warning);
