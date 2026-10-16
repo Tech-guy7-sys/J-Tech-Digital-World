@@ -69,7 +69,9 @@ public partial class SecurityCenterWindow : Window
         try
         {
             var progress = new Progress<(int completed, int total, string current)>(p =>
-                EngineStatus.Text = $"Scanning {p.completed}/{p.total}: {Path.GetFileName(p.current)}");
+                EngineStatus.Text = p.total > 0
+                    ? $"Scanning {p.completed}/{p.total}: {Path.GetFileName(p.current)}"
+                    : $"Scanning file {p.completed} (maximum 20,000): {Path.GetFileName(p.current)}");
             var engine = new AntivirusEngine();
             var results = await engine.ScanFolderAsync(folder, progress, CancellationToken.None);
             static string Csv(string value) => "\"" + value.Replace("\"", "\"\"") + "\"";
