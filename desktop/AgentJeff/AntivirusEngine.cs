@@ -113,7 +113,7 @@ public sealed class AntivirusEngine
             && (path.StartsWith(temp, StringComparison.OrdinalIgnoreCase) || path.StartsWith(downloads, StringComparison.OrdinalIgnoreCase)))
         {
             findings.Add("Executable located in Temp or Downloads; verify its source");
-            if (risk < FileRisk.Review) risk = FileRisk.Review;
+            if (risk == FileRisk.Clean) risk = FileRisk.Review;
         }
 
         var info = new FileInfo(path);
