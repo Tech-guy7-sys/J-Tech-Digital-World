@@ -1,0 +1,53 @@
+name: JT Digital World website CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "*.css"
+      - "*.js"
+      - "assets/**"
+      - "jt-ai-agent/**"
+      - "jt-apps/**"
+      - "scripts/build-site.mjs"
+      - "package.json"
+      - "wrangler.toml"
+      - ".github/workflows/website-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "*.html"
+      - "*.css"
+      - "*.js"
+      - "assets/**"
+      - "jt-ai-agent/**"
+      - "jt-apps/**"
+      - "scripts/build-site.mjs"
+      - "package.json"
+      - "wrangler.toml"
+      - ".github/workflows/website-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-static-website:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check build script syntax
+        run: node --check scripts/build-site.mjs
+      - name: Build public website files
+        run: npm run build:website
+      - name: Verify required output
+        run: |
+          test -f dist/index.html
+          test -f dist/home.html
+          test -f dist/apps.html
+          test -f dist/style.css
