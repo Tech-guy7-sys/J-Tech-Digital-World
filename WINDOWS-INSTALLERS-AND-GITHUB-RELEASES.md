@@ -34,7 +34,7 @@ A successful pipeline validates build, automated tests, installer compilation, a
 The workflow supports three release paths:
 
 - Push a version tag such as `agent-jeff-v0.1.0` after reviewing the intended source commit.
-- Open **GitHub → Actions → Build Agent Jeff Windows Installers → Run workflow**, enter a semantic version such as `0.1.0`, and set **Create a draft GitHub Release** to true (the workflow action currently publishes a marked pre-release once all checks pass).
+- Open **GitHub → Actions → Build Agent Jeff Windows Installers → Run workflow**, enter a semantic version such as `0.1.0`, and set **Publish release** to true to publish the marked pre-release once all checks pass.
 - Use the repository's explicitly prefixed release commit flow when a release run is deliberately prepared.
 
 The release step runs only after all prior build, test, packaging, and install/uninstall checks succeed. It publishes an **early pre-release**, with the setup EXE, portable ZIP and SHA-256 checksums attached. The release body warns that the installer is unsigned and that CI package checks do not replace human feature testing.
