@@ -9,7 +9,7 @@ on:
         default: "0.1.0"
         type: string
       publish_release:
-        description: "Create a draft GitHub Release after all build and install checks pass"
+        description: "Publish a marked pre-release after all build and install checks pass"
         required: true
         default: false
         type: boolean
