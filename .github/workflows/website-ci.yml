@@ -41,8 +41,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Check build script syntax
-        run: node --check scripts/build-site.mjs
+      - name: Check JavaScript syntax
+        run: |
+          node --check scripts/build-site.mjs
+          node --check jt-apps/jt-stream/studio.js
+          node --check release-downloads.js
       - name: Build public website files
         run: npm run build:website
       - name: Verify required output
@@ -51,3 +54,8 @@ jobs:
           test -f dist/home.html
           test -f dist/apps.html
           test -f dist/style.css
+          test -f dist/jt-apps/jt-stream/studio.html
+          test -f dist/jt-apps/jt-stream/studio.css
+          test -f dist/jt-apps/jt-stream/studio.js
+          grep -q 'Open JT Stream Studio' dist/jt-apps/jt-stream/index.html
+          grep -q 'programCanvas' dist/jt-apps/jt-stream/studio.html
