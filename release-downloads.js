@@ -26,7 +26,6 @@
       const release = releases
         .filter((item) =>
           !item.draft &&
-          !item.prerelease &&
           /^agent-jeff-v\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(item.tag_name)
         )
         .sort((a, b) => Date.parse(b.published_at || b.created_at) - Date.parse(a.published_at || a.created_at))[0];
@@ -46,7 +45,7 @@
         return;
       }
 
-      status.textContent = "Agent Jeff " + release.tag_name.replace(/^agent-jeff-v/, "") + " · verified release assets";
+      status.textContent = "Agent Jeff " + release.tag_name.replace(/^agent-jeff-v/, "") + (release.prerelease ? " · Windows x64 pre-release" : " · Windows x64 release") + " · installer and checksums";
       setupLink.href = setup.browser_download_url;
       setupLink.textContent = "Download Windows installer (.exe)";
       setupLink.hidden = false;
@@ -59,7 +58,6 @@
         checksumLink.href = checksums.browser_download_url;
         checksumLink.hidden = false;
       }
-      status.insertAdjacentHTML("afterend", "");
     } catch (error) {
       unavailable("Could not check published assets right now. Use the official GitHub Releases page.");
       const fallback = document.querySelector('#agent-jeff-downloads a[href="' + releasesPage + '"]');
