@@ -59,3 +59,16 @@ jobs:
           test -f dist/jt-apps/jt-stream/studio.js
           grep -q 'Open JT Stream Studio' dist/jt-apps/jt-stream/index.html
           grep -q 'programCanvas' dist/jt-apps/jt-stream/studio.html
+          node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
+          const html = readFileSync("dist/jt-apps/jt-stream/studio.html", "utf8");
+          const js = readFileSync("dist/jt-apps/jt-stream/studio.js", "utf8");
+          const ids = new Set([...html.matchAll(/\\bid=["']([^"']+)["']/g)].map((match) => match[1]));
+          const refs = [...new Set([...js.matchAll(/\\$\\(["']([^"']+)["']\\)/g)].map((match) => match[1]))];
+          const missing = refs.filter((id) => !ids.has(id));
+          if (missing.length) {
+            console.error("JT Stream Studio references missing element IDs:", missing.join(", "));
+            process.exit(1);
+          }
+          console.log("JT Stream Studio DOM references verified:", refs.length);
+          NODE
