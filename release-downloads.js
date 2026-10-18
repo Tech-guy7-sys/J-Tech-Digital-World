@@ -7,11 +7,17 @@
   const portableLink = document.getElementById("agent-jeff-portable-download");
   const checksumLink = document.getElementById("agent-jeff-checksums-download");
   const releasesPage = "https://github.com/Tech-guy7-sys/jt-digital-world/releases";
+  [setupLink, portableLink, checksumLink].forEach((link) => {
+    if (link) link.style.display = "none";
+  });
 
   function unavailable(message) {
     status.textContent = message;
     [setupLink, portableLink, checksumLink].forEach((link) => {
-      if (link) link.hidden = true;
+      if (link) {
+        link.hidden = true;
+        link.style.display = "none";
+      }
     });
   }
 
@@ -49,14 +55,17 @@
       setupLink.href = setup.browser_download_url;
       setupLink.textContent = "Download Windows installer (.exe)";
       setupLink.hidden = false;
+      setupLink.style.display = "flex";
       setupLink.setAttribute("aria-label", "Download Agent Jeff Windows setup installer");
       if (portable) {
         portableLink.href = portable.browser_download_url;
         portableLink.hidden = false;
+        portableLink.style.display = "flex";
       }
       if (checksums) {
         checksumLink.href = checksums.browser_download_url;
         checksumLink.hidden = false;
+        checksumLink.style.display = "flex";
       }
     } catch (error) {
       unavailable("Could not check published assets right now. Use the official GitHub Releases page.");
