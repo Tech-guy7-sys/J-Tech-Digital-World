@@ -87,6 +87,19 @@
             <button class="scene-choice" data-scene="pip" aria-pressed="false"><span class="scene-thumb pip-thumb"><i></i><b></b></span><strong>Picture-in-picture</strong><small>Screen + camera</small></button>
           </div>
           <div class="scene-actions"><button class="text-button" id="snapshotButton">↧ Save still frame</button><span id="snapshotStatus">PNG snapshot</span></div>
+          <div class="inspector-section jt-hotkey-panel">
+            <span class="panel-kicker">FAST CONTROL</span>
+            <label for="transitionSelect">Scene transition</label>
+            <select id="transitionSelect"><option value="cut">Cut</option><option value="fade">Fade to black · 260 ms</option></select>
+            <div class="hotkey-grid">
+              <span><kbd>Alt</kbd> + <kbd>1</kbd> Camera</span>
+              <span><kbd>Alt</kbd> + <kbd>2</kbd> Screen</span>
+              <span><kbd>Alt</kbd> + <kbd>3</kbd> Picture-in-picture</span>
+              <span><kbd>Alt</kbd> + <kbd>S</kbd> Snapshot</span>
+              <span><kbd>Alt</kbd> + <kbd>R</kbd> Record / stop</span>
+            </div>
+            <small>Broadcast output is not enabled in this browser build. Recording is local.</small>
+          </div>
         </div>
       </section>
 
