@@ -32,6 +32,20 @@
 - A detailed specification is recorded in `JT-STREAM-CAPABILITY-SPEC.md`.
 - A working browser-based Stage 01 studio now exists at `jt-apps/jt-stream/studio.html`. Implemented: camera/microphone capture, screen sharing, Camera/Screen/Picture-in-Picture layouts, branded title/lower-third overlay, 720p/1080p canvas options, microphone gain/meter, local profile save/import/export, PNG snapshots, and local WebM recording. These controls still require hands-on browser/device testing. Direct RTMP/RTMPS output, virtual camera, advanced effects/background replacement, chat/alert integrations and platform streaming integrations remain planned.
 
+## Other JT apps — interactive local-first workspace update
+- Added shared app workspace runtime at `jt-apps/workspace-tools.js` and linked it from JT AI Core, JT App Manager, JT Cloud, JT Code, JT Design, JT Video & Photo (existing internal route `jt-motion`), JT Studio, and Agent Jeff.
+- JT AI Core: local provider/model/endpoint preference fields and app-tool permission profile. This is a local preference UI only; it does not connect to an AI backend or enforce operating-system permissions.
+- JT App Manager: searchable/filterable app library with links and clear prototype/release status. Existing release-check UI remains separate; app install/update automation is not implemented.
+- JT Cloud: create local project records, add file metadata references, delete projects and export workspace JSON. It does not upload files or provide remote cloud storage.
+- JT Code: editable HTML starter, sandboxed iframe preview, local draft save and HTML download. It is not a full IDE and does not run terminal commands.
+- JT Design: editable simple SVG artboard with shape, color, text and SVG export. This is a starter tool, not a full layer-based design suite.
+- JT Video & Photo: storyboard/shot-list planning with scene duration, local saving and JSON export; video editing/rendering is not implemented.
+- JT Studio: local audio-session/track planner with BPM, key, mix notes and JSON export; it does not yet record or mix audio.
+- Agent Jeff page: published v0.1.0 release link and a desktop-action safety checklist. The checklist is informational and does not configure actual agent permissions.
+- Updated the app directory to display JT Video & Photo branding. Added CI checks for shared workspace script syntax and all eight app workspace links/assets.
+- Latest website CI run after the workspace additions: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39133054208 (build and verification steps passed; run was still finalizing when checked).
+- All new app workspaces are explicitly local-first prototypes. Real shared AI, cloud sync, production video/audio processing, full IDE functionality, and secure desktop permission enforcement require separate backend/native implementation and acceptance testing.
+
 ## JT Stream Studio — Stage 01 implementation
 - Added browser studio page: https://github.com/Tech-guy7-sys/jt-digital-world/blob/main/jt-apps/jt-stream/studio.html
 - Added original responsive JT studio styling in `jt-apps/jt-stream/studio.css`.
