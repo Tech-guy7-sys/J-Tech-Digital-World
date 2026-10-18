@@ -72,3 +72,6 @@
 - The setup and portable ZIP were downloaded into the working environment from the same successful run and verified against `SHA256SUMS.txt`.
 - **Release status:** published prerelease, not a final stable release. The installer is unsigned; SmartScreen may show a warning. Automated CI covers build, 9 unit tests and install/uninstall packaging smoke tests; human acceptance testing of the app’s actual runtime features on a normal Windows 11 machine remains necessary.
 - The website downloads page queries the real GitHub release API and now recognizes published prereleases. Website CI passed for the script and allowlist updates. Live Cloudflare deployment still has not been verified.
+
+- Final download-page visibility fix: `release-downloads.js` now explicitly hides setup/portable/checksum links when no valid release asset is available, because the site CSS assigns `display:flex` to `.platform-button` and can override the browser's default `hidden` attribute. Latest website CI passed after this fix: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39131169043.
+- Final release verification confirmed `agent-jeff-v0.1.0` is published (`draft=false`, `prerelease=true`) with all three assets present. The latest successful build run: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39130783302.
