@@ -29,14 +29,15 @@ Expected filenames:
 
 A successful pipeline validates build, automated tests, installer compilation, and basic install/uninstall behavior. It does not replace a human acceptance test of the app's launch, runtime features, upgrade behavior, security, or usability on a normal Windows 11 account.
 
-## Create a draft GitHub Release
+## Publish an Agent Jeff pre-release
 
-The workflow supports two release paths:
+The workflow supports three release paths:
 
 - Push a version tag such as `agent-jeff-v0.1.0` after reviewing the intended source commit.
-- Open **GitHub → Actions → Build Agent Jeff Windows Installers → Run workflow**, enter a semantic version such as `0.1.0`, and set **Create a draft GitHub Release** to true.
+- Open **GitHub → Actions → Build Agent Jeff Windows Installers → Run workflow**, enter a semantic version such as `0.1.0`, and set **Create a draft GitHub Release** to true (the workflow action currently publishes a marked pre-release once all checks pass).
+- Use the repository's explicitly prefixed release commit flow when a release run is deliberately prepared.
 
-The release step runs only after all prior build, test, packaging, and install/uninstall checks succeed. It creates a **draft** release with the setup EXE, portable ZIP and SHA-256 checksums attached. Review the draft release notes and assets before publishing it publicly.
+The release step runs only after all prior build, test, packaging, and install/uninstall checks succeed. It publishes an **early pre-release**, with the setup EXE, portable ZIP and SHA-256 checksums attached. The release body warns that the installer is unsigned and that CI package checks do not replace human feature testing.
 
 For normal CI checks, leave the draft-release option off. Main-branch CI builds use a version resembling `0.1.0-ci.<run-number>` and upload an artifact without publishing a release.
 
