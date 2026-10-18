@@ -20,6 +20,11 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
       - name: Build release bundles
         shell: bash
         run: |
@@ -34,14 +39,13 @@ jobs:
           # Always produce a complete repository source archive.
           git archive --format=zip --prefix="jt-digital-world-${VERSION}/" HEAD > "release-assets/jt-digital-world-${VERSION}-source.zip"
 
-          # Package the static website as a separate ZIP only when a recognized
-          # site root exists. These are web bundles, not desktop installers.
-          for candidate in public Website/public website public_html; do
-            if [[ -d "$candidate" ]]; then
-              (cd "$candidate" && zip -qr "$GITHUB_WORKSPACE/release-assets/jt-digital-world-${VERSION}-website.zip" .)
-              break
-            fi
-          done
+          # Build and package the actual static site using the repository's
+          # maintained build script. This is a web bundle, not a desktop installer.
+          npm run build:website
+          test -f dist/index.html
+          test -f dist/home.html
+          test -f dist/apps.html
+          (cd dist && zip -qr "$GITHUB_WORKSPACE/release-assets/jt-digital-world-${VERSION}-website.zip" .)
 
           # Package available app preview folders as source/preview bundles.
           if [[ -d app-previews ]]; then
@@ -57,8 +61,8 @@ jobs:
 
           ## Assets
           - Repository source ZIP: complete tracked repository snapshot.
-          - Website ZIP: included only if a recognized static site output directory exists.
-          - App preview ZIPs: source/preview files from app-previews/.
+          - Website ZIP: built static site from the repository's dist output.
+          - App preview ZIPs: source/preview files from app-previews/ when that directory exists.
 
           ## Important
           These archives are source or web-preview bundles, not signed Windows/macOS/Android installers.
