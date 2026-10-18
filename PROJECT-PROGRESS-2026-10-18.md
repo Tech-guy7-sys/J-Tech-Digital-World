@@ -26,6 +26,15 @@
 - The most recent observed JT Command Agent daily health scan succeeded: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39115236222
 - Agent Jeff's Windows build workflow has successfully built the WPF application, passed all 9 unit tests, published self-contained x64 files, compiled the setup EXE, generated the portable ZIP/checksums, passed silent install/uninstall smoke tests, and published the official pre-release: https://github.com/Tech-guy7-sys/jt-digital-world/releases/tag/agent-jeff-v0.1.0.
 
+## JT AI gateway implementation — 2026-10-18
+- Added root Pages Function `functions/api/jeff.js`, exposing same-origin `POST /api/jeff` for the JT AI Agent.
+- Implemented provider adapters for Ollama (through a configured reachable gateway), OpenAI-compatible chat completions, Anthropic Messages, and Google Gemini generateContent. Provider keys are read only from server environment variables; Gemini credentials are sent in a request header rather than a URL.
+- Added origin and content-type checks, JSON/request/history length validation, provider allow-list, timeout handling, generic upstream error handling, and no-store JSON responses.
+- Added `JT-AI-PROVIDER-GATEWAY.md` documenting Cloudflare Pages deployment, environment configuration, and security limits.
+- Added `scripts/test-jeff-api.mjs` for request validation; CI now syntax-checks the gateway and runs these tests.
+- The gateway is not a complete public production service yet: account authentication, durable rate limits/quotas, abuse monitoring, and live provider verification remain required before open public access. Local Ollama requires a secured, reachable gateway; Cloudflare cannot call a user's PC localhost directly. Copilot CLI explicitly requires a native Agent Jeff bridge.
+- CI validation runs are available at https://github.com/Tech-guy7-sys/jt-digital-world/actions. Do not label provider integrations live until secrets are configured and each provider is smoke-tested in the deployed Pages project.
+
 ## JT app capability expansion — 2026-10-18
 - Added `JT-ECOSYSTEM-CAPABILITY-MATRIX.md` with product-by-product benchmarks, current implementation boundaries, security requirements, and staged engineering order for every JT app.
 - JT Stream browser Studio now has Alt+1/2/3 scene hotkeys, Alt+S snapshot, Alt+R record/stop, and selectable cut/fade-to-black transitions. Existing camera/screen/PiP composition, title overlays, profile import/export, snapshot and local WebM recording remain. This does not add RTMP/RTMPS broadcast, virtual-camera output, multi-streaming, hardware encoding, or OBS/XSplit feature parity; those need a native media engine.
