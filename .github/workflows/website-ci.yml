@@ -47,6 +47,11 @@ jobs:
           node --check jt-apps/jt-stream/studio.js
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
+          grep -q "AI coding-agent handoff" jt-apps/pro-workspaces.js
+          grep -q "Cloud provider connectors" jt-apps/pro-workspaces.js
+          grep -q "Provider and agent compatibility" jt-apps/pro-workspaces.js
+          grep -q "transitionSelect" jt-apps/jt-stream/studio.js
+          grep -q "document.addEventListener(\"keydown\"" jt-apps/jt-stream/studio.js
           node --check release-downloads.js
       - name: Build public website files
         run: npm run build:website
