@@ -24,7 +24,7 @@
 - Existing Windows installer guidance requires actual build outputs, install/upgrade/uninstall testing, and checks before public release. Do not fabricate setup EXEs or claim unsigned builds are signed.
 - The website CI latest successful run: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39052255044
 - The most recent observed JT Command Agent daily health scan succeeded: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39115236222
-- Agent Jeff Windows desktop workflow history has mixed successes and failures; inspect the latest relevant run and its logs before declaring the installer pipeline healthy.
+- Agent Jeff Windows build workflow was hardened and exercised on a Windows runner. The successful packaging run built the WPF app, passed all 9 unit tests, published self-contained x64 files, compiled the setup EXE, created the portable ZIP/checksums, passed silent install/uninstall smoke tests, and uploaded a 116,633,443-byte artifact. The release-creation step then returned HTTP 403 because GitHub denied the Actions integration permission. The installer artifact exists and has been copied out for direct download, but no official GitHub Release is published yet.
 
 ## JT Stream — new requirement
 - JT Stream should have a creator-studio capability set comparable to Camo Studio, including camera inputs and image controls, scenes/layers/overlays, effects, multi-source audio mixing, recording, RTMP/RTMPS streaming, session profiles, transitions, web/chat layers, hotkeys/control-surface integration, and diagnostics.
@@ -44,7 +44,7 @@
 1. Run `npm run build:website` locally and verify the expected files in `dist`.
 2. Connect the repository to Cloudflare Pages, deploy, and test the `pages.dev` preview.
 3. Buy/connect a custom domain only after checking spelling and renewal cost.
-4. Fix/verify the Windows installer workflow against actual build logs; publish releases only after real artifacts and installation tests pass.
+4. Complete the GitHub Release permission setup by allowing read/write contents permission or defining the repository Actions secret `JT_RELEASE_TOKEN` (fine-grained PAT scoped only to `jt-digital-world`, Contents: read/write). Then rerun the Agent Jeff workflow with Publish release enabled. Never paste the token into chat.
 5. Create a dedicated `jt-stream` repository when the user is ready, then implement the specification in stages with real camera/audio/recording/streaming tests.
 6. Keep each app's GitHub Releases page honest: version tag, release notes, source archive, and only those platform installers that were actually built and tested.
 
@@ -56,3 +56,16 @@
 - Added this progress snapshot (commit `f5b0c2e`).
 - Website CI for the Stream page commit completed successfully: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39128815646. The static build and required-output checks passed. This validates the static build, not a live Cloudflare deployment.
 - GitHub Releases API returned an empty list for the main website repository and the three app repositories checked. Release workflow improvements are committed, but no new release has been published and no Windows installer is claimed.
+
+
+## Agent Jeff Windows download and release verification — 2026-10-18
+- Fixed the native Windows compile error in `desktop/AgentJeff/ClamAvScanner.cs` by importing `System.IO` (commit `691e927`).
+- Added `installer/AgentJeff.iss` for a JT-branded Windows setup wizard with uninstall support and optional desktop shortcut (commit `2e2a7b9`).
+- Hardened `.github/workflows/agent-jeff-desktop.yml` to restore/build/test the real .NET 8 WPF application; publish self-contained Windows x64; compile the installer; generate portable ZIP + SHA-256 checksums; run a silent install/uninstall smoke test; upload build artifacts; and attempt an early GitHub pre-release.
+- Successful Windows-run validation: build passed; all 9 automated tests passed; self-contained publish passed; Inno Setup compile passed; portable archive and checksums were generated; install/uninstall smoke test passed. Artifact upload succeeded in run `39130284709`.
+- Verified artifact download: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39130284709/artifacts/12138155796
+- Artifact files copied from that run and hash-verified in the working environment:
+  - `Agent-Jeff-Setup-0.1.0-x64.exe` — SHA-256 `3d50a5d0abae1434d1bd81efa7e6b234e5bc3b422966d5b1649aaa02ec99e561`.
+  - `Agent-Jeff-Windows-x64-0.1.0-portable.zip` — SHA-256 `36216835c56964ed1cf983da348b90060e0ae7744957b7c49ed00d6419a7315f`.
+- GitHub's release creation endpoint returned HTTP 403, `Resource not accessible by integration`, even after adding `contents: write` to the workflow. The build-and-install checks passed, but automated publication is still blocked by repository/GITHUB_TOKEN permissions. Do not claim the GitHub Release exists until the Releases API returns it.
+- Downloads page now checks for actual version-tagged Agent Jeff assets rather than claiming installers are permanently unavailable. Once an official prerelease is published, it can show the setup, portable ZIP and checksum links. Website CI passed for this change.
