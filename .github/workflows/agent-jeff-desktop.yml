@@ -197,15 +197,23 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Create draft GitHub Release
+      - name: Publish tested Windows x64 pre-release
         if: "startsWith(github.ref, 'refs/tags/agent-jeff-v') || (github.event_name == 'workflow_dispatch' && inputs.publish_release) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release: agent-jeff-v'))"
         uses: softprops/action-gh-release@v2
         with:
-          name: Agent Jeff v${{ steps.package.outputs.version }}
+          name: Agent Jeff v${{ steps.package.outputs.version }} — Windows x64 pre-release
           tag_name: ${{ steps.package.outputs.tag_name }}
           target_commitish: ${{ github.sha }}
-          generate_release_notes: true
-          draft: true
+          body: |
+            ## Agent Jeff — Windows x64 pre-release
+
+            This release contains the real self-contained Agent Jeff Windows desktop application, a Windows setup wizard, a portable ZIP, and SHA-256 checksums.
+
+            The publishing job only runs after the .NET build, automated tests, installer compilation, and silent install/uninstall smoke checks pass on a Windows runner.
+
+            **Important:** This is an early pre-release, not a signed production build. The installer is currently unsigned and Windows SmartScreen may display a warning. CI validates packaging and basic installation behavior; it does not replace human testing of every application feature on a normal Windows 11 computer. Review the checksums in SHA256SUMS.txt before installing.
+          draft: false
+          prerelease: true
           fail_on_unmatched_files: true
           files: |
             artifacts/Agent-Jeff-Setup-*-x64.exe
