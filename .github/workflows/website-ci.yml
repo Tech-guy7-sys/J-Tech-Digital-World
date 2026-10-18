@@ -55,6 +55,8 @@ jobs:
           grep -q "transitionSelect" jt-apps/jt-stream/studio.js
           grep -q "document.addEventListener(\"keydown\"" jt-apps/jt-stream/studio.js
           node --check release-downloads.js
+      - name: Test JT AI gateway request validation
+        run: node scripts/test-jeff-api.mjs
       - name: Build public website files
         run: npm run build:website
       - name: Verify required output
