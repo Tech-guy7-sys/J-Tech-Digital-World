@@ -14,7 +14,7 @@
     saveProfileButton: $("saveProfileButton"), exportProfileButton: $("exportProfileButton"), importProfileButton: $("importProfileButton"), profileFile: $("profileFile"), profileStatus: $("profileStatus")
   };
   const ctx = els.canvas.getContext("2d", { alpha: false });
-  const state = { cameraStream: null, screenStream: null, micStream: null, recorder: null, chunks: [], scene: "camera", raf: 0, startedAt: 0, timer: 0, audioContext: null, analyser: null, gain: null, meterFrame: 0, recordingUrl: null, profileKey: "jt-stream-profile-v1" };
+  const state = { cameraStream: null, screenStream: null, micStream: null, recorder: null, chunks: [], scene: "camera", raf: 0, startedAt: 0, timer: 0, audioContext: null, audioDestination: null, micSource: null, screenSource: null, screenGain: null, analyser: null, gain: null, meterFrame: 0, recordingUrl: null, profileKey: "jt-stream-profile-v1" };
 
   function note(message) {
     els.topStatus.textContent = message;
@@ -105,8 +105,10 @@
       setLamp(els.screenLamp, true);
       els.placeholder.hidden = true;
       els.recordButton.disabled = false;
-      if (stream.getAudioTracks().length) note("Screen shared with tab/system audio · local preview only");
-      else note("Screen shared · local preview only");
+      if (stream.getAudioTracks().length) {
+        await setupScreenAudio(stream);
+        note("Screen shared with available tab audio · local preview only");
+      } else note("Screen shared · local preview only");
       draw();
     } catch (error) {
       if (error.name !== "NotAllowedError") alert("Screen sharing could not start: " + (error.message || error.name));
@@ -117,26 +119,38 @@
     if (state.screenStream) state.screenStream.getTracks().forEach(t => t.stop());
     state.screenStream = null;
     els.screenVideo.srcObject = null;
+    if (state.screenSource) { try { state.screenSource.disconnect(); } catch (_) {} state.screenSource = null; }
+    if (state.screenGain) { try { state.screenGain.disconnect(); } catch (_) {} state.screenGain = null; }
     els.screenStatus.textContent = "Not sharing";
     setLamp(els.screenLamp, false);
     if (!liveTracks(state.cameraStream)) els.recordButton.disabled = true;
+    if (!state.gain) closeAudioGraphIfUnused();
     note(liveTracks(state.cameraStream) ? "Camera ready · screen stopped" : "Studio ready · no source");
+  }
+  async function ensureAudioGraph() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) throw new Error("Audio mixing is unavailable in this browser.");
+    if (!state.audioContext || state.audioContext.state === "closed") {
+      state.audioContext = new AudioContextClass();
+      state.audioDestination = state.audioContext.createMediaStreamDestination();
+    }
+    if (state.audioContext.state === "suspended") await state.audioContext.resume();
   }
   async function setupAudio(stream) {
     stopAudioMeter();
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) { els.micLevelLabel.textContent = "Meter unsupported"; return; }
     try {
-      state.audioContext = new AudioContextClass();
-      await state.audioContext.resume();
-      const source = state.audioContext.createMediaStreamSource(stream);
+      await ensureAudioGraph();
+      state.micSource = state.audioContext.createMediaStreamSource(new MediaStream(stream.getAudioTracks()));
       state.gain = state.audioContext.createGain();
       state.gain.gain.value = Number(els.micGain.value) / 100;
       state.analyser = state.audioContext.createAnalyser();
       state.analyser.fftSize = 256;
-      source.connect(state.gain);
+      state.micSource.connect(state.gain);
       state.gain.connect(state.analyser);
-      const samples = new Uint8Array(state.analyser.frequencyBinCount);
+      state.gain.connect(state.audioDestination);
+      const samples = new Uint8Array(state.analyser.fftSize);
       const tick = () => {
         if (!state.analyser) return;
         state.analyser.getByteTimeDomainData(samples);
@@ -151,12 +165,30 @@
       tick();
     } catch (error) { console.warn("Audio meter could not start", error); els.micLevelLabel.textContent = "Meter unavailable"; }
   }
+  async function setupScreenAudio(stream) {
+    if (!stream.getAudioTracks().length) return;
+    await ensureAudioGraph();
+    if (state.screenSource) { try { state.screenSource.disconnect(); } catch (_) {} }
+    if (state.screenGain) { try { state.screenGain.disconnect(); } catch (_) {} }
+    state.screenSource = state.audioContext.createMediaStreamSource(new MediaStream(stream.getAudioTracks()));
+    state.screenGain = state.audioContext.createGain();
+    state.screenGain.gain.value = 1;
+    state.screenSource.connect(state.screenGain);
+    state.screenGain.connect(state.audioDestination);
+  }
   function stopAudioMeter() {
     if (state.meterFrame) cancelAnimationFrame(state.meterFrame);
     state.meterFrame = 0;
-    if (state.audioContext) state.audioContext.close().catch(() => {});
-    state.audioContext = null; state.analyser = null; state.gain = null;
+    if (state.micSource) { try { state.micSource.disconnect(); } catch (_) {} }
+    if (state.gain) { try { state.gain.disconnect(); } catch (_) {} }
+    state.micSource = null; state.analyser = null; state.gain = null;
     els.micMeter.style.width = "0%"; els.micLevelLabel.textContent = "Waiting for input";
+    closeAudioGraphIfUnused();
+  }
+  function closeAudioGraphIfUnused() {
+    if (state.gain || state.screenSource) return;
+    if (state.audioContext) state.audioContext.close().catch(() => {});
+    state.audioContext = null; state.audioDestination = null; state.analyser = null;
   }
   function fitVideo(video, x, y, w, h) {
     if (!video || video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
@@ -247,11 +279,9 @@
     const hasSource = liveTracks(state.cameraStream) || liveTracks(state.screenStream);
     if (!hasSource) { alert("Enable a camera or share your screen before recording."); return; }
     const fps = Number(els.fpsSelect.value) || 30;
-    const output = els.canvas.captureStream(fps);
-    const audioTracks = [];
-    if (state.cameraStream) audioTracks.push(...state.cameraStream.getAudioTracks());
-    if (state.screenStream) audioTracks.push(...state.screenStream.getAudioTracks());
-    [...new Set(audioTracks)].forEach(track => output.addTrack(track));
+    const canvasStream = els.canvas.captureStream(fps);
+    const output = new MediaStream(canvasStream.getVideoTracks());
+    if (state.audioDestination) state.audioDestination.stream.getAudioTracks().forEach(track => output.addTrack(track));
     const mimeType = ["video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"].find(type => MediaRecorder.isTypeSupported(type));
     try {
       state.chunks = [];
@@ -271,7 +301,7 @@
         els.recIndicator.innerHTML = "<i></i> REC OFF"; els.liveDot.classList.remove("active");
         clearInterval(state.timer); els.recordTime.textContent = "00:00";
         note("Recording finished · download it to keep your clip");
-        output.getTracks().forEach(t => t.stop());
+        canvasStream.getTracks().forEach(t => t.stop());
       };
       state.recorder.start(1000);
       state.startedAt = Date.now();
@@ -285,7 +315,7 @@
         els.recordTime.textContent = String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
       },250);
     } catch (error) {
-      output.getTracks().forEach(t => t.stop());
+      canvasStream.getTracks().forEach(t => t.stop());
       alert("Recording could not start: " + (error.message || error.name));
     }
   }
@@ -318,6 +348,7 @@
   window.addEventListener("beforeunload", () => {
     if (state.recorder?.state === "recording") state.recorder.stop();
     [state.cameraStream,state.screenStream].filter(Boolean).forEach(s=>s.getTracks().forEach(t=>t.stop()));
+    if (state.audioContext && state.audioContext.state !== "closed") state.audioContext.close().catch(() => {});
     if (state.recordingUrl) URL.revokeObjectURL(state.recordingUrl);
   });
   (async () => {
