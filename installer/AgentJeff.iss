@@ -32,7 +32,7 @@ CloseApplications=yes
 RestartApplications=no
 VersionInfoCompany={#MyAppPublisher}
 VersionInfoProductName={#MyAppName}
-VersionInfoProductVersion={#AppVersion}
+VersionInfoProductVersion={#NumericVersion}
 VersionInfoVersion={#NumericVersion}
 
 [Languages]
