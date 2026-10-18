@@ -48,6 +48,13 @@
     } catch (error) { console.warn("Could not enumerate media devices", error); }
   }
   async function enableCamera() {
+    if (state.cameraStream) {
+      stopCamera();
+      els.cameraButton.textContent = "Enable camera + microphone";
+      note(liveTracks(state.screenStream) ? "Screen ready · camera stopped" : "Studio ready · no source");
+      draw();
+      return;
+    }
     if (!secureCaptureAvailable()) {
       note("Camera access needs a supported browser on HTTPS or localhost.");
       alert("JT Stream needs a supported browser on HTTPS or localhost to access camera and microphone devices.");
@@ -65,6 +72,7 @@
       await waitForVideo(els.cameraVideo);
       els.cameraStatus.textContent = "Connected";
       els.micStatus.textContent = stream.getAudioTracks().length ? "Connected" : "No audio track";
+      els.cameraButton.textContent = "Turn camera + mic off";
       setLamp(els.cameraLamp, true);
       await refreshDevices();
       if (stream.getAudioTracks().length) await setupAudio(stream);
@@ -83,11 +91,18 @@
     els.cameraVideo.srcObject = null;
     els.cameraStatus.textContent = "Not connected";
     els.micStatus.textContent = "Not connected";
+    els.cameraButton.textContent = "Enable camera + microphone";
     setLamp(els.cameraLamp, false);
     stopAudioMeter();
     if (!liveTracks(state.screenStream)) els.recordButton.disabled = true;
   }
   async function shareScreen() {
+    if (state.screenStream) {
+      stopScreen();
+      els.screenButton.textContent = "Share screen or window";
+      draw();
+      return;
+    }
     if (!navigator.mediaDevices?.getDisplayMedia) {
       alert("Screen sharing is not available in this browser or context. Use a supported browser on HTTPS or localhost.");
       return;
@@ -102,6 +117,7 @@
       const videoTrack = stream.getVideoTracks()[0];
       if (videoTrack) videoTrack.addEventListener("ended", () => stopScreen(), { once: true });
       els.screenStatus.textContent = "Sharing";
+      els.screenButton.textContent = "Stop screen sharing";
       setLamp(els.screenLamp, true);
       els.placeholder.hidden = true;
       els.recordButton.disabled = false;
@@ -122,6 +138,7 @@
     if (state.screenSource) { try { state.screenSource.disconnect(); } catch (_) {} state.screenSource = null; }
     if (state.screenGain) { try { state.screenGain.disconnect(); } catch (_) {} state.screenGain = null; }
     els.screenStatus.textContent = "Not sharing";
+    els.screenButton.textContent = "Share screen or window";
     setLamp(els.screenLamp, false);
     if (!liveTracks(state.cameraStream)) els.recordButton.disabled = true;
     if (!state.gain) closeAudioGraphIfUnused();
