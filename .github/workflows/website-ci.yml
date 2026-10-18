@@ -46,6 +46,7 @@ jobs:
           node --check scripts/build-site.mjs
           node --check jt-apps/jt-stream/studio.js
           node --check jt-apps/workspace-tools.js
+          node --check jt-apps/pro-workspaces.js
           node --check release-downloads.js
       - name: Build public website files
         run: npm run build:website
@@ -59,6 +60,10 @@ jobs:
           test -f dist/jt-apps/jt-stream/studio.css
           test -f dist/jt-apps/jt-stream/studio.js
           test -f dist/jt-apps/workspace-tools.js
+          test -f dist/jt-apps/pro-workspaces.js
+          for app in jt-ai-core jt-app-manager jt-cloud jt-code jt-design jt-motion jt-studio agent-jeff jt-stream; do
+            grep -q 'pro-workspaces.js' "dist/jt-apps/$app/index.html"
+          done
           for app in jt-ai-core jt-app-manager jt-cloud jt-code jt-design jt-motion jt-studio agent-jeff; do
             test -f "dist/jt-apps/$app/index.html"
             grep -q 'data-workspace-tool' "dist/jt-apps/$app/index.html"
