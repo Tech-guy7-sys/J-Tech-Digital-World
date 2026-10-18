@@ -41,6 +41,19 @@ The release step runs only after all prior build, test, packaging, and install/u
 
 For normal CI checks, leave the draft-release option off. Main-branch CI builds use a version resembling `0.1.0-ci.<run-number>` and upload an artifact without publishing a release.
 
+## Current published Agent Jeff pre-release
+
+**Published 2026-10-18:** [Agent Jeff v0.1.0 — Windows x64 pre-release](https://github.com/Tech-guy7-sys/jt-digital-world/releases/tag/agent-jeff-v0.1.0)
+
+Assets attached to this GitHub Release:
+- [Windows setup installer (.exe)](https://github.com/Tech-guy7-sys/jt-digital-world/releases/download/agent-jeff-v0.1.0/Agent-Jeff-Setup-0.1.0-x64.exe) — SHA-256: `06a05488b342d214ba5d52cb0e7a33f971fc19557661caa12ab5134ede671043`
+- [Portable Windows ZIP](https://github.com/Tech-guy7-sys/jt-digital-world/releases/download/agent-jeff-v0.1.0/Agent-Jeff-Windows-x64-0.1.0-portable.zip) — SHA-256: `a00d804c18b28c49454d74700ea8893c0f7ef1d50cd57ccbf72fd37e2590bceb`
+- [SHA-256 checksum manifest](https://github.com/Tech-guy7-sys/jt-digital-world/releases/download/agent-jeff-v0.1.0/SHA256SUMS.txt)
+
+Verified GitHub Actions run: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39130783302. The .NET build and 9 automated tests passed. The installer compiled, the portable ZIP/checksums were created, and the installer was silently installed and uninstalled successfully on the Windows runner.
+
+This is a **pre-release**, not a final stable release, and the installer is **unsigned**. Package and install smoke tests do not replace human testing of app features on a normal Windows 11 account.
+
 ## Installer behavior and security
 
 - The setup requires administrator privileges and installs under the JT Digital World application folder in Program Files.
