@@ -37,7 +37,7 @@
 - Added original responsive JT studio styling in `jt-apps/jt-stream/studio.css`.
 - Implemented camera and screen source toggles, camera/screen/PiP scene composition, branded canvas overlays, audio gain/metering and an audio mix graph, local WebM recording, still PNG export, and local JSON profile save/import/export in `jt-apps/jt-stream/studio.js`.
 - Changed the JT Stream overview hero to link directly to the working studio. Updated website CI to syntax-check the studio/download JavaScript and verify that the studio page, styles, and script exist in `dist`.
-- Website CI passed after the studio updates: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39132387107.
+- Website CI passed after the studio updates: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39132666373. The latest check includes JavaScript syntax checks, static build-output checks and validation of all 41 statically referenced studio element IDs.
 - This browser studio is Stage 01, not a Camo Studio replacement yet. Live streaming/RTMP output and full virtual-camera/effects/device control still need a native or media-engine implementation and real hardware/platform tests.
 
 ## Recent confirmed configuration commits (main website repo)
