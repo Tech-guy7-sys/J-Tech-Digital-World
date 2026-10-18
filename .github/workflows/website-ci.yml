@@ -45,6 +45,7 @@ jobs:
         run: |
           node --check scripts/build-site.mjs
           node --check jt-ai-agent/workspace.js
+          node --check functions/api/jeff.js
           node --check jt-apps/jt-stream/studio.js
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
