@@ -30,7 +30,15 @@
 - JT Stream should have a creator-studio capability set comparable to Camo Studio, including camera inputs and image controls, scenes/layers/overlays, effects, multi-source audio mixing, recording, RTMP/RTMPS streaming, session profiles, transitions, web/chat layers, hotkeys/control-surface integration, and diagnostics.
 - JT Stream must retain original JT branding and UI rather than copy Camo's assets or interface.
 - A detailed specification is recorded in `JT-STREAM-CAPABILITY-SPEC.md`.
-- The current website page is a product preview/roadmap, not proof those production capabilities are implemented. All features must be marked planned until they pass their acceptance tests.
+- A working browser-based Stage 01 studio now exists at `jt-apps/jt-stream/studio.html`. Implemented: camera/microphone capture, screen sharing, Camera/Screen/Picture-in-Picture layouts, branded title/lower-third overlay, 720p/1080p canvas options, microphone gain/meter, local profile save/import/export, PNG snapshots, and local WebM recording. These controls still require hands-on browser/device testing. Direct RTMP/RTMPS output, virtual camera, advanced effects/background replacement, chat/alert integrations and platform streaming integrations remain planned.
+
+## JT Stream Studio — Stage 01 implementation
+- Added browser studio page: https://github.com/Tech-guy7-sys/jt-digital-world/blob/main/jt-apps/jt-stream/studio.html
+- Added original responsive JT studio styling in `jt-apps/jt-stream/studio.css`.
+- Implemented camera and screen source toggles, camera/screen/PiP scene composition, branded canvas overlays, audio gain/metering and an audio mix graph, local WebM recording, still PNG export, and local JSON profile save/import/export in `jt-apps/jt-stream/studio.js`.
+- Changed the JT Stream overview hero to link directly to the working studio. Updated website CI to syntax-check the studio/download JavaScript and verify that the studio page, styles, and script exist in `dist`.
+- Website CI passed after the studio updates: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39132387107.
+- This browser studio is Stage 01, not a Camo Studio replacement yet. Live streaming/RTMP output and full virtual-camera/effects/device control still need a native or media-engine implementation and real hardware/platform tests.
 
 ## Recent confirmed configuration commits (main website repo)
 - `333954c` — added allowlisted static website build script.
@@ -45,7 +53,7 @@
 2. Connect the repository to Cloudflare Pages, deploy, and test the `pages.dev` preview.
 3. Buy/connect a custom domain only after checking spelling and renewal cost.
 4. Human-test Agent Jeff on a normal Windows 11 account: first launch, key features, shortcuts, install path, upgrade behavior, and uninstall. The published pre-release is unsigned and remains an early release.
-5. Create a dedicated `jt-stream` repository when the user is ready, then implement the specification in stages with real camera/audio/recording/streaming tests.
+5. Continue JT Stream Stage 02: test browser behavior on actual Windows hardware, harden audio/recording edge cases, and then design the native/media-engine layer required for RTMP/RTMPS streaming and virtual-camera output.
 6. Keep each app's GitHub Releases page honest: version tag, release notes, source archive, and only those platform installers that were actually built and tested.
 
 
@@ -75,3 +83,10 @@
 
 - Final download-page visibility fix: `release-downloads.js` now explicitly hides setup/portable/checksum links when no valid release asset is available, because the site CSS assigns `display:flex` to `.platform-button` and can override the browser's default `hidden` attribute. Latest website CI passed after this fix: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39131169043.
 - Final release verification confirmed `agent-jeff-v0.1.0` is published (`draft=false`, `prerelease=true`) with all three assets present. The latest successful build run: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39130783302.
+
+
+## Deployment status checkpoint — 2026-10-18
+- The repository's Cloudflare Pages build is ready and CI verifies the new studio assets are copied to `dist/jt-apps/jt-stream/`.
+- Latest Studio CI passed: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39132387107.
+- A live Cloudflare Pages deployment still cannot be verified from the connected GitHub tool. The Cloudflare Pages project must be connected to this repository in Cloudflare Dashboard (or a Cloudflare API token/account ID must be configured as protected deployment secrets). No Cloudflare credentials have been placed in source control or chat.
+- Deployment settings: repository root, build command `npm run build:website`, output directory `dist`, production branch `main`. The site can be verified only after the project dashboard supplies a real `*.pages.dev` URL.
