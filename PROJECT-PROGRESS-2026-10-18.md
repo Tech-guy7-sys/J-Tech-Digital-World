@@ -54,5 +54,5 @@
 - Updated `jt-apps/jt-stream/index.html` (commit `061357e`) to show the expanded creator-studio roadmap and clearly label production features as planned rather than already working.
 - Updated `.github/workflows/jt-app-releases.yml` (commit `2f7b290`) to build the actual site with Node 22 and `npm run build:website`, verify key output files, and package the contents of `dist` as a website ZIP. This fixes the previous workflow's mismatch with the repository's root-based site layout.
 - Added this progress snapshot (commit `f5b0c2e`).
-- CI for the Stream page commit is queued at the time of this update: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39128815646. Do not mark it passed until the run completes.
+- Website CI for the Stream page commit completed successfully: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39128815646. The static build and required-output checks passed. This validates the static build, not a live Cloudflare deployment.
 - GitHub Releases API returned an empty list for the main website repository and the three app repositories checked. Release workflow improvements are committed, but no new release has been published and no Windows installer is claimed.
