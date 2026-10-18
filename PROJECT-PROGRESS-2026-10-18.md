@@ -26,6 +26,16 @@
 - The most recent observed JT Command Agent daily health scan succeeded: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39115236222
 - Agent Jeff's Windows build workflow has successfully built the WPF application, passed all 9 unit tests, published self-contained x64 files, compiled the setup EXE, generated the portable ZIP/checksums, passed silent install/uninstall smoke tests, and published the official pre-release: https://github.com/Tech-guy7-sys/jt-digital-world/releases/tag/agent-jeff-v0.1.0.
 
+## JT app capability expansion — 2026-10-18
+- Added `JT-ECOSYSTEM-CAPABILITY-MATRIX.md` with product-by-product benchmarks, current implementation boundaries, security requirements, and staged engineering order for every JT app.
+- JT Stream browser Studio now has Alt+1/2/3 scene hotkeys, Alt+S snapshot, Alt+R record/stop, and selectable cut/fade-to-black transitions. Existing camera/screen/PiP composition, title overlays, profile import/export, snapshot and local WebM recording remain. This does not add RTMP/RTMPS broadcast, virtual-camera output, multi-streaming, hardware encoding, or OBS/XSplit feature parity; those need a native media engine.
+- JT Code now has an AI coding-agent handoff brief builder for Codex, OpenCode, Qwen Code and GitHub Copilot CLI. It can build/copy/download a task brief with safety and testing instructions; it does not run these agents or execute terminal commands.
+- JT Cloud now shows an honest connector registry for OneDrive, iCloud Drive and a possible later Google Drive integration. OAuth, sync, uploads, conflict resolution and remote storage remain unimplemented. No credentials are collected by the prototype.
+- JT AI Core now displays the intended compatibility targets: local Ollama, OpenAI/ChatGPT/Codex, Anthropic Claude, Google Gemini, and native coding-agent bridges. The provider list is a roadmap/diagnostic surface, not proof those providers are connected.
+- JT AI Agent now has a locally persisted provider preference for local/Ollama, OpenAI/ChatGPT, Claude, Gemini and GitHub Copilot CLI. The selected preference is sent to `/api/jeff`; the static repository still has no verified production API route, and adapters must be deployed before changing providers actually works. “Microsoft CLI” was interpreted as GitHub Copilot CLI; if a different Microsoft CLI was intended, identify the exact product before implementing an adapter.
+- CI now checks the new JT Stream controls and app connector/handoff panels. Workflow run for the latest app-panel changes succeeded: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39134645190. The workflow including the newest added checks is still being verified separately.
+- All claims above are separated into working browser workflows vs planned native/cloud integrations. No public Cloudflare deployment was performed as part of these changes.
+
 ## JT Stream — new requirement
 - JT Stream should have a creator-studio capability set comparable to Camo Studio, including camera inputs and image controls, scenes/layers/overlays, effects, multi-source audio mixing, recording, RTMP/RTMPS streaming, session profiles, transitions, web/chat layers, hotkeys/control-surface integration, and diagnostics.
 - JT Stream must retain original JT branding and UI rather than copy Camo's assets or interface.
