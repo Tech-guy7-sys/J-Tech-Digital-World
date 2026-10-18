@@ -153,26 +153,35 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           $setup = (Get-ChildItem "artifacts/Agent-Jeff-Setup-*-x64.exe" | Select-Object -First 1).FullName
-          $testDir = Join-Path $env:RUNNER_TEMP "Agent Jeff Installer Test"
+          $testDir = Join-Path $env:RUNNER_TEMP "AgentJeffInstallerTest"
           if (Test-Path $testDir) { Remove-Item $testDir -Recurse -Force }
-          & $setup "/VERYSILENT" "/SUPPRESSMSGBOXES" "/NORESTART" "/SP-" "/DIR=$testDir"
-          if ($LASTEXITCODE -ne 0) {
-            throw "Silent installer test failed with exit code $LASTEXITCODE"
+
+          $installerProcess = Start-Process -FilePath $setup -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP- /DIR=$testDir" -Wait -PassThru
+          if ($installerProcess.ExitCode -ne 0) {
+            throw "Silent installer test failed with exit code $($installerProcess.ExitCode)"
           }
+
           $installedExe = Join-Path $testDir "AgentJeff.exe"
           if (!(Test-Path $installedExe)) {
             Get-ChildItem $testDir -Recurse -Force -ErrorAction SilentlyContinue
             throw "Installer completed but AgentJeff.exe was not installed."
           }
+
           $uninstaller = Join-Path $testDir "unins000.exe"
           if (!(Test-Path $uninstaller)) {
             throw "Expected Inno Setup uninstaller was not installed."
           }
-          & $uninstaller "/VERYSILENT" "/SUPPRESSMSGBOXES" "/NORESTART"
-          if ($LASTEXITCODE -ne 0) {
-            throw "Silent uninstaller test failed with exit code $LASTEXITCODE"
+          $uninstallerProcess = Start-Process -FilePath $uninstaller -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART" -Wait -PassThru
+          if ($uninstallerProcess.ExitCode -ne 0) {
+            throw "Silent uninstaller test failed with exit code $($uninstallerProcess.ExitCode)"
+          }
+
+          $deadline = (Get-Date).AddSeconds(30)
+          while ((Test-Path $testDir) -and (Get-Date) -lt $deadline) {
+            Start-Sleep -Milliseconds 500
           }
           if (Test-Path $testDir) {
+            Get-ChildItem $testDir -Force -ErrorAction SilentlyContinue
             throw "Installer test directory still exists after uninstall."
           }
           Write-Host "Install and uninstall checks passed."
