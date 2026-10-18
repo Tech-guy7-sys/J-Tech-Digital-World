@@ -13,6 +13,12 @@ This guide describes the configuration committed to this repository. It does **n
 
 The build script copies an allowlist of website pages, styles/scripts, app-preview directories and assets into `dist/`. It intentionally does not publish development documentation, desktop source, or workflow files. It also does not publish the root `_redirects` file because its current `/api/*` rewrite is not backed by a Pages Functions directory.
 
+## Current website validation — 2026-10-18
+
+The latest successful website CI run is https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39132666373. It syntax-checks the build script, JT Stream Studio script and live-release download script; builds the static site; verifies the main output files; and confirms the JT Stream Studio HTML/CSS/JS files are present in `dist`. It also verifies that all 41 statically referenced studio element IDs exist in the studio HTML.
+
+The working Stage 01 browser studio is at `/jt-apps/jt-stream/studio.html`. Once Cloudflare Pages is connected and deployed, test the live route at `https://<your-project>.pages.dev/jt-apps/jt-stream/studio.html`; do not treat that URL as live until the Pages project has returned its actual hostname.
+
 ## 1. Run and verify the build locally
 
 Install Node.js 22 or newer, clone the repository, then run:
