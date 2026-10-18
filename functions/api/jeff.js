@@ -120,6 +120,8 @@ export async function onRequestPost({ request, env }) {
   if (!["ollama", "openai", "anthropic", "gemini", "copilot-cli"].includes(provider)) return json({ error: "unsupported_provider", message: "Choose a supported provider." }, 400);
   if (provider === "copilot-cli") return json({ error: "native_bridge_required", message: "Copilot CLI requires the Agent Jeff native bridge; it cannot run inside a hosted Pages function." }, 501);
 
+  if (envValue(env || {}, "JEFF_API_ENABLED", "false").toLowerCase() !== "true") return json({ error: "service_disabled", message: "Jeff AI API is disabled until deployment security and provider configuration are completed." }, 503);
+
   const messages = safeMessages(payload.history, message);
   return providerRequest(provider, messages, env || {});
 }
