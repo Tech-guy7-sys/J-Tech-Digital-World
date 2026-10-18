@@ -8,13 +8,13 @@
     canvas: $("programCanvas"), cameraVideo: $("cameraVideo"), screenVideo: $("screenVideo"), placeholder: $("canvasPlaceholder"),
     liveDot: $("liveDot"), topStatus: $("topStatus"), previewStatus: $("previewStatus"), frameRateStatus: $("frameRateStatus"),
     recIndicator: $("recIndicator"), resolutionBadge: $("resolutionBadge"), sceneButtons: [...document.querySelectorAll("[data-scene]")],
-    showTitle: $("showTitle"), showSubtitle: $("showSubtitle"), overlayToggle: $("overlayToggle"), resolutionSelect: $("resolutionSelect"), fpsSelect: $("fpsSelect"),
+    showTitle: $("showTitle"), showSubtitle: $("showSubtitle"), overlayToggle: $("overlayToggle"), resolutionSelect: $("resolutionSelect"), fpsSelect: $("fpsSelect"), transitionSelect: $("transitionSelect"),
     snapshotButton: $("snapshotButton"), snapshotStatus: $("snapshotStatus"), recordButton: $("recordButton"), stopButton: $("stopButton"),
     recordingHeadline: $("recordingHeadline"), recordingHelp: $("recordingHelp"), recordTime: $("recordTime"),
     saveProfileButton: $("saveProfileButton"), exportProfileButton: $("exportProfileButton"), importProfileButton: $("importProfileButton"), profileFile: $("profileFile"), profileStatus: $("profileStatus")
   };
   const ctx = els.canvas.getContext("2d", { alpha: false });
-  const state = { cameraStream: null, screenStream: null, micStream: null, recorder: null, chunks: [], scene: "camera", raf: 0, startedAt: 0, timer: 0, audioContext: null, audioDestination: null, micSource: null, screenSource: null, screenGain: null, analyser: null, gain: null, meterFrame: 0, recordingUrl: null, profileKey: "jt-stream-profile-v1" };
+  const state = { cameraStream: null, screenStream: null, micStream: null, recorder: null, chunks: [], scene: "camera", raf: 0, startedAt: 0, timer: 0, audioContext: null, audioDestination: null, micSource: null, screenSource: null, screenGain: null, analyser: null, gain: null, meterFrame: 0, recordingUrl: null, fadeUntil: 0, profileKey: "jt-stream-profile-v1" };
 
   function note(message) {
     els.topStatus.textContent = message;
@@ -241,6 +241,11 @@
       ctx.fillStyle = "#f4f4fb"; ctx.font = "700 " + Math.round(width*.035) + "px system-ui"; ctx.fillText("Your studio, ready when you are.", width*.06, height*.27);
       ctx.fillStyle = "#a5a5bd"; ctx.font = Math.round(width*.018) + "px system-ui"; ctx.fillText("Enable a camera or share a screen to start.", width*.06, height*.32);
     }
+    if (state.fadeUntil > 0) {
+      const remaining = state.fadeUntil - performance.now();
+      if (remaining <= 0) state.fadeUntil = 0;
+      else { ctx.save(); ctx.globalAlpha = Math.min(1, remaining / 130); ctx.fillStyle = "#000"; ctx.fillRect(0, 0, width, height); ctx.restore(); }
+    }
     if (els.overlayToggle.checked) {
       const barH = Math.round(height * .13), pad = Math.round(width * .035), y = height - barH - pad;
       ctx.fillStyle = "rgba(8,9,17,.82)"; ctx.fillRect(pad, y, width - pad*2, barH);
@@ -257,13 +262,16 @@
   }
   function setScene(scene) {
     state.scene = scene;
+    if (els.transitionSelect?.value === "fade") state.fadeUntil = performance.now() + 260;
     els.sceneButtons.forEach(b => { const active = b.dataset.scene === scene; b.classList.toggle("selected", active); b.setAttribute("aria-pressed", String(active)); });
+    note("Scene changed · " + ({camera:"Camera",screen:"Screen",pip:"Picture-in-picture"}[scene] || scene) + (els.transitionSelect?.value === "fade" ? " · fade transition" : " · cut"));
   }
   function profile() {
-    return { version: 1, scene: state.scene, title: els.showTitle.value, subtitle: els.showSubtitle.value, overlay: els.overlayToggle.checked, resolution: els.resolutionSelect.value, fps: els.fpsSelect.value, micGain: els.micGain.value, screenAudio: els.screenAudio.checked, savedAt: new Date().toISOString() };
+    return { version: 1, scene: state.scene, transition: els.transitionSelect?.value || "cut", title: els.showTitle.value, subtitle: els.showSubtitle.value, overlay: els.overlayToggle.checked, resolution: els.resolutionSelect.value, fps: els.fpsSelect.value, micGain: els.micGain.value, screenAudio: els.screenAudio.checked, savedAt: new Date().toISOString() };
   }
   function applyProfile(p) {
     if (!p || p.version !== 1) throw new Error("Unsupported JT Stream profile format.");
+    if (els.transitionSelect) els.transitionSelect.value = p.transition === "fade" ? "fade" : "cut";
     setScene(["camera","screen","pip"].includes(p.scene) ? p.scene : "camera");
     els.showTitle.value = String(p.title || "").slice(0,90);
     els.showSubtitle.value = String(p.subtitle || "").slice(0,120);
@@ -339,6 +347,18 @@
   function stopRecording() {
     if (state.recorder && state.recorder.state !== "inactive") state.recorder.stop();
   }
+  document.addEventListener("keydown", event => {
+    if (event.altKey && !event.ctrlKey && !event.metaKey) {
+      const tag = event.target?.tagName?.toLowerCase();
+      if (["input","textarea","select"].includes(tag) || event.target?.isContentEditable) return;
+      const key = event.key.toLowerCase();
+      if (key === "1") { event.preventDefault(); setScene("camera"); }
+      else if (key === "2") { event.preventDefault(); setScene("screen"); }
+      else if (key === "3") { event.preventDefault(); setScene("pip"); }
+      else if (key === "s") { event.preventDefault(); takeSnapshot(); }
+      else if (key === "r") { event.preventDefault(); if (state.recorder?.state === "recording") stopRecording(); else startRecording(); }
+    }
+  });
   els.cameraButton.addEventListener("click", enableCamera);
   els.screenButton.addEventListener("click", shareScreen);
   els.micGain.addEventListener("input", () => { els.micGainValue.value = els.micGain.value + "%"; els.micGainValue.textContent = els.micGain.value + "%"; if (state.gain) state.gain.gain.value = Number(els.micGain.value)/100; });
