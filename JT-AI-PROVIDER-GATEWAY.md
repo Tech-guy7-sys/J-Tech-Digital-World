@@ -10,10 +10,11 @@ This adds a real same-origin `POST /api/jeff` handler. It is a provider gateway,
 - **Copilot CLI**: deliberately returns a clear native-bridge-required response; a hosted Pages function cannot launch a CLI on the user's Windows machine.
 
 ## Deploy requirements
-1. Deploy this repository through **Cloudflare Pages Git integration**, with the repository root as the project root, build command `npm run build:website`, and output directory `dist`. Pages Functions are discovered from the root `functions/` directory and are not copied into `dist/`.
-2. In Cloudflare Pages → project → Settings → Variables and Secrets, add only the secrets for providers you intend to use. Set model names as non-secret environment variables if desired. Never commit API keys to Git.
-3. Redeploy after configuring the environment.
-4. Test with a short chat for every configured provider. The browser UI persists the selected preference and sends it to the API.
+1. Keep `JEFF_API_ENABLED` unset or set to `false` during initial deployment. The endpoint deliberately returns HTTP 503 until you explicitly enable it.
+2. Deploy this repository through **Cloudflare Pages Git integration**, with the repository root as the project root, build command `npm run build:website`, and output directory `dist`. Pages Functions are discovered from the root `functions/` directory and are not copied into `dist/`.
+3. In Cloudflare Pages → project → Settings → Variables and Secrets, first add the secrets for providers you intend to use. Set model names as non-secret environment variables if desired. Never commit API keys to Git.
+4. Add `JEFF_API_ENABLED=true` only after you have reviewed the security limits below and configured a provider. Redeploy after configuring the environment.
+5. Test with a short chat for every configured provider. The browser UI persists the selected preference and sends it to the API.
 
 ## Security and current limits
 - Same-origin check, JSON-only request validation, input/history bounds, no-store responses, provider request timeout, and generic upstream errors are implemented.
