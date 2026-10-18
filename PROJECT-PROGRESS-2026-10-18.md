@@ -46,6 +46,20 @@
 - Latest website CI run after the workspace additions: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39133054208 (build and verification steps passed; run was still finalizing when checked).
 - All new app workspaces are explicitly local-first prototypes. Real shared AI, cloud sync, production video/audio processing, full IDE functionality, and secure desktop permission enforcement require separate backend/native implementation and acceptance testing.
 
+## Category-specific app capability update — 2026-10-18
+- Added shared category-specific tool layer at `jt-apps/pro-workspaces.js`, linked from JT AI Core, JT App Manager, JT Cloud, JT Code, JT Design, JT Video & Photo, JT Studio, Agent Jeff, and JT Stream.
+- JT AI Core: local provider/model/base-URL profile, browser-side endpoint reachability check, and local tool-scope preference checklist. This is not an authenticated production AI gateway; provider access can be blocked by CORS, and scope choices are not enforced server-side.
+- JT App Manager: public GitHub release feed, app catalogue search, and clear release/prototype descriptions. It does not install, update, sign, or roll back binaries.
+- JT Cloud: local project vault, tags/notes, metadata-only file index, search and JSON manifest export. No remote upload or sync.
+- JT Code: separate HTML/CSS/JavaScript editor fields, sandboxed iframe preview, browser-local draft save, standalone HTML export, and starter reset. Not a full IDE; no terminal or arbitrary host filesystem access.
+- JT Design: editable vector starter with shape/background colours, text, position/size controls, local save and SVG/PNG export. Not yet a full professional design suite or collaborative canvas.
+- JT Video & Photo: local media-bin metadata, browser preview of selected local images/video, shot labels, in/out points, notes, timeline overview and JSON shot-list export. Does not render an edited video or upload footage.
+- JT Studio: audio test tone, microphone meter, local microphone recording/download, and track/BPM/key/mix-note session planner. It does not yet provide a full multitrack DAW, effects chain, MIDI arrangement, or mix engine.
+- JT Stream: scene/rundown planner and production-pack export are added alongside the existing Stage 01 camera/screen studio. No RTMP/RTMPS broadcasting or virtual camera.
+- Agent Jeff: task queue, user-confirmation reminder, status labels and JSON audit export. These records are a planner only and do not invoke Windows desktop actions or replace runtime permission enforcement.
+- Updated website CI to syntax-check the shared pro workspace script and verify all nine app pages include it. Successful run: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39133524933.
+- These are real committed browser-side workflows, not a claim of feature parity with commercial category leaders. Production AI, cloud sync, installer/update enforcement, full media editing, professional audio processing, and Windows desktop control need their own service/native implementations and tests.
+
 ## JT Stream Studio — Stage 01 implementation
 - Added browser studio page: https://github.com/Tech-guy7-sys/jt-digital-world/blob/main/jt-apps/jt-stream/studio.html
 - Added original responsive JT studio styling in `jt-apps/jt-stream/studio.css`.
