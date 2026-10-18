@@ -18,8 +18,8 @@
 
 ## GitHub repositories and releases
 - Repositories visible in the connected GitHub account: `jt-digital-world`, `agent-jeff`, `jeff-ai`, and `jt-studio`.
-- No published GitHub Releases were returned for these four repositories at the time of inspection.
-- The main repository includes a `JT App Releases` workflow, but the existence of a workflow does not mean a release or installer has been published.
+- An official Agent Jeff Windows x64 pre-release was published successfully on 2026-10-18: https://github.com/Tech-guy7-sys/jt-digital-world/releases/tag/agent-jeff-v0.1.0. The other three repositories (`agent-jeff`, `jeff-ai`, and `jt-studio`) still had no published releases when checked.
+- The main repository includes a `JT App Releases` workflow and a separate Agent Jeff Windows installer workflow. Do not infer release availability from a workflow alone; verify the release list and attached assets.
 - Existing release notes in the repository include versions through 62.0.0, but these files are source documentation, not proof of a published GitHub Release or verified installer.
 - Existing Windows installer guidance requires actual build outputs, install/upgrade/uninstall testing, and checks before public release. Do not fabricate setup EXEs or claim unsigned builds are signed.
 - The website CI latest successful run: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39052255044
@@ -44,7 +44,7 @@
 1. Run `npm run build:website` locally and verify the expected files in `dist`.
 2. Connect the repository to Cloudflare Pages, deploy, and test the `pages.dev` preview.
 3. Buy/connect a custom domain only after checking spelling and renewal cost.
-4. Complete the GitHub Release permission setup by allowing read/write contents permission or defining the repository Actions secret `JT_RELEASE_TOKEN` (fine-grained PAT scoped only to `jt-digital-world`, Contents: read/write). Then rerun the Agent Jeff workflow with Publish release enabled. Never paste the token into chat.
+4. Human-test Agent Jeff on a normal Windows 11 account: first launch, key features, shortcuts, install path, upgrade behavior, and uninstall. The published pre-release is unsigned and remains an early release.
 5. Create a dedicated `jt-stream` repository when the user is ready, then implement the specification in stages with real camera/audio/recording/streaming tests.
 6. Keep each app's GitHub Releases page honest: version tag, release notes, source archive, and only those platform installers that were actually built and tested.
 
@@ -55,17 +55,20 @@
 - Updated `.github/workflows/jt-app-releases.yml` (commit `2f7b290`) to build the actual site with Node 22 and `npm run build:website`, verify key output files, and package the contents of `dist` as a website ZIP. This fixes the previous workflow's mismatch with the repository's root-based site layout.
 - Added this progress snapshot (commit `f5b0c2e`).
 - Website CI for the Stream page commit completed successfully: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39128815646. The static build and required-output checks passed. This validates the static build, not a live Cloudflare deployment.
-- GitHub Releases API returned an empty list for the main website repository and the three app repositories checked. Release workflow improvements are committed, but no new release has been published and no Windows installer is claimed.
+- Current status update: Agent Jeff `agent-jeff-v0.1.0` is now a published GitHub pre-release with a setup EXE, portable ZIP, and SHA-256 manifest. The other product repositories remain without published releases; this does not imply those apps are packaged.
 
 
 ## Agent Jeff Windows download and release verification — 2026-10-18
 - Fixed the native Windows compile error in `desktop/AgentJeff/ClamAvScanner.cs` by importing `System.IO` (commit `691e927`).
 - Added `installer/AgentJeff.iss` for a JT-branded Windows setup wizard with uninstall support and optional desktop shortcut (commit `2e2a7b9`).
-- Hardened `.github/workflows/agent-jeff-desktop.yml` to restore/build/test the real .NET 8 WPF application; publish self-contained Windows x64; compile the installer; generate portable ZIP + SHA-256 checksums; run a silent install/uninstall smoke test; upload build artifacts; and attempt an early GitHub pre-release.
-- Successful Windows-run validation: build passed; all 9 automated tests passed; self-contained publish passed; Inno Setup compile passed; portable archive and checksums were generated; install/uninstall smoke test passed. Artifact upload succeeded in run `39130284709`.
-- Verified artifact download: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39130284709/artifacts/12138155796
-- Artifact files copied from that run and hash-verified in the working environment:
-  - `Agent-Jeff-Setup-0.1.0-x64.exe` — SHA-256 `3d50a5d0abae1434d1bd81efa7e6b234e5bc3b422966d5b1649aaa02ec99e561`.
-  - `Agent-Jeff-Windows-x64-0.1.0-portable.zip` — SHA-256 `36216835c56964ed1cf983da348b90060e0ae7744957b7c49ed00d6419a7315f`.
-- GitHub's release creation endpoint returned HTTP 403, `Resource not accessible by integration`, even after adding `contents: write` to the workflow. The build-and-install checks passed, but automated publication is still blocked by repository/GITHUB_TOKEN permissions. Do not claim the GitHub Release exists until the Releases API returns it.
-- Downloads page now checks for actual version-tagged Agent Jeff assets rather than claiming installers are permanently unavailable. Once an official prerelease is published, it can show the setup, portable ZIP and checksum links. Website CI passed for this change.
+- Hardened `.github/workflows/agent-jeff-desktop.yml` to restore/build/test the real .NET 8 WPF application; publish self-contained Windows x64; compile the installer; generate portable ZIP + SHA-256 checksums; run a silent install/uninstall smoke test; upload build artifacts; and publish an early pre-release.
+- **Successful final run:** https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39130783302 — build, 9 automated tests, self-contained publish, installer compilation, portable archive/checksum generation, install/uninstall smoke test, artifact upload and release publication all succeeded.
+- **Published release:** https://github.com/Tech-guy7-sys/jt-digital-world/releases/tag/agent-jeff-v0.1.0
+- The official release assets are:
+  - `Agent-Jeff-Setup-0.1.0-x64.exe` — SHA-256 `06a05488b342d214ba5d52cb0e7a33f971fc19557661caa12ab5134ede671043`.
+  - `Agent-Jeff-Windows-x64-0.1.0-portable.zip` — SHA-256 `a00d804c18b28c49454d74700ea8893c0f7ef1d50cd57ccbf72fd37e2590bceb`.
+  - `SHA256SUMS.txt` — official checksum manifest.
+- The successful run’s Actions artifact is available until 2026-11-17: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39130783302/artifacts/12138226338
+- The setup and portable ZIP were downloaded into the working environment from the same successful run and verified against `SHA256SUMS.txt`.
+- **Release status:** published prerelease, not a final stable release. The installer is unsigned; SmartScreen may show a warning. Automated CI covers build, 9 unit tests and install/uninstall packaging smoke tests; human acceptance testing of the app’s actual runtime features on a normal Windows 11 machine remains necessary.
+- The website downloads page queries the real GitHub release API and now recognizes published prereleases. Website CI passed for the script and allowlist updates. Live Cloudflare deployment still has not been verified.
