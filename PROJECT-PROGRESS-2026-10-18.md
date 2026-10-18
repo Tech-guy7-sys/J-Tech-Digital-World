@@ -24,7 +24,7 @@
 - Existing Windows installer guidance requires actual build outputs, install/upgrade/uninstall testing, and checks before public release. Do not fabricate setup EXEs or claim unsigned builds are signed.
 - The website CI latest successful run: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39052255044
 - The most recent observed JT Command Agent daily health scan succeeded: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39115236222
-- Agent Jeff Windows build workflow was hardened and exercised on a Windows runner. The successful packaging run built the WPF app, passed all 9 unit tests, published self-contained x64 files, compiled the setup EXE, created the portable ZIP/checksums, passed silent install/uninstall smoke tests, and uploaded a 116,633,443-byte artifact. The release-creation step then returned HTTP 403 because GitHub denied the Actions integration permission. The installer artifact exists and has been copied out for direct download, but no official GitHub Release is published yet.
+- Agent Jeff's Windows build workflow has successfully built the WPF application, passed all 9 unit tests, published self-contained x64 files, compiled the setup EXE, generated the portable ZIP/checksums, passed silent install/uninstall smoke tests, and published the official pre-release: https://github.com/Tech-guy7-sys/jt-digital-world/releases/tag/agent-jeff-v0.1.0.
 
 ## JT Stream — new requirement
 - JT Stream should have a creator-studio capability set comparable to Camo Studio, including camera inputs and image controls, scenes/layers/overlays, effects, multi-source audio mixing, recording, RTMP/RTMPS streaming, session profiles, transitions, web/chat layers, hotkeys/control-surface integration, and diagnostics.
