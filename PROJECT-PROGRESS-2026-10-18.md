@@ -47,3 +47,12 @@
 4. Fix/verify the Windows installer workflow against actual build logs; publish releases only after real artifacts and installation tests pass.
 5. Create a dedicated `jt-stream` repository when the user is ready, then implement the specification in stages with real camera/audio/recording/streaming tests.
 6. Keep each app's GitHub Releases page honest: version tag, release notes, source archive, and only those platform installers that were actually built and tested.
+
+
+## Additional progress — 2026-10-18
+- Added `JT-STREAM-CAPABILITY-SPEC.md` (commit `fd5f5d3`) covering camera input and controls, scene/layer composition, overlays/effects, multi-source audio, recording, RTMP/RTMPS streaming, profiles, hotkeys, creator integrations, Jeff AI assistance, safety, and acceptance tests.
+- Updated `jt-apps/jt-stream/index.html` (commit `061357e`) to show the expanded creator-studio roadmap and clearly label production features as planned rather than already working.
+- Updated `.github/workflows/jt-app-releases.yml` (commit `2f7b290`) to build the actual site with Node 22 and `npm run build:website`, verify key output files, and package the contents of `dist` as a website ZIP. This fixes the previous workflow's mismatch with the repository's root-based site layout.
+- Added this progress snapshot (commit `f5b0c2e`).
+- CI for the Stream page commit is queued at the time of this update: https://github.com/Tech-guy7-sys/jt-digital-world/actions/runs/39128815646. Do not mark it passed until the run completes.
+- GitHub Releases API returned an empty list for the main website repository and the three app repositories checked. Release workflow improvements are committed, but no new release has been published and no Windows installer is claimed.
