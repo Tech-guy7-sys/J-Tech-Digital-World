@@ -65,7 +65,7 @@ async function providerRequest(provider, messages, env) {
       const key = envValue(env, "GEMINI_API_KEY");
       if (!key) return json({ error: "provider_not_configured", message: "The Gemini provider is not configured on the server." }, 503);
       const model = envValue(env, "GEMINI_MODEL", "gemini-2.0-flash");
-      url = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent?key=" + encodeURIComponent(key);
+      url = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent";
       headers["x-goog-api-key"] = key;
       body = JSON.stringify({ systemInstruction: { parts: [{ text: systemPrompt }] }, contents: messages.map(item => ({ role: item.role === "assistant" ? "model" : "user", parts: [{ text: item.content }] })), generationConfig: { maxOutputTokens: 1400, temperature: 0.7 } });
     } else {
