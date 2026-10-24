@@ -28,7 +28,7 @@ const publicFiles = [
   "_headers"
 ];
 
-const publicDirectories = ["assets", "jt-ai-agent", "jt-apps"];
+const publicDirectories = ["assets", "jt-ai-agent", "jt-apps", "functions"];
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
@@ -57,7 +57,7 @@ for (const directory of publicDirectories) {
   }
 }
 
-for (const required of ["index.html", "home.html", "apps.html", "style.css"]) {
+for (const required of ["index.html", "home.html", "apps.html", "style.css", "functions/api/jeff.js"]) {
   try {
     await stat(path.join(out, required));
   } catch {
@@ -66,4 +66,4 @@ for (const required of ["index.html", "home.html", "apps.html", "style.css"]) {
 }
 
 console.log(`JT Digital World static site prepared at ${out}`);
-console.log("Note: this build publishes static files only; it does not deploy API functions or enable authentication by itself.");
+console.log("Static site and Pages Function files are staged. API functionality still requires Cloudflare deployment and provider secrets/bindings.");
