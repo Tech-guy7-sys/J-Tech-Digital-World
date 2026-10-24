@@ -104,10 +104,47 @@
     setTimeout(()=>URL.revokeObjectURL(url),1500);
     notify("Workspace backup exported (" + entries.length + " saved item" + (entries.length===1?"":"s") + ").");
   }
+  function localRestore() {
+    const picker = document.createElement("input");
+    picker.type = "file";
+    picker.accept = "application/json,.json";
+    picker.hidden = true;
+    document.body.appendChild(picker);
+    picker.addEventListener("change", async () => {
+      try {
+        const file = picker.files && picker.files[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) throw new Error("Backup exceeds the 5 MB safety limit.");
+        const payload = JSON.parse(await file.text());
+        if (payload.format !== "JT-local-workspace-backup" || payload.version !== 1 || !Array.isArray(payload.entries)) {
+          throw new Error("This is not a supported JT workspace backup.");
+        }
+        const entries = payload.entries.filter(entry => entry && typeof entry.key === "string" &&
+          /^(jt-workspace-v1-|jt-pro-workspace|jt-pro-tools|jt-stream-)/i.test(entry.key));
+        if (!entries.length) throw new Error("No supported JT workspace records were found.");
+        if (!window.confirm("Import " + entries.length + " saved JT item(s)? Matching local keys will be replaced on this browser. Export a backup first if you need to keep the current state.")) return;
+        let restored = 0;
+        for (const entry of entries) {
+          try {
+            localStorage.setItem(entry.key, typeof entry.value === "string" ? entry.value : JSON.stringify(entry.value));
+            restored++;
+          } catch (_) {}
+        }
+        notify("Imported " + restored + " JT item(s). Refresh the workspace to reload them.");
+      } catch (error) {
+        notify("Import failed: " + (error && error.message ? error.message : "invalid file"));
+      } finally {
+        picker.remove();
+      }
+    }, {once:true});
+    picker.click();
+  }
+
   const commands = [
     ...apps.map(item => ({...item, type:"app", action:()=>{ if(item.external) window.open(item.url,"_blank","noopener,noreferrer"); else window.location.href=item.url; }})),
     {name:"Focus the workspace",detail:"Jump to the interactive tools on this page",icon:"↘",type:"action",action:()=>{const target=document.querySelector("[data-workspace-tool],#jt-pro-tools,#release-manager,.studio-workspace,.studio-layout");if(target){target.scrollIntoView({behavior:"smooth",block:"start"});dialog.close();}else notify("No interactive tool panel is available on this page yet.");}},
     {name:"Export JT local workspace backup",detail:"Download saved JT workspace records as JSON",icon:"↓",type:"action",action:()=>{dialog.close();localBackup();}},
+    {name:"Import JT local workspace backup",detail:"Restore saved workspace records from a JSON backup",icon:"↑",type:"action",action:()=>{dialog.close();localRestore();}},
     {name:"Keyboard shortcut guide",detail:"Ctrl/⌘ K opens this deck · Esc closes it",icon:"⌨",type:"action",action:()=>notify("Tip: press Ctrl+K (or ⌘K on Mac) from any JT workspace to open Command Deck.")},
   ];
 
