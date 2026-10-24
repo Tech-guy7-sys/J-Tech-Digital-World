@@ -32,7 +32,7 @@
       const release = releases
         .filter((item) =>
           !item.draft &&
-          /^agent-jeff-v\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(item.tag_name)
+          /^v\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(item.tag_name)
         )
         .sort((a, b) => Date.parse(b.published_at || b.created_at) - Date.parse(a.published_at || a.created_at))[0];
 
