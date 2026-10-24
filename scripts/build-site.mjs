@@ -22,6 +22,7 @@ const publicFiles = [
   "support.html",
   "modern-ui.css",
   "jt-home-creator.css",
+  "jt-creator-pages.css",
   "style.css",
   "script.js",
   "jeff-website-chat.js",
