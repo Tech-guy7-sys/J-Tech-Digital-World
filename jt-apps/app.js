@@ -1,1 +1,42 @@
-(()=>{const root=document.querySelector('[data-app]');if(!root)return;const app=root.dataset.app;const slug=app.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');const nav=document.querySelector('.app-nav');if(nav&&!nav.querySelector('[data-jt-guide]')){const a=document.createElement('a');a.href='/about-app.html?app='+encodeURIComponent(slug);a.textContent='About app';a.dataset.jtGuide='1';nav.appendChild(a);const d=document.createElement('a');d.href='/download.html';d.textContent='Downloads';nav.appendChild(d);}document.querySelectorAll('[data-action="primary"]').forEach(b=>b.addEventListener('click',()=>{const msg='This '+app+' workspace is an interactive product preview. Core interface design is ready, but production tools and model integrations must be connected before actions can execute.';let note=document.getElementById('actionNotice');if(!note){note=document.createElement('div');note.id='actionNotice';note.style.cssText='margin:18px 0;padding:16px;border:1px solid #6c5a9d;background:#171329;border-radius:12px;color:#ded7ff;line-height:1.6';b.closest('section')?.appendChild(note)||root.appendChild(note);}note.textContent=msg;}));})();
+(()=>{
+  "use strict";
+  const main=document.querySelector("main[data-app]");
+  if(!main)return;
+  const app=main.dataset.app||"JT Workspace";
+  const slug=app.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  const nav=document.querySelector(".app-nav");
+  if(nav&&!nav.querySelector("[data-jt-guide]")){
+    const about=document.createElement("a");
+    about.href="/about-app.html?app="+encodeURIComponent(slug);
+    about.textContent="About app";
+    about.dataset.jtGuide="1";
+    nav.appendChild(about);
+    const downloads=document.createElement("a");
+    downloads.href="/download.html";
+    downloads.textContent="Downloads";
+    nav.appendChild(downloads);
+  }
+  const findWorkspace=()=>document.querySelector("#jt-pro-tools")||main.querySelector("[data-workspace-tool]")||document.querySelector("#release-manager");
+  document.querySelectorAll('[data-action="primary"]').forEach(button=>button.addEventListener("click",()=>{
+    const target=findWorkspace();
+    if(target){
+      target.scrollIntoView({behavior:"smooth",block:"start"});
+      let notice=target.querySelector("[data-workspace-ready]");
+      if(!notice){
+        notice=document.createElement("p");
+        notice.dataset.workspaceReady="1";
+        notice.setAttribute("role","status");
+        notice.style.cssText="margin:0 0 16px;padding:12px 14px;border:1px solid #344b56;border-radius:10px;background:#101b22;color:#bcefe1;font-size:12px;line-height:1.6";
+        target.insertBefore(notice,target.firstChild);
+      }
+      notice.textContent=app+" workspace opened. Use the tools below; browser-local changes stay on this device unless you export them. Cloud sync, AI services, installation, or other external actions are only available where explicitly connected.";
+      const focusable=target.querySelector('input:not([type="file"]),textarea,select,button');
+      if(focusable)window.setTimeout(()=>focusable.focus({preventScroll:true}),250);
+      return;
+    }
+    let note=document.getElementById("actionNotice");
+    if(!note){note=document.createElement("p");note.id="actionNotice";note.setAttribute("role","status");note.style.cssText="margin:18px 0;padding:16px;border:1px solid #6c5a9d;background:#171329;border-radius:12px;color:#ded7ff;line-height:1.6";button.closest("section")?.appendChild(note)||main.appendChild(note);}
+    note.textContent="No interactive workspace module is available on this page yet. This action has not been executed.";
+    note.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }));
+})();
