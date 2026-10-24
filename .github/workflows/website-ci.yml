@@ -51,6 +51,7 @@ jobs:
           node --check jt-apps/jt-stream/studio.js
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
+          node --check jt-apps/command-deck.js
           grep -q "AI coding-agent handoff" jt-apps/pro-workspaces.js
           grep -q "Cloud provider connectors" jt-apps/pro-workspaces.js
           grep -q "Provider and agent compatibility" jt-apps/pro-workspaces.js
@@ -76,6 +77,11 @@ jobs:
           test -f dist/jt-apps/jt-stream/studio.js
           test -f dist/jt-apps/workspace-tools.js
           test -f dist/jt-apps/pro-workspaces.js
+          test -f dist/jt-apps/command-deck.js
+          grep -q 'JT Command Deck' dist/jt-apps/command-deck.js
+          grep -q 'Export JT local workspace backup' dist/jt-apps/command-deck.js
+          grep -q 'Import JT local workspace backup' dist/jt-apps/command-deck.js
+          grep -q 'command-deck.js' dist/jt-apps/app.js
           for app in jt-ai-core jt-app-manager jt-cloud jt-code jt-design jt-motion jt-studio agent-jeff jt-stream; do
             grep -q 'pro-workspaces.js' "dist/jt-apps/$app/index.html"
           done
