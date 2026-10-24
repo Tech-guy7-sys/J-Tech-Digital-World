@@ -65,6 +65,7 @@ jobs:
           test -f dist/home.html
           test -f dist/apps.html
           test -f dist/style.css
+          test -f dist/functions/api/jeff.js
           test -f dist/jt-apps/jt-stream/studio.html
           test -f dist/jt-apps/jt-stream/studio.css
           test -f dist/jt-ai-agent/workspace.js
