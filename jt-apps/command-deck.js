@@ -89,8 +89,7 @@
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key && /^(jt-workspace-v1-|jt-pro-workspace|jt-pro-tools|jt-stream-)/i.test(key)) {
-        try { entries.push({key, value: JSON.parse(localStorage.getItem(key))}); }
-        catch (_) { entries.push({key, value: localStorage.getItem(key)}); }
+        entries.push({key, rawValue: localStorage.getItem(key)});
       }
     }
     if (!entries.length) { notify("No JT local workspace data found in this browser yet."); return; }
@@ -126,7 +125,8 @@
         let restored = 0;
         for (const entry of entries) {
           try {
-            localStorage.setItem(entry.key, typeof entry.value === "string" ? entry.value : JSON.stringify(entry.value));
+            const rawValue = typeof entry.rawValue === "string" ? entry.rawValue : JSON.stringify(entry.value);
+            localStorage.setItem(entry.key, rawValue);
             restored++;
           } catch (_) {}
         }
