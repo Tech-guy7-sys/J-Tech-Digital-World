@@ -21,6 +21,7 @@ const publicFiles = [
   "signin.html",
   "support.html",
   "modern-ui.css",
+  "jt-home-creator.css",
   "style.css",
   "script.js",
   "jeff-website-chat.js",
