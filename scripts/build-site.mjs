@@ -28,7 +28,7 @@ const publicFiles = [
   "_headers"
 ];
 
-const publicDirectories = ["assets", "jt-ai-agent", "jt-apps", "functions"];
+const publicDirectories = ["assets", "jt-ai-agent", "jt-apps"];
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
@@ -57,7 +57,7 @@ for (const directory of publicDirectories) {
   }
 }
 
-for (const required of ["index.html", "home.html", "apps.html", "style.css", "functions/api/jeff.js"]) {
+for (const required of ["index.html", "home.html", "apps.html", "style.css"]) {
   try {
     await stat(path.join(out, required));
   } catch {
@@ -66,4 +66,5 @@ for (const required of ["index.html", "home.html", "apps.html", "style.css", "fu
 }
 
 console.log(`JT Digital World static site prepared at ${out}`);
-console.log("Static site and Pages Function files are staged. API functionality still requires Cloudflare deployment and provider secrets/bindings.");
+await stat(path.join(root, "functions", "api", "jeff.js"));
+console.log("Static site prepared. Cloudflare Pages Function source remains at functions/api/jeff.js for Wrangler deployment.");
