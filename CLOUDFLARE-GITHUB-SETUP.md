@@ -11,7 +11,7 @@ This guide describes the configuration committed to this repository. It does **n
 - Build script: `scripts/build-site.mjs`
 - Wrangler Pages output: `dist`
 
-The build script copies an allowlist of website pages, styles/scripts, app-preview directories and assets into `dist/`. It intentionally does not publish development documentation, desktop source, or workflow files. It also does not publish the root `_redirects` file because its current `/api/*` rewrite is not backed by a Pages Functions directory.
+The build script copies an allowlist of website pages, styles/scripts, app-preview directories and assets into `dist/`. It intentionally does not publish development documentation, desktop source, or workflow files. Cloudflare Pages Functions remain at the repository root under `functions/` and are packaged by Wrangler during deployment; they must not be copied into `dist/` as public static files.
 
 ## Current website validation — 2026-10-18
 
@@ -47,6 +47,15 @@ The build is static-only. Sign-in, account persistence, update-manifest and othe
 
 Cloudflare Pages Git integration can deploy on pushes and provide preview deployments for branches and pull requests. See the official [Git integration docs](https://developers.cloudflare.com/pages/configuration/git-integration/).
 
+
+## GitHub Actions deployment
+
+The workflow `.github/workflows/deploy-cloudflare-pages.yml` validates the website on pushes to `main`. It deploys only when the repository has both required Actions secrets: `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+
+To configure them, open this repository on GitHub → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Add the Cloudflare API token with the minimum Pages deployment permissions and the account ID shown in the Cloudflare dashboard. Never commit credentials or paste them into chat. Then open **Actions** → **Deploy JT Digital World to Cloudflare Pages** → **Run workflow** on `main`, and verify the resulting deployment and URL in Cloudflare. If the secrets are missing, the workflow intentionally skips deployment rather than claiming the site is live.
+
+If Cloudflare Pages is already connected to this repository through Git integration, use that deployment path consistently and verify its latest deployment in Cloudflare to avoid competing production deploys.
+
 ## 3. Obtain the domain
 
 The existing brand notes mention `jtdigitalworld.com` as the preferred candidate, but its ownership and availability have **not** been verified. Do not assume it is available.
@@ -81,4 +90,4 @@ Do not manually add guessed DNS records. Use the records shown in the Cloudflare
 
 ## Known backend gap
 
-The repository currently has no `functions/` directory in its root tree. This static build does not implement the API endpoints referenced by some legacy deployment notes. Before advertising account sign-in, password recovery, update manifests, billing or persistent cloud features as operational, implement and test the required server-side endpoints and storage bindings separately.
+The repository has a Pages Function at `functions/api/jeff.js` for the Jeff AI gateway. It remains disabled by default and returns `503` until `JEFF_API_ENABLED=true` and a supported provider is configured. Provider credentials and configuration belong in Cloudflare Pages Settings → Variables and Secrets, not in source files or chat. For Ollama, `OLLAMA_BASE_URL` must point to a secured, reachable gateway; do not expose an unauthenticated local Ollama server directly to the internet. The function currently has basic request validation but not account-based authentication or per-user rate limiting, so keep it disabled until appropriate abuse controls are in place. Account sign-in, password recovery, billing, and persistent cloud APIs remain unimplemented.
