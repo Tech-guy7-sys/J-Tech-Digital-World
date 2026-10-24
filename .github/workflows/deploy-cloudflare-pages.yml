@@ -36,7 +36,7 @@ jobs:
           test -f dist/home.html
           test -f dist/apps.html
           test -f dist/style.css
-          test -f dist/functions/api/jeff.js
+          test -f functions/api/jeff.js
 
       - name: Check Cloudflare credentials
         id: cloudflare
