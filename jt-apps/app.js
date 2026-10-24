@@ -4,6 +4,13 @@
   if(!main)return;
   const app=main.dataset.app||"JT Workspace";
   const slug=app.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  if(!document.querySelector("[data-jt-command-deck-loader]")){
+    const deck=document.createElement("script");
+    deck.src="/jt-apps/command-deck.js";
+    deck.defer=true;
+    deck.dataset.jtCommandDeckLoader="1";
+    document.head.appendChild(deck);
+  }
   const nav=document.querySelector(".app-nav");
   if(nav&&!nav.querySelector("[data-jt-guide]")){
     const about=document.createElement("a");
