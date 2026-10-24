@@ -81,7 +81,10 @@ jobs:
             grep -q 'data-workspace-tool' "dist/jt-apps/$app/index.html"
             grep -q 'workspace-tools.js' "dist/jt-apps/$app/index.html"
           done
-          grep -q 'JT Video &amp; Photo' dist/jt-apps/jt-motion/index.html
+          grep -q 'JT Motion' dist/jt-apps/jt-motion/index.html
+          grep -q 'motionTimeline' dist/jt-apps/workspace-tools.js
+          grep -q 'MediaRecorder' dist/jt-apps/workspace-tools.js
+          grep -q 'releaseLabList' dist/jt-apps/workspace-tools.js
           grep -q 'Open JT Stream Studio' dist/jt-apps/jt-stream/index.html
           grep -q 'programCanvas' dist/jt-apps/jt-stream/studio.html
           node --input-type=module <<'NODE'
