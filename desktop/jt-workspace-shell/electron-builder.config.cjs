@@ -33,5 +33,4 @@ module.exports = {
     deleteAppDataOnUninstall: false, differentialPackage: false
   },
   mac: { category: "public.app-category.productivity", target: [{ target: "dmg", arch: [arch] }, { target: "zip", arch: [arch] }] },
-  linux: { category: "Utility", packageName: appId, maintainer: "J Tech Digital World <support@jtdigitalworld.com>", target: [{ target: "AppImage", arch: [arch] }, { target: "deb", arch: [arch] }, { target: "rpm", arch: [arch] }, { target: "zip", arch: [arch] }] }
 };
