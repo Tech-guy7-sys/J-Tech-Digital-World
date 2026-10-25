@@ -22,7 +22,7 @@ module.exports = {
   directories: { output: path.resolve(__dirname, "../../release-desktop", appId, process.platform + "-" + arch) },
   files: ["main.cjs", "package.json"],
   extraResources: [{ from: path.resolve(__dirname, "../../dist"), to: "site", filter: ["**/*"] }],
-  extraMetadata: { name: appId, productName, version, main: "main.cjs", jtAppId: appId },
+  extraMetadata: { name: appId, productName, version, main: "main.cjs", jtAppId: appId, author: { name: "J Tech Digital World", email: "support@jtdigitalworld.com" }, homepage: "https://jtdigitalworld.com/" },
   asar: true,
   compression: "maximum",
   publish: null,
@@ -33,5 +33,5 @@ module.exports = {
     deleteAppDataOnUninstall: false, differentialPackage: false
   },
   mac: { category: "public.app-category.productivity", target: [{ target: "dmg", arch: [arch] }, { target: "zip", arch: [arch] }] },
-  linux: { category: "Utility", packageName: appId, maintainer: "J Tech Digital World <support@jtdigitalworld.com>", target: [{ target: "AppImage", arch: [arch] }, { target: "deb", arch: [arch] }, { target: "rpm", arch: [arch] }, { target: "zip", arch: [arch] }] }
+  linux: { category: "Utility", packageName: appId, maintainer: "J Tech Digital World <support@jtdigitalworld.com>", vendor: "J Tech Digital World", target: [{ target: "AppImage", arch: [arch] }, { target: "deb", arch: [arch] }, { target: "rpm", arch: [arch] }, { target: "zip", arch: [arch] }] }
 };
