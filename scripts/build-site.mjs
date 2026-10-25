@@ -23,6 +23,8 @@ const publicFiles = [
   "modern-ui.css",
   "jt-home-creator.css",
   "jt-creator-pages.css",
+  "jt-theme-toggle.css",
+  "jt-theme-toggle.js",
   "style.css",
   "script.js",
   "jeff-website-chat.js",
