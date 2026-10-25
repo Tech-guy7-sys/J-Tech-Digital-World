@@ -13,7 +13,11 @@
     "electron": "^43.0.0",
     "electron-builder": "^26.0.12"
   },
-  "author": "J Tech Digital World <support@jtdigitalworld.com>",
+  "author": {
+    "name": "J Tech Digital World",
+    "email": "support@jtdigitalworld.com",
+    "url": "https://jtdigitalworld.com/"
+  },
   "homepage": "https://jtdigitalworld.com/",
   "license": "UNLICENSED"
 }
