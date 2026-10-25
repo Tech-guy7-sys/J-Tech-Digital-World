@@ -99,7 +99,7 @@ jobs:
   publish:
     name: Publish verified desktop release
     needs: build
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_release }}
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.publish_release) }}
     runs-on: ubuntu-latest
     steps:
       - name: Download all platform artifacts
@@ -135,8 +135,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ format('jt-desktop-v{0}', inputs.version) }}
-          name: JT Digital World Desktop ${{ inputs.version }}
+          tag_name: ${{ format('jt-desktop-v{0}', github.event_name == 'workflow_dispatch' && inputs.version || format('1.0.0-ci.{0}', github.run_number)) }}
+          name: JT Digital World Desktop ${{ github.event_name == 'workflow_dispatch' && inputs.version || format('1.0.0-ci.{0}', github.run_number) }}
           prerelease: true
           generate_release_notes: true
           files: |
