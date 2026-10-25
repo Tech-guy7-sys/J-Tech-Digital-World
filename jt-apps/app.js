@@ -23,6 +23,7 @@
     downloads.textContent="Downloads";
     nav.appendChild(downloads);
   }
+  if(nav&&!nav.querySelector("[data-jt-ai-handoff]")){const handoff=document.createElement("a");handoff.href="/jt-ai-agent/?app="+encodeURIComponent(app);handoff.textContent="Ask Jeff AI";handoff.dataset.jtAiHandoff="1";handoff.title="Prepare a task for Jeff AI; content is shared only when you send it";nav.appendChild(handoff);}
   const findWorkspace=()=>document.querySelector("#jt-pro-tools")||main.querySelector("[data-workspace-tool]")||document.querySelector("#release-manager");
   document.querySelectorAll('[data-action="primary"]').forEach(button=>button.addEventListener("click",()=>{
     const target=findWorkspace();
