@@ -45,6 +45,12 @@ The source release workflow does not invent fake assets. A release is ready only
 - Uninstall: use Windows Settings → Apps → Installed apps, or run `scripts/Uninstall-JTWorkspace.ps1`. The helper lists registered JT workspace installs and asks you to confirm before launching the registered uninstaller.
 - Portable ZIP: extract to a normal folder and run the app executable. Uninstall by closing the app and deleting that extracted folder. Do not delete folders that contain user-created files without backing them up.
 
+Cross-platform helper scripts:
+- [macOS/Linux repair and reinstall](scripts/Repair-JTWorkspace.sh)
+- [macOS/Linux uninstall](scripts/Uninstall-JTWorkspace.sh)
+
+Run these shell scripts from Terminal after downloading the official package. They ask for confirmation and do not intentionally remove user-created project data.
+
 ## macOS repair and uninstall
 
 Repair/update by replacing the app with the latest official DMG/ZIP build. To uninstall, quit the app and remove it from Applications or delete the extracted portable app. Back up any user-created files first. Signing and notarization must be configured before distributing a seamless production-grade macOS installer.
