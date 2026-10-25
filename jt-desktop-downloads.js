@@ -21,7 +21,7 @@
   }
 
   function labelFor(platform, arch, ext) {
-    const cpu = arch === "arm64" ? "ARM64" : arch === "x64" ? "x64 / AMD64" : arch;
+    const cpu = arch === "arm64" ? "ARM64" : arch === "x64" ? "x64 / AMD64" : arch === "ia32" ? "x86 / 32-bit" : arch;
     if (ext === ".exe") return "Windows " + cpu + " · Setup";
     if (ext === ".dmg") return "macOS " + (arch === "arm64" ? "Apple Silicon" : "Intel") + " · DMG";
     if (ext === ".AppImage") return "Linux " + cpu + " · AppImage";
@@ -47,7 +47,7 @@
       if (!release) {
         status.textContent = "No native desktop installer release has been published yet. Existing JT workspace ZIPs are browser-workspace bundles, not setup installers. This section will show desktop packages after the build matrix succeeds and a release is published.";
         container.replaceChildren();
-        if (meta) meta.textContent = "Current architecture plan: Windows x64/ARM64, macOS Intel/Apple Silicon, and Linux x64/ARM64. A 32-bit x86 package is not offered by this Electron toolchain.";
+        if (meta) meta.textContent = "Current architecture plan: Windows x64/ARM64 and legacy x86, macOS Intel/Apple Silicon 64-bit, and Linux x64/ARM64. Windows x86 support depends on Electron 43 and must be retired before upgrading to Electron 44+.";
         return;
       }
 
@@ -55,7 +55,7 @@
       const checksumAssets = assets.filter(asset => /SHA256SUMS[^/]*\.txt$/i.test(asset.name));
       const packageAssets = assets.filter(asset => /\.(exe|zip|dmg|AppImage|deb|rpm)$/i.test(asset.name));
       const normalized = packageAssets.map(asset => {
-        const match = asset.name.match(/^jt-desktop-(win|mac|linux)-(x64|arm64)-(.+)$/i);
+        const match = asset.name.match(/^jt-desktop-(win|mac|linux)-(x64|arm64|ia32)-(.+)$/i);
         if (!match) return null;
         return { asset, platform: match[1].toLowerCase(), arch: match[2].toLowerCase(), name: match[3] };
       }).filter(Boolean);
