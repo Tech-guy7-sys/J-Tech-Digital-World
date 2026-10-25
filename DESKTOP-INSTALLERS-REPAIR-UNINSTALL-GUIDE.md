@@ -4,6 +4,7 @@
 
 The desktop release workflow builds desktop wrappers for these browser-based workspaces in this repository:
 
+- JT AI Agent
 - JT AI Core
 - JT App Manager
 - JT Cloud
@@ -14,6 +15,8 @@ The desktop release workflow builds desktop wrappers for these browser-based wor
 - JT Stream
 
 The separate Agent Jeff desktop agent remains in its own repository: https://github.com/Tech-guy7-sys/agent-jeff. It is not merged into this installer bundle.
+
+The Video & Photo editing experience is represented by the JT Motion workspace in this repository; it is not falsely advertised as a second independent source tree. The separate Agent Jeff desktop agent remains outside this bundle.
 
 These desktop packages wrap the current web workspace and its local static assets. They do not magically add native audio/video engines, cloud storage, AI-provider credentials, account sync, or native Agent Jeff desktop-control powers. Those services need separate implementation and configuration.
 
