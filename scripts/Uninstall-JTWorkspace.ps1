@@ -6,7 +6,7 @@ $roots = @(
   "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*",
   "HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*"
 )
-$products = @("JT AI Core","JT App Manager","JT Cloud","JT Code","JT Design","JT Motion","JT Studio","JT Stream")
+$products = @("JT AI Agent","JT AI Core","JT App Manager","JT Cloud","JT Code","JT Design","JT Motion","JT Studio","JT Stream")
 $found = foreach ($root in $roots) {
   Get-ItemProperty $root -ErrorAction SilentlyContinue |
     Where-Object { $_.DisplayName -and ($products -contains $_.DisplayName) -and $_.UninstallString } |
