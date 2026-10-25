@@ -1,0 +1,101 @@
+/* JT Premium Identity System — shared app and workspace polish */
+:root{
+  --jt-glass:rgba(18,20,34,.78);
+  --jt-edge:rgba(179,183,255,.17);
+  --jt-lilac:#a994ff;
+  --jt-cyan:#73e4f5;
+  --jt-pink:#f59ad4;
+}
+.app-top{
+  position:sticky;top:0;z-index:30;
+  background:rgba(10,11,20,.82);
+  -webkit-backdrop-filter:blur(22px) saturate(145%);
+  backdrop-filter:blur(22px) saturate(145%);
+  border-bottom-color:rgba(180,185,255,.15);
+}
+.app-mark,.brand-mark{
+  position:relative;isolation:isolate;overflow:hidden;
+  border:1px solid rgba(255,255,255,.25);
+  background:linear-gradient(135deg,#c4b5fd 0%,#8271ff 45%,#39c9dc 100%);
+  box-shadow:0 8px 28px rgba(111,91,255,.28),inset 0 1px rgba(255,255,255,.5);
+  text-shadow:0 1px 9px rgba(20,12,55,.28);
+}
+.app-mark:before,.brand-mark:before{
+  content:"";position:absolute;inset:3px;border-radius:inherit;
+  border:1px solid rgba(255,255,255,.2);pointer-events:none;
+}
+.app-mark:after,.brand-mark:after{
+  content:"";position:absolute;width:19px;height:19px;right:-6px;top:-7px;
+  border-radius:50%;background:rgba(255,255,255,.48);filter:blur(7px);pointer-events:none;
+}
+.app-brand strong,.brand b{letter-spacing:-.45px}
+.app-brand small,.brand small{letter-spacing:1.6px;font-size:9px}
+.app-main{position:relative}
+.app-eyebrow{letter-spacing:2.4px}
+.app-hero h1{letter-spacing:-3.5px;text-wrap:balance}
+.app-art{
+  border-color:rgba(190,183,255,.24);
+  background:
+    radial-gradient(ellipse at 78% 10%,color-mix(in srgb,var(--accent2) 23%,transparent),transparent 42%),
+    radial-gradient(ellipse at 15% 88%,color-mix(in srgb,var(--accent) 17%,transparent),transparent 45%),
+    linear-gradient(145deg,#171827 0%,#0b0c15 76%);
+  box-shadow:0 30px 90px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.04);
+}
+.art-grid{
+  background-image:linear-gradient(rgba(184,184,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(184,184,255,.055) 1px,transparent 1px);
+  background-size:28px 28px;
+  mask-image:linear-gradient(180deg,#000 0%,transparent 95%);
+}
+.floating-panel{
+  border-color:rgba(197,190,255,.25);
+  background:rgba(16,17,30,.78);
+  box-shadow:0 18px 42px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.055);
+}
+.feature,.workspace-card{
+  position:relative;overflow:hidden;
+  border-color:rgba(174,178,255,.16);
+  background:linear-gradient(145deg,rgba(24,25,43,.94),rgba(13,14,24,.97));
+  box-shadow:inset 0 1px rgba(255,255,255,.025);
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+.feature:before,.workspace-card:before{
+  content:"";position:absolute;left:16px;right:16px;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent2,#a994ff),transparent);opacity:.55;
+}
+.feature:hover,.workspace-card:hover{
+  transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent2,#a994ff) 48%,transparent);
+  box-shadow:0 18px 38px rgba(0,0,0,.2),0 0 28px color-mix(in srgb,var(--accent2,#a994ff) 8%,transparent);
+}
+.feature-icon{
+  border:1px solid color-mix(in srgb,var(--accent2,#a994ff) 25%,transparent);
+  box-shadow:inset 0 1px rgba(255,255,255,.08);
+}
+.app-button{transition:transform .18s ease,filter .18s ease,border-color .18s ease}
+.app-button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.app-button.primary{box-shadow:0 8px 25px color-mix(in srgb,var(--accent2) 18%,transparent)}
+.app-button.secondary:hover{border-color:color-mix(in srgb,var(--accent2) 55%,#36374a)}
+.bottom-note{border-top-color:rgba(180,185,255,.13)}
+/* JT AI Agent workspace: more intentional desktop-app chrome */
+.sidebar{
+  background:
+    radial-gradient(ellipse at 0 0,rgba(133,110,255,.12),transparent 44%),
+    linear-gradient(180deg,#10111d 0%,#0a0b13 100%);
+  border-right-color:rgba(177,180,255,.15);
+}
+.brand{padding-bottom:25px}
+.brand-mark{flex-shrink:0}
+.new-chat{
+  border-color:rgba(177,167,255,.25);
+  background:linear-gradient(110deg,rgba(122,101,255,.15),rgba(30,31,50,.86));
+  box-shadow:inset 0 1px rgba(255,255,255,.04);
+  transition:border-color .18s ease,background .18s ease,transform .18s ease;
+}
+.new-chat:hover{border-color:rgba(180,164,255,.55);background:linear-gradient(110deg,rgba(122,101,255,.23),rgba(34,35,56,.96));transform:translateY(-1px)}
+.side-link{transition:background .18s ease,color .18s ease,transform .18s ease}
+.side-link:hover{transform:translateX(2px)}
+.side-link.active{background:linear-gradient(90deg,rgba(150,124,255,.19),rgba(150,124,255,.055));box-shadow:inset 2px 0 #a994ff, inset 0 0 0 1px rgba(169,148,255,.08)}
+@media(prefers-reduced-motion:reduce){
+  .feature,.workspace-card,.app-button,.new-chat,.side-link{transition:none}
+  .feature:hover,.workspace-card:hover,.app-button:hover,.new-chat:hover,.side-link:hover{transform:none}
+}
+@media(max-width:700px){.app-hero h1{letter-spacing:-1.8px}}
