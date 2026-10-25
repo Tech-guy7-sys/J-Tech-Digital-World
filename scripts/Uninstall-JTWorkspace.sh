@@ -30,7 +30,7 @@ case "$(uname -s)" in
     fi
     ;;
   Linux)
-    if command -v dpkg-query >/dev/null && dpkg-query -W -f='\${Status}' "$app" 2>/dev/null | grep -q "install ok installed"; then
+    if command -v dpkg-query >/dev/null && dpkg-query -W -f='${Status}' "$app" 2>/dev/null | grep -q "install ok installed"; then
       sudo apt-get remove -y "$app"
     elif command -v rpm >/dev/null && rpm -q "$app" >/dev/null 2>&1; then
       if command -v dnf >/dev/null; then sudo dnf remove -y "$app"; else sudo zypper remove -y "$app"; fi
