@@ -47,3 +47,4 @@
     note.scrollIntoView({behavior:"smooth",block:"nearest"});
   }));
 })();
+;(()=>{if(!document.querySelector('script[data-jt-theme-loader]')&&!document.querySelector('script[src*="jt-theme-toggle.js"]')){const s=document.createElement("script");s.src="/jt-theme-toggle.js";s.dataset.jtThemeLoader="";document.head.appendChild(s);}})();
