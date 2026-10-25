@@ -16,15 +16,13 @@ if (!productName) throw new Error("Set JT_APP_ID to a supported JT workspace slu
 const version = (process.env.JT_RELEASE_VERSION || "1.0.0").replace(/^v/, "");
 const arch = process.env.JT_ARCH || process.arch;
 module.exports = {
-  homepage: "https://jtdigitalworld.com/",
-  author: { name: "J Tech Digital World", email: "support@jtdigitalworld.com", url: "https://jtdigitalworld.com/" },
   appId: "world.jtech." + appId,
   productName,
   artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
   directories: { output: path.resolve(__dirname, "../../release-desktop", appId, process.platform + "-" + arch) },
   files: ["main.cjs", "package.json"],
   extraResources: [{ from: path.resolve(__dirname, "../../dist"), to: "site", filter: ["**/*"] }],
-  extraMetadata: { name: appId, productName, version, main: "main.cjs", jtAppId: appId, author: { name: "J Tech Digital World", email: "support@jtdigitalworld.com" }, homepage: "https://jtdigitalworld.com/" },
+  extraMetadata: { name: appId, productName, version, main: "main.cjs", jtAppId: appId, author: "J Tech Digital World <support@jtdigitalworld.com>", homepage: "https://jtdigitalworld.com/" },
   asar: true,
   compression: "maximum",
   publish: null,
@@ -35,5 +33,5 @@ module.exports = {
     deleteAppDataOnUninstall: false, differentialPackage: false
   },
   mac: { category: "public.app-category.productivity", target: [{ target: "dmg", arch: [arch] }, { target: "zip", arch: [arch] }] },
-  linux: { category: "Utility", packageName: appId, maintainer: "J Tech Digital World <support@jtdigitalworld.com>", vendor: "J Tech Digital World", target: [{ target: "AppImage", arch: [arch] }, { target: "deb", arch: [arch] }, { target: "rpm", arch: [arch] }, { target: "zip", arch: [arch] }] }
+  linux: { category: "Utility", packageName: appId, maintainer: "J Tech Digital World <support@jtdigitalworld.com>", target: [{ target: "AppImage", arch: [arch] }, { target: "deb", arch: [arch] }, { target: "rpm", arch: [arch] }, { target: "zip", arch: [arch] }] }
 };
