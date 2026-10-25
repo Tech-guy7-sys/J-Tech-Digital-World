@@ -21,7 +21,7 @@ module.exports = {
   directories: { output: path.resolve(__dirname, "../../release-desktop", appId, process.platform + "-" + arch) },
   files: ["main.cjs", "package.json"],
   extraResources: [{ from: path.resolve(__dirname, "../../dist"), to: "site", filter: ["**/*"] }],
-  extraMetadata: { name: appId, productName, version, main: "main.cjs" },
+  extraMetadata: { name: appId, productName, version, main: "main.cjs", jtAppId: appId },
   asar: true,
   compression: "maximum",
   publish: null,
