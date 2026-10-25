@@ -22,3 +22,11 @@ html[data-jt-theme="dark"] .attachment-chip{background:#1b1c2d;border-color:#393
 .message-body{white-space:pre-wrap;overflow-wrap:anywhere}
 html[data-jt-theme="dark"] .message-actions button{background:#1a1b2b;border-color:#383a51;color:#c2c4d8}
 html[data-jt-theme="dark"] .message-actions button:hover{background:#2b2648;border-color:#7565b8;color:#eeeaff}
+
+.bridge-label{display:block;margin:12px 0 6px;font-size:11px;font-weight:700;color:#666f89}
+.bridge-select{width:100%;padding:10px;border:1px solid #dfe3ef;border-radius:10px;background:#fbfcff;color:#292c47;font:12px inherit}
+.bridge-check{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:11px;color:#5c6480}
+#jtBridgeTask{box-sizing:border-box;width:100%;margin-top:3px;padding:11px;border:1px solid #dfe3ef;border-radius:10px;background:#fbfcff;color:#292c47;font:12px/1.6 inherit;resize:vertical}
+#jtAppBridgeButton{white-space:nowrap}
+html[data-jt-theme="dark"] .bridge-label,html[data-jt-theme="dark"] .bridge-check{color:#b4b8d0}
+html[data-jt-theme="dark"] .bridge-select,html[data-jt-theme="dark"] #jtBridgeTask{background:#10111d;border-color:#3b3d54;color:#f0f0fa}
