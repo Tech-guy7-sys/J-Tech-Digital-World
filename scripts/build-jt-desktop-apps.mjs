@@ -13,7 +13,7 @@ const arch = process.env.JT_ARCH || "x64";
 const version = (process.env.JT_RELEASE_VERSION || "1.0.0").replace(/^v/, "");
 if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("JT_RELEASE_VERSION must be a semantic version such as 1.2.3.");
 if (!["win", "mac", "linux"].includes(platform)) throw new Error("JT_PLATFORM must be win, mac, or linux.");
-if (!["x64", "ia32", "arm64"].includes(arch) || (platform !== "win" && arch === "ia32")) throw new Error("Unsupported platform/architecture combination.");
+if (!["x64", "arm64"].includes(arch)) throw new Error("Unsupported architecture. This Electron release supports x64 and arm64 targets; do not publish a 32-bit ia32 package.");
 await mkdir(outputDir, { recursive: true });
 const electronBuilder = path.join(shellDir, "node_modules", "electron-builder", "cli.js");
 const targets = platform === "win" ? ["nsis", "zip"] : platform === "mac" ? ["dmg", "zip"] : ["AppImage", "deb", "rpm", "zip"];
