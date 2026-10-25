@@ -3,7 +3,7 @@
 Official JT Digital World website and workspace application repository.
 
 ## JT workspace applications
-The website repository includes the JT Digital World site and browser-based workspaces for JT Studio, JT Motion, JT Cloud, JT Stream and JT App Manager. Each workspace bundle has a published GitHub release with a SHA-256 checksum. See [all JT releases](https://github.com/Tech-guy7-sys/jt-digital-world/releases).
+The website repository includes the JT Digital World site and browser-based workspaces for JT AI Agent, JT AI Core, JT Studio, JT Motion, JT Cloud, JT Stream and JT App Manager. Each workspace bundle has a published GitHub release with a SHA-256 checksum. See [all JT releases](https://github.com/Tech-guy7-sys/jt-digital-world/releases).
 
 - [JT Studio — audio workbench](https://github.com/Tech-guy7-sys/jt-digital-world/tree/main/jt-apps/jt-studio)
 - [JT Motion — storyboard, timeline and local media bay](https://github.com/Tech-guy7-sys/jt-digital-world/tree/main/jt-apps/jt-motion)
