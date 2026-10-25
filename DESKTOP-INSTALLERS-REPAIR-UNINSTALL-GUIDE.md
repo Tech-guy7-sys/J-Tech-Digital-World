@@ -36,7 +36,7 @@ Builds are unsigned unless the release owner configures and protects platform si
 
 Open GitHub Actions → **Build JT Desktop Installers** and run the workflow with a version such as `1.0.0`. CI builds a platform/architecture matrix, runs source/build checks, packages each workspace, calculates SHA-256 checksums, and uploads artifacts. Publishing a GitHub Release is a separate explicit workflow input and only happens after the matrix succeeds.
 
-The source release workflow does not invent fake assets. A release is ready only when the matching CI run actually creates the binaries and the release contains them.
+Relevant pushes to `main` publish a clearly versioned CI pre-release only after all platform/architecture jobs pass. A manual workflow run can publish a specifically versioned pre-release after all builds pass. The workflow does not fabricate assets; each published binary comes from a successful packaging job.
 
 ## Windows repair and uninstall
 
