@@ -24,11 +24,11 @@ These desktop packages wrap the current web workspace and its local static asset
 
 | Platform | Packages | Architecture targets |
 |---|---|---|
-| Windows | Interactive Setup EXE; portable ZIP | x64; ARM64 build where supported by the Electron toolchain |
+| Windows | Interactive Setup EXE; portable ZIP | x64/AMD64; ARM64; legacy x86/ia32 while using Electron 43 |
 | macOS | DMG; ZIP | Intel x64; Apple Silicon ARM64 |
 | Linux | AppImage; DEB; RPM; ZIP | x64; ARM64 |
 
-**32-bit x86/ia32:** the current Electron version and supported platform toolchain do not provide a reliable 32-bit Windows release target for this project. The workflow must not publish a falsely labelled x86 installer. Use x64 on 64-bit Intel/AMD Windows or ARM64 on a compatible ARM device. AMD64 is the standard x64 target; it is not a separate installer architecture from x64.
+**32-bit architecture limits:** Windows x86/ia32 can be built only while the project uses Electron 43 or earlier; Electron 44 removes Windows x86 binaries. This pipeline pins the Electron major to 43 for the legacy x86 target, so that support must be re-evaluated before upgrading. Linux x86 and 32-bit macOS are not included. Use x64/AMD64 on most Intel/AMD PCs, or ARM64 on compatible ARM devices. AMD64 is another name for x64, not a separate target.
 
 Builds are unsigned unless the release owner configures and protects platform signing certificates. macOS Gatekeeper, Windows SmartScreen, and Linux package trust prompts may warn about unsigned packages. Do not bypass OS security warnings or describe unsigned packages as verified publishers.
 
