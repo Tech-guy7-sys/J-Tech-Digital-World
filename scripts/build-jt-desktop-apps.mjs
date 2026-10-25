@@ -7,7 +7,7 @@ import { createHash } from "node:crypto";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const shellDir = path.join(root, "desktop", "jt-workspace-shell");
 const outputDir = path.join(root, "release-assets");
-const apps = ["jt-ai-core", "jt-app-manager", "jt-cloud", "jt-code", "jt-design", "jt-motion", "jt-studio", "jt-stream"];
+const apps = ["jt-ai-agent", "jt-ai-core", "jt-app-manager", "jt-cloud", "jt-code", "jt-design", "jt-motion", "jt-studio", "jt-stream"];
 const platform = process.env.JT_PLATFORM || (process.platform === "win32" ? "win" : process.platform === "darwin" ? "mac" : "linux");
 const arch = process.env.JT_ARCH || "x64";
 const version = (process.env.JT_RELEASE_VERSION || "1.0.0").replace(/^v/, "");
