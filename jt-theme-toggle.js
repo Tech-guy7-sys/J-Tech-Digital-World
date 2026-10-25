@@ -1,0 +1,11 @@
+/* JT theme switcher: shared preference across website and app workspaces */
+(()=>{'use strict';
+const KEY='jt-theme-preference',root=document.documentElement;
+const read=()=>{try{return localStorage.getItem(KEY)}catch(_){return null}};
+const apply=mode=>{const m=mode==='light'?'light':'dark';root.setAttribute('data-jt-theme',m);root.style.colorScheme=m;try{localStorage.setItem(KEY,m)}catch(_){}document.querySelectorAll('.jt-theme-toggle').forEach(b=>{b.setAttribute('aria-pressed',String(m==='light'));b.setAttribute('aria-label','Switch to '+(m==='light'?'dark':'light')+' mode');const icon=b.querySelector('.jt-theme-icon'),label=b.querySelector('.jt-theme-label');if(icon)icon.textContent=m==='light'?'☀':'☾';if(label)label.textContent=m==='light'?'Light':'Dark';});};
+apply(read()||'light');
+const make=()=>{if(document.querySelector('.jt-theme-toggle'))return;const b=document.createElement('button');b.type='button';b.className='jt-theme-toggle';b.innerHTML='<span class="jt-theme-icon" aria-hidden="true">☀</span><span class="jt-theme-label">Light</span>';b.addEventListener('click',()=>apply(root.getAttribute('data-jt-theme')==='light'?'dark':'light'));b.title='Change appearance';return b;};
+const install=()=>{const b=make();if(!b)return;const home=document.querySelector('.jtw-header .jtw-nav-actions');const site=document.querySelector('.site-header .nav-actions');const app=document.querySelector('.app-top');const nav=document.querySelector('.app-nav');if(home)home.insertBefore(b,home.firstChild);else if(site)site.appendChild(b);else if(app&&nav)app.insertBefore(b,nav);else if(app)app.appendChild(b);};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.JTTheme={set:apply,toggle:()=>apply(root.getAttribute('data-jt-theme')==='light'?'dark':'light'),get:()=>root.getAttribute('data-jt-theme')||'light'};
+})();
