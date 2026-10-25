@@ -126,7 +126,7 @@ jobs:
           cat > release/RELEASE-NOTES.md <<'EOF'
           # JT Digital World Desktop Workspaces
 
-          These are desktop wrappers for the current JT web workspaces. The separate Agent Jeff desktop agent is released from its own repository.
+          These are desktop wrappers for the current JT web workspaces. The separate Agent Jeff desktop agent is released from its own repository. macOS builds are ZIP archives; DMG generation is omitted because GitHub-hosted macOS runners returned hdiutil “Device not configured”.
 
           Packages are unsigned unless explicitly stated otherwise. SHA-256 checksums provide integrity checks, not publisher identity. Windows x86/ia32 is a legacy Electron 43 target; review this compatibility before upgrading Electron. Linux x86 and 32-bit macOS are not included.
 
