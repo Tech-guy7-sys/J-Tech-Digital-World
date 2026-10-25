@@ -6,7 +6,7 @@
   if (!status || !container) return;
 
   const apps = [
-    "JT AI Core", "JT App Manager", "JT Cloud", "JT Code",
+    "JT AI Agent", "JT AI Core", "JT App Manager", "JT Cloud", "JT Code",
     "JT Design", "JT Motion", "JT Studio", "JT Stream"
   ];
   const releasePage = "https://github.com/Tech-guy7-sys/jt-digital-world/releases";
