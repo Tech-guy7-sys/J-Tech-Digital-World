@@ -17,7 +17,7 @@ The website repository includes the JT Digital World site and browser-based work
 
 ## Cross-platform desktop installers
 
-A dedicated [Build JT Desktop Installers workflow](.github/workflows/publish-jt-desktop-installers.yml) now packages the eight browser workspaces into desktop wrappers. It targets Windows Setup EXE + portable ZIP (x64 and ARM64), macOS DMG + ZIP (Intel x64 and Apple Silicon ARM64), and Linux AppImage + DEB + RPM + ZIP (x64 and ARM64). The workflow also generates SHA-256 manifests and uploads build artifacts. Native builds must complete successfully before a desktop GitHub Release is published; run the workflow manually with `publish_release=true` to publish a pre-release.
+A dedicated [Build JT Desktop Installers workflow](.github/workflows/publish-jt-desktop-installers.yml) now packages the nine browser workspaces into desktop wrappers. It targets Windows Setup EXE + portable ZIP (x64 and ARM64), macOS DMG + ZIP (Intel x64 and Apple Silicon ARM64), and Linux AppImage + DEB + RPM + ZIP (x64 and ARM64). The workflow also generates SHA-256 manifests and uploads build artifacts. Native builds must complete successfully before a desktop GitHub Release is published; run the workflow manually with `publish_release=true` to publish a pre-release.
 
 - [Download center with live desktop release listings](https://jtdigitalworld.com/download.html)
 - [Installer, repair and uninstall guide](DESKTOP-INSTALLERS-REPAIR-UNINSTALL-GUIDE.md)
