@@ -128,13 +128,14 @@ jobs:
 
           These are desktop wrappers for the current JT web workspaces. The separate Agent Jeff desktop agent is released from its own repository.
 
-          Packages are unsigned unless explicitly stated otherwise. SHA-256 checksums provide integrity checks, not publisher identity. Windows x86/ia32 packages are not offered because the current supported Electron target is 64-bit/ARM64.
+          Packages are unsigned unless explicitly stated otherwise. SHA-256 checksums provide integrity checks, not publisher identity. Windows x86/ia32 is a legacy Electron 43 target; review this compatibility before upgrading Electron. Linux x86 and 32-bit macOS are not included.
 
           Repair/update by rerunning the Windows setup installer, replacing the macOS app from the official DMG/ZIP, or reinstalling the Linux package. See DESKTOP-INSTALLERS-REPAIR-UNINSTALL-GUIDE.md in the source repository for platform-specific instructions.
 
           These wrappers do not imply that remote AI, cloud, account, or native app-specific services are configured.
           EOF
           cp DESKTOP-INSTALLERS-REPAIR-UNINSTALL-GUIDE.md release/
+          printf "\\nBuild status: all platform and architecture jobs passed before this release was created.\\n" >> release/RELEASE-NOTES.md
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
