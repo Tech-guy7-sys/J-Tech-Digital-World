@@ -1,3 +1,4 @@
+@import url("/jt-theme-toggle.css");
 /* JT CREATOR HOMEPAGE — HeyGen-inspired product storytelling, original JT design */
 :root{--jtw-bg:#080914;--jtw-panel:#111322;--jtw-text:#f7f7ff;--jtw-muted:#aaaec4;--jtw-line:rgba(174,179,255,.16);--jtw-blue:#8b83ff;--jtw-cyan:#70e6e4;--jtw-violet:#b69aff}
 body.jtw-home{margin:0!important;background:var(--jtw-bg)!important;color:var(--jtw-text)!important;font-family:"DM Sans",Inter,system-ui,sans-serif!important;line-height:1.55;overflow-x:hidden}
