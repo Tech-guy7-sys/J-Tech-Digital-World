@@ -1,0 +1,16 @@
+{
+  "name": "jt-workspace-desktop-shell",
+  "version": "1.0.0",
+  "private": true,
+  "description": "JT-branded desktop shell for local-first JT Digital World workspaces",
+  "main": "main.cjs",
+  "scripts": {
+    "dist:win": "electron-builder --config electron-builder.config.cjs --win nsis zip",
+    "dist:mac": "electron-builder --config electron-builder.config.cjs --mac dmg zip",
+    "dist:linux": "electron-builder --config electron-builder.config.cjs --linux AppImage deb rpm zip"
+  },
+  "devDependencies": {
+    "electron": "^38.2.0",
+    "electron-builder": "^26.0.12"
+  }
+}
