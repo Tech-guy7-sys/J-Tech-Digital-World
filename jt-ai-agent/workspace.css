@@ -15,3 +15,10 @@ html[data-jt-theme="dark"] .project-panel-head>button,html[data-jt-theme="dark"]
 html[data-jt-theme="dark"] .project-panel textarea{background:#0f101b;border-color:#383a51;color:#f2f2fc}
 html[data-jt-theme="dark"] .attachment-chip{background:#1b1c2d;border-color:#393b52;color:#e0e1f3}
 @media(max-width:700px){.project-panel{top:62px;right:12px}.project-context-button span{display:none}.project-context-button{padding:8px 10px}}
+
+.message-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.message-actions button{border:1px solid #e0e4f0;border-radius:8px;padding:6px 9px;background:#fff;color:#626a84;font:600 10px inherit;cursor:pointer;transition:background .15s,border-color .15s}
+.message-actions button:hover{background:#f0efff;border-color:#bcb2ff;color:#4b4385}
+.message-body{white-space:pre-wrap;overflow-wrap:anywhere}
+html[data-jt-theme="dark"] .message-actions button{background:#1a1b2b;border-color:#383a51;color:#c2c4d8}
+html[data-jt-theme="dark"] .message-actions button:hover{background:#2b2648;border-color:#7565b8;color:#eeeaff}
