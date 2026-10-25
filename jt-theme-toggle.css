@@ -55,3 +55,40 @@ html[data-jt-theme="light"] body:has(.app-top) .app-art,html[data-jt-theme="ligh
 html[data-jt-theme="light"] body:has(.app-top) .app-button.secondary{background:#fff!important;border-color:#dce1ef!important;color:#343954!important}
 html[data-jt-theme="light"] body:has(.app-top) .app-section,html[data-jt-theme="light"] body:has(.app-top) .app-feature{border-color:#e0e5f1!important}
 html[data-jt-theme="light"] body:has(.app-top) .app-footer{border-color:#e0e5f1!important;color:#5e6680!important}
+
+/* JT AI Agent workspace — readable Copilot-inspired day mode */
+html[data-jt-theme="light"] body:has(.app-shell){background:#f5f7fd!important;color:#25283f!important}
+html[data-jt-theme="light"] .app-shell{background:#f5f7fd!important;color:#25283f!important}
+html[data-jt-theme="light"] .sidebar{background:#fff!important;border-right-color:#e4e7f1!important}
+html[data-jt-theme="light"] .brand{color:#242740!important}
+html[data-jt-theme="light"] .brand small,html[data-jt-theme="light"] .side-label,html[data-jt-theme="light"] .recent-head,html[data-jt-theme="light"] .empty-recent{color:#7a829b!important}
+html[data-jt-theme="light"] .new-chat{background:#f6f7fc!important;color:#333751!important;border-color:#dfe3ef!important}
+html[data-jt-theme="light"] .new-chat kbd{color:#737b95!important;border-color:#d7dceb!important}
+html[data-jt-theme="light"] .side-link{color:#555d78!important}
+html[data-jt-theme="light"] .side-link.active,html[data-jt-theme="light"] .side-link:hover{background:#eeefff!important;color:#37315e!important}
+html[data-jt-theme="light"] .model-pill,html[data-jt-theme="light"] .profile-link{color:#353954!important}
+html[data-jt-theme="light"] .model-pill small,html[data-jt-theme="light"] .profile-link small{color:#737b95!important}
+html[data-jt-theme="light"] .main{background:#f8f9fe!important;color:#25283f!important}
+html[data-jt-theme="light"] .topbar{background:rgba(255,255,255,.9)!important;border-bottom-color:#e4e7f1!important;color:#343752!important}
+html[data-jt-theme="light"] .breadcrumb{color:#666e88!important}
+html[data-jt-theme="light"] .secure-label{color:#63718a!important}
+html[data-jt-theme="light"] .conversation{background:radial-gradient(ellipse at 50% 15%,rgba(157,143,255,.10),transparent 52%),#f8f9fe!important}
+html[data-jt-theme="light"] .welcome h1{color:#22243d!important}
+html[data-jt-theme="light"] .welcome>p{color:#636b85!important}
+html[data-jt-theme="light"] .welcome-eyebrow{color:#6b648d!important}
+html[data-jt-theme="light"] .suggestions button{background:linear-gradient(140deg,#fff,#f8f9ff)!important;border-color:#e1e5f1!important;color:#30334f!important;box-shadow:0 8px 25px rgba(48,55,105,.045)}
+html[data-jt-theme="light"] .suggestions button:hover{border-color:#b5a9ff!important;background:#fff!important;box-shadow:0 12px 28px rgba(80,71,160,.09)}
+html[data-jt-theme="light"] .suggestions small{color:#727a93!important}
+html[data-jt-theme="light"] .composer-wrap{background:linear-gradient(180deg,rgba(248,249,254,0),#f8f9fe 28%)!important}
+html[data-jt-theme="light"] .composer{background:#fff!important;border-color:#dfe4f0!important;box-shadow:0 14px 45px rgba(45,55,100,.09)!important}
+html[data-jt-theme="light"] .composer textarea{color:#272a44!important}
+html[data-jt-theme="light"] .composer textarea::placeholder{color:#8a91a8!important}
+html[data-jt-theme="light"] .tool-button{color:#606984!important}
+html[data-jt-theme="light"] .tool-button:hover{background:#f0efff!important;color:#4b4284!important}
+html[data-jt-theme="light"] .composer-disclaimer,html[data-jt-theme="light"] #composerHint{color:#7b839b!important}
+html[data-jt-theme="light"] .message.assistant{background:#fff!important;border:1px solid #e3e7f1!important;color:#30334d!important;box-shadow:0 8px 26px rgba(45,55,100,.04)}
+html[data-jt-theme="light"] .message.user{background:#e9e8ff!important;color:#29274d!important}
+html[data-jt-theme="light"] .settings-button{background:#f3f4fb!important;color:#515a75!important;border-color:#e0e4f0!important}
+html[data-jt-theme="light"] .jt-theme-toggle{color:#3e4260!important;background:#f2f3fb!important;border-color:#dfe3ef!important}
+html[data-jt-theme="light"] .top-actions .jt-theme-toggle{min-height:34px;padding:7px 9px}
+@media(max-width:700px){html[data-jt-theme="light"] .sidebar{box-shadow:12px 0 36px rgba(45,55,100,.10)}}
