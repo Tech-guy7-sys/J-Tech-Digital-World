@@ -32,5 +32,5 @@ module.exports = {
     createDesktopShortcut: true, createStartMenuShortcut: true, shortcutName: productName,
     deleteAppDataOnUninstall: false, differentialPackage: false
   },
-  mac: { category: "public.app-category.productivity", target: [{ target: "dmg", arch: [arch] }, { target: "zip", arch: [arch] }] },
+  mac: { category: "public.app-category.productivity", target: [{ target: "zip", arch: [arch] }] },
 };
