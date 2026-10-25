@@ -7,6 +7,7 @@ const path = require("node:path");
 const BUILD_METADATA = require("./package.json");
 const APP_ID = process.env.JT_APP_ID || BUILD_METADATA.jtAppId || "jt-studio";
 const APP_LABELS = {
+  "jt-ai-agent": "JT AI Agent",
   "jt-ai-core": "JT AI Core",
   "jt-app-manager": "JT App Manager",
   "jt-cloud": "JT Cloud",
@@ -19,6 +20,17 @@ const APP_LABELS = {
 const APP_LABEL = APP_LABELS[APP_ID];
 if (!APP_LABEL) throw new Error("Unknown JT app ID. Refusing to launch an unregistered workspace.");
 
+const APP_PATHS = {
+  "jt-ai-agent": "/jt-ai-agent/index.html",
+  "jt-ai-core": "/jt-apps/jt-ai-core/index.html",
+  "jt-app-manager": "/jt-apps/jt-app-manager/index.html",
+  "jt-cloud": "/jt-apps/jt-cloud/index.html",
+  "jt-code": "/jt-apps/jt-code/index.html",
+  "jt-design": "/jt-apps/jt-design/index.html",
+  "jt-motion": "/jt-apps/jt-motion/index.html",
+  "jt-studio": "/jt-apps/jt-studio/index.html",
+  "jt-stream": "/jt-apps/jt-stream/index.html"
+};
 const MIME = {
   ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8",
@@ -86,7 +98,7 @@ function createWindow() {
     event.preventDefault();
     void openExternalSafely(url);
   });
-  win.loadURL(baseUrl + "/jt-apps/" + APP_ID + "/index.html");
+  win.loadURL(baseUrl + APP_PATHS[APP_ID]);
   return win;
 }
 
