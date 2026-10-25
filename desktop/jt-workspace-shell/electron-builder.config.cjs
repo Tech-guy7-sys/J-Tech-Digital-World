@@ -16,6 +16,8 @@ if (!productName) throw new Error("Set JT_APP_ID to a supported JT workspace slu
 const version = (process.env.JT_RELEASE_VERSION || "1.0.0").replace(/^v/, "");
 const arch = process.env.JT_ARCH || process.arch;
 module.exports = {
+  homepage: "https://jtdigitalworld.com/",
+  author: { name: "J Tech Digital World", email: "support@jtdigitalworld.com", url: "https://jtdigitalworld.com/" },
   appId: "world.jtech." + appId,
   productName,
   artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
