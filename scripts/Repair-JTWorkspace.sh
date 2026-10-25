@@ -82,7 +82,8 @@ case "$(uname -s)" in
         [[ -d "$target" ]] && rm -rf "$target"
         mkdir -p "$target"
         cp -R "$tmp"/. "$target"/
-        executable="$(find "$target" -type f -perm -u+x -print -quit)"
+        executable="$(find "$target" -type f -name "$app" -print -quit)"
+        if [[ -z "$executable" ]]; then executable="$(find "$target" -type f -perm -u+x ! -name "chrome-sandbox" ! -name "chrome_crashpad_handler" -print -quit)"; fi
         if [[ -n "$executable" ]]; then ln -sfn "$executable" "$HOME/.local/bin/$app"; fi
         echo "Reinstalled portable app under $target"
         ;;
