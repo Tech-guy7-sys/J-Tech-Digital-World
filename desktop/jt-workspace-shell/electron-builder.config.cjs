@@ -1,5 +1,6 @@
 const path = require("node:path");
 const apps = {
+  "jt-ai-agent": "JT AI Agent",
   "jt-ai-core": "JT AI Core",
   "jt-app-manager": "JT App Manager",
   "jt-cloud": "JT Cloud",
