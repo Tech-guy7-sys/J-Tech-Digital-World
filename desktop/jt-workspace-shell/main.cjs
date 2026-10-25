@@ -4,7 +4,8 @@ const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const APP_ID = process.env.JT_APP_ID || "jt-studio";
+const BUILD_METADATA = require("./package.json");
+const APP_ID = process.env.JT_APP_ID || BUILD_METADATA.jtAppId || "jt-studio";
 const APP_LABELS = {
   "jt-ai-core": "JT AI Core",
   "jt-app-manager": "JT App Manager",
