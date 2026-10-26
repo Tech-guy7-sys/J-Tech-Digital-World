@@ -16,7 +16,7 @@ if (!["win", "mac", "linux"].includes(platform)) throw new Error("JT_PLATFORM mu
 if (!["x64", "arm64"].includes(arch) && !(platform === "win" && arch === "ia32")) throw new Error("Unsupported platform/architecture combination. Windows supports x64, ARM64, and legacy x86 with Electron 43; macOS/Linux targets are x64 or ARM64.");
 await mkdir(outputDir, { recursive: true });
 const electronBuilder = path.join(shellDir, "node_modules", "electron-builder", "cli.js");
-const targets = platform === "win" ? ["nsis", "zip"] : platform === "mac" ? ["zip"] : ["AppImage", "deb", "rpm", "zip"];
+const targets = platform === "win" ? ["nsis", "zip"] : platform === "mac" ? ["dmg", "zip"] : ["AppImage", "deb", "rpm", "zip"];
 for (const appId of apps) {
   console.log("\n=== Packaging " + appId + " for " + platform + "/" + arch + " ===");
   const args = [electronBuilder, "--config", "electron-builder.config.cjs", "--" + platform, ...targets, "--" + arch, "--publish=never"];
@@ -43,12 +43,12 @@ for (const file of files) {
 }
 await writeFile(path.join(outputDir, "SHA256SUMS.txt"), manifest.join("\n") + "\n");
 await writeFile(path.join(outputDir, "BUILD-METADATA.txt"), [
-  "JT Digital World desktop workspace release",
+  "J Tech Digital World desktop workspace build (artifact only)",
   "Version: " + version,
   "Platform: " + platform,
   "Architecture: " + arch,
   "Workspaces: " + apps.join(", "),
   "Built at: " + new Date().toISOString(),
-  "Note: unsigned builds; review official release notes and checksums."
+  "Artifact-only CI output. No GitHub Release is created. Unsigned builds; verify checksums before use."
 ].join("\n") + "\n");
 console.log("\nProduced " + files.length + " packages and SHA-256 manifest in " + outputDir);
