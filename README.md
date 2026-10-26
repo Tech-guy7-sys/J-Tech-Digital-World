@@ -1,32 +1,54 @@
-# JT Digital World
+# J Tech Digital World
 
-Official JT Digital World website and workspace application repository.
+Official JT company website and the source monorepo for JT browser workspaces.
 
-## JT workspace applications
-The website repository includes the JT Digital World site and browser-based workspaces for JT AI Agent, JT AI Core, JT Studio, JT Motion, JT Cloud, JT Stream and JT App Manager. Each workspace bundle has a published GitHub release with a SHA-256 checksum. See [all JT releases](https://github.com/Tech-guy7-sys/jt-digital-world/releases).
+## Product names
 
-- [JT Studio — audio workbench](https://github.com/Tech-guy7-sys/jt-digital-world/tree/main/jt-apps/jt-studio)
-- [JT Motion — storyboard, timeline and local media bay](https://github.com/Tech-guy7-sys/jt-digital-world/tree/main/jt-apps/jt-motion)
-- [JT Cloud — local project vault and file metadata](https://github.com/Tech-guy7-sys/jt-digital-world/tree/main/jt-apps/jt-cloud)
-- [JT Stream — camera/screen studio and local recording](https://github.com/Tech-guy7-sys/jt-digital-world/tree/main/jt-apps/jt-stream)
-- [JT App Manager — catalogue and release monitor](https://github.com/Tech-guy7-sys/jt-digital-world/tree/main/jt-apps/jt-app-manager)
+Use these exact display names across the JT ecosystem:
 
-## Separate application repositories
-- [Agent Jeff — standalone Windows desktop agent source, tests, installer and releases](https://github.com/Tech-guy7-sys/agent-jeff)
-- [JT Studio — standalone browser audio workbench source and release](https://github.com/Tech-guy7-sys/jt-studio)
+- **JT Desktop Agent** — permission-controlled desktop and device automation. The current native WPF implementation targets Windows; macOS and Linux require a real platform port.
+- **Jeff AI** — the AI assistant experience and provider interface.
+- **JT AI Agent** — general-purpose workspace for research, coding, projects, documents and specialist tasks.
+- **JT AI Core** — shared provider abstraction and app-specific permission model.
+- **JT Code** — coding and development workspace.
+- **JT Design** — visual design workspace.
+- **JT Studio** — audio production workspace.
+- **JT Motion** — video and motion-planning workspace.
+- **JT Cloud** — project vault and file-metadata workspace.
+- **JT Stream** — camera, scene and local recording workspace.
+- **JT App Manager** — JT product catalogue, build status and product-update workspace.
 
-## Cross-platform desktop installers
+## Source locations
 
-A dedicated [Build JT Desktop Installers workflow](.github/workflows/publish-jt-desktop-installers.yml) now packages the nine browser workspaces into desktop wrappers. It targets Windows Setup EXE + portable ZIP (x64/AMD64, ARM64 and legacy x86/ia32 with Electron 43), macOS DMG + ZIP (Intel x64 and Apple Silicon ARM64), and Linux AppImage + DEB + RPM + ZIP (x64 and ARM64). The workflow also generates SHA-256 manifests and uploads build artifacts. Native builds must complete successfully before a desktop GitHub Release is published. Relevant pushes to `main` publish a versioned CI pre-release after all platform builds pass; run the workflow manually with `publish_release=true` to publish a specifically versioned pre-release.
+The central repository contains the website and browser-workspace source for JT AI Agent, JT AI Core, JT Code, JT Design, JT Motion, JT Cloud, JT Stream, JT Studio, and JT App Manager under `jt-apps/`. The standalone native JT Desktop Agent source is in [agent-jeff](https://github.com/Tech-guy7-sys/agent-jeff). The dedicated [Jeff AI repository](https://github.com/Tech-guy7-sys/jeff-ai) and [JT Studio repository](https://github.com/Tech-guy7-sys/jt-studio) include desktop-shell and packaging work.
 
-- [Download center with live desktop release listings](https://jtdigitalworld.com/download.html)
-- [Installer, repair and uninstall guide](DESKTOP-INSTALLERS-REPAIR-UNINSTALL-GUIDE.md)
-- [Windows repair helper](scripts/Repair-JTWorkspace.ps1)
-- [Windows uninstall helper](scripts/Uninstall-JTWorkspace.ps1)
+## Desktop builds: artifact-only
 
-**Important:** existing per-app releases currently contain browser-workspace ZIP bundles; those are not native installers. Native desktop packages will appear in the download center only after the new packaging workflow finishes and a release is published. No cracked binaries or license bypasses are produced. 32-bit x86 is not advertised for the current Electron toolchain. The separate [Agent Jeff desktop repository](https://github.com/Tech-guy7-sys/agent-jeff) remains separate and retains its own installer/releases.
+The [Build JT Workspace Artifacts workflow](.github/workflows/build-jt-workspace-artifacts.yml) packages the nine browser workspaces in this repository across the configured platform matrix:
 
-## Feature and release boundaries
-JT Studio, JT Motion, and JT Cloud currently provide local-first browser tools; they are not full professional DAW, nonlinear video editor, or remote cloud-sync services yet. JT Stream supports a Stage 01 local studio workflow; direct live broadcasting is not yet claimed. JT App Manager reads public release metadata and stores a local checklist; it does not install, update, or verify software signatures. The separate Agent Jeff repository builds the Windows desktop application and publishes installer/portable releases; the current installer is not code-signed.
+- Windows: x64, ARM64, and an x86/ia32 build attempt. x86 is only supported if the Electron/toolchain build passes; do not advertise it before verification.
+- macOS: Intel x64 and Apple Silicon ARM64; DMG and ZIP targets.
+- Linux: x64 and ARM64; AppImage, DEB, RPM and ZIP targets.
 
-Cloudflare Pages deployment requires repository secrets for the Cloudflare API token and account ID. The deployment workflow validates the site and skips deployment cleanly when those secrets are not configured.
+The workflow uploads temporary GitHub Actions artifacts and explicitly disables automatic release publishing. A platform/architecture combination is available only after its own CI job succeeds and its output is verified. The workflow creates checksums for produced artifacts. These packages are unsigned unless separately signed.
+
+The standalone [JT Desktop Agent workflow](https://github.com/Tech-guy7-sys/agent-jeff/actions) currently builds Windows x64 and x86 targets. Its existing WPF and Windows-specific desktop APIs are not cross-platform. Do not advertise macOS or Linux installers for JT Desktop Agent until native implementations and tests exist for those systems.
+
+The [Jeff AI workflow](https://github.com/Tech-guy7-sys/jeff-ai/actions) and [JT Studio workflow](https://github.com/Tech-guy7-sys/jt-studio/actions) build product-specific desktop artifacts. CI artifacts are not permanent releases; use a product repository for any future published product downloads. This company repository is not intended to publish GitHub Releases.
+
+## Product boundaries
+
+- JT Studio is an early audio workbench, not yet a full multitrack DAW.
+- JT Motion is a video/storyboard workspace, not yet a full nonlinear video editor.
+- JT Cloud currently stores local project records and file metadata; remote file sync is not claimed.
+- JT App Manager can catalogue products and inspect product repository build/release information; it does not silently install or update software.
+- Jeff AI must be exposed through a provider abstraction. Do not claim an AI backend is connected until configuration and a real request have been verified.
+- Desktop/device control belongs exclusively to JT Desktop Agent and must remain permission-controlled, auditable, and stoppable.
+
+## Release policy
+
+Do not publish GitHub Releases from this company repository. Use the artifact-only CI workflow for company-site workspace builds and keep product distribution in each product's own repository. Previously published historical release records are not automatically deleted by disabling the workflows; a repository administrator must delete those existing releases and associated tags separately.
+
+## Development
+
+The site uses Node.js tooling. Review the relevant package scripts before running builds. Inspect existing files before replacing them, and verify workflow results before advertising installers as available.
