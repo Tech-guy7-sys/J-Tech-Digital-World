@@ -1,0 +1,103 @@
+{
+  "product": "JT Design",
+  "category": "Graphic design",
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "id": "social-square",
+      "name": "Social Post — Square",
+      "canvas": {
+        "width": 1080,
+        "height": 1080,
+        "background": "#111827"
+      },
+      "layers": [
+        {
+          "type": "shape",
+          "name": "Background accent",
+          "shape": "gradient-orb"
+        },
+        {
+          "type": "text",
+          "name": "Headline",
+          "text": "YOUR HEADLINE",
+          "fontSize": 88,
+          "weight": 800
+        },
+        {
+          "type": "text",
+          "name": "Supporting copy",
+          "text": "A short, clear message",
+          "fontSize": 32
+        },
+        {
+          "type": "shape",
+          "name": "Brand mark",
+          "shape": "rounded-square"
+        }
+      ]
+    },
+    {
+      "id": "story-vertical",
+      "name": "Story / Reel Cover",
+      "canvas": {
+        "width": 1080,
+        "height": 1920,
+        "background": "#0b1020"
+      },
+      "layers": [
+        {
+          "type": "image-placeholder",
+          "name": "Hero visual",
+          "fit": "cover"
+        },
+        {
+          "type": "shape",
+          "name": "Contrast overlay",
+          "shape": "gradient"
+        },
+        {
+          "type": "text",
+          "name": "Title",
+          "text": "MAKE IT MEMORABLE",
+          "fontSize": 82
+        },
+        {
+          "type": "text",
+          "name": "Brand / CTA",
+          "text": "YOUR BRAND",
+          "fontSize": 28
+        }
+      ]
+    },
+    {
+      "id": "poster",
+      "name": "Event Poster",
+      "canvas": {
+        "width": 1200,
+        "height": 1600,
+        "background": "#f3f0e8"
+      },
+      "layers": [
+        {
+          "type": "text",
+          "name": "Event title",
+          "text": "THE NEXT CHAPTER",
+          "fontSize": 96,
+          "weight": 800
+        },
+        {
+          "type": "text",
+          "name": "Date and venue",
+          "text": "DATE · TIME · VENUE",
+          "fontSize": 30
+        },
+        {
+          "type": "shape",
+          "name": "Accent",
+          "shape": "bold-geometric"
+        }
+      ]
+    }
+  ]
+}
