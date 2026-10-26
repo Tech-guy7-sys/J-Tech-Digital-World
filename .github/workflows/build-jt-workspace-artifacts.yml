@@ -1,0 +1,95 @@
+name: Build JT Workspace Artifacts (No Releases)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "desktop/jt-workspace-shell/**"
+      - "scripts/build-jt-desktop-apps.mjs"
+      - "scripts/build-site.mjs"
+      - "jt-apps/**"
+      - "package.json"
+      - "DESKTOP-INSTALLERS-REPAIR-UNINSTALL-GUIDE.md"
+      - ".github/workflows/build-jt-workspace-artifacts.yml"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Artifact label only; this workflow never publishes a GitHub Release"
+        required: true
+        default: "1.0.0"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jt-workspace-artifacts-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform }} / ${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: win
+            arch: x64
+            runner: windows-latest
+          - platform: win
+            arch: ia32
+            runner: windows-latest
+          - platform: win
+            arch: arm64
+            runner: windows-latest
+          - platform: mac
+            arch: x64
+            runner: macos-13
+          - platform: mac
+            arch: arm64
+            runner: macos-14
+          - platform: linux
+            arch: x64
+            runner: ubuntu-latest
+          - platform: linux
+            arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate source syntax
+        shell: bash
+        run: |
+          node --check desktop/jt-workspace-shell/main.cjs
+          node --check desktop/jt-workspace-shell/electron-builder.config.cjs
+          node --check scripts/build-jt-desktop-apps.mjs
+          node --check scripts/build-site.mjs
+      - name: Build website assets
+        run: npm run build:website
+      - name: Install desktop packaging dependencies
+        working-directory: desktop/jt-workspace-shell
+        run: npm install --no-audit --no-fund
+      - name: Package JT workspaces
+        shell: bash
+        env:
+          JT_PLATFORM: ${{ matrix.platform }}
+          JT_ARCH: ${{ matrix.arch }}
+          JT_RELEASE_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.version || format('1.0.0-ci.{0}', github.run_number) }}
+        run: |
+          set -euo pipefail
+          VERSION="${JT_RELEASE_VERSION#jt-desktop-v}"
+          VERSION="${VERSION#v}"
+          export JT_RELEASE_VERSION="$VERSION"
+          node scripts/build-jt-desktop-apps.mjs
+      - name: Upload build artifacts (not a release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: jt-workspace-${{ matrix.platform }}-${{ matrix.arch }}
+          path: release-assets/*
+          if-no-files-found: error
+          retention-days: 30
