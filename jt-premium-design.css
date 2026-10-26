@@ -300,3 +300,62 @@
   .app-tile,.tile-icon,.app-filter{transition:none}
   .app-tile:hover,.app-tile:active,.app-filter:hover,.app-tile:hover .tile-icon{transform:none}
 }
+
+
+/* JT design system refinement — keyboard, contrast, and workspace polish */
+:where(a,button,[role="button"],input,textarea,select):focus-visible{
+  outline:2px solid var(--accent2,#79dcff);
+  outline-offset:3px;
+}
+.app-top{
+  position:sticky;top:0;z-index:30;
+  background:rgba(10,11,20,.78);
+  -webkit-backdrop-filter:blur(22px) saturate(145%);
+  backdrop-filter:blur(22px) saturate(145%);
+  box-shadow:0 8px 32px rgba(0,0,0,.12);
+}
+.app-mark{position:relative;isolation:isolate;transition:transform .22s ease,box-shadow .22s ease}
+.app-mark:after{
+  content:"";position:absolute;inset:-4px;border-radius:inherit;
+  border:1px solid color-mix(in srgb,var(--accent2,#8b8cff) 34%,transparent);
+  opacity:0;transform:scale(.92);transition:opacity .22s ease,transform .22s ease;z-index:-1;
+}
+.app-brand:hover .app-mark{transform:translateY(-1px) rotate(-3deg);box-shadow:0 8px 28px color-mix(in srgb,var(--accent) 35%,transparent)}
+.app-brand:hover .app-mark:after{opacity:1;transform:scale(1)}
+.app-art{isolation:isolate}
+.app-art:before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:linear-gradient(125deg,rgba(255,255,255,.055),transparent 32%,transparent 70%,rgba(255,255,255,.025));
+}
+.art-grid{opacity:.72;transition:opacity .3s ease,background-size .5s ease}
+.app-art:hover .art-grid{opacity:1;background-size:28px 28px}
+.art-orbit{transition:box-shadow .3s ease,border-color .3s ease}
+.app-art:hover .art-orbit{box-shadow:0 0 72px color-mix(in srgb,var(--accent) 18%,transparent),inset 0 0 42px color-mix(in srgb,var(--accent) 10%,transparent)}
+.floating-panel{transition:transform .22s ease,border-color .22s ease,background .22s ease}
+.app-art:hover .fp-a{transform:translateY(-2px)}
+.app-art:hover .fp-b{transform:translateY(2px)}
+.app-art:hover .fp-c{transform:translateY(2px)}
+.app-art:hover .fp-d{transform:translateY(-2px)}
+.feature,.workspace-card{
+  transition:transform .22s ease,border-color .22s ease,background .22s ease,box-shadow .22s ease;
+}
+.feature:hover,.workspace-card:hover{
+  transform:translateY(-3px);
+  border-color:color-mix(in srgb,var(--accent2) 34%,#292a3c);
+  box-shadow:0 14px 32px rgba(0,0,0,.18);
+}
+.workspace-line i{box-shadow:0 0 14px color-mix(in srgb,var(--accent) 30%,transparent)}
+.app-button{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease}
+.app-button:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.app-button.primary:hover{box-shadow:0 10px 28px color-mix(in srgb,var(--accent) 23%,transparent)}
+.section-head{scroll-margin-top:88px}
+@media(max-width:620px){
+  .app-top{min-height:64px}
+  .app-art:hover .art-grid{background-size:32px 32px}
+  .app-art:hover .fp-a,.app-art:hover .fp-b,.app-art:hover .fp-c,.app-art:hover .fp-d{transform:none}
+  .feature:hover,.workspace-card:hover{transform:translateY(-1px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .app-mark,.app-mark:after,.app-art .art-grid,.art-orbit,.floating-panel,.feature,.workspace-card,.app-button{transition:none!important}
+  .app-brand:hover .app-mark,.app-art:hover .fp-a,.app-art:hover .fp-b,.app-art:hover .fp-c,.app-art:hover .fp-d,.feature:hover,.workspace-card:hover,.app-button:hover{transform:none}
+}
