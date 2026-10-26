@@ -231,3 +231,72 @@
   .app-brand:hover .app-mark,.brand:hover .brand-mark,
   .app-art:hover .fp-a,.app-art:hover .fp-b,.app-art:hover .fp-c,.app-art:hover .fp-d{transform:none}
 }
+
+
+/* JT Workspace Finish v3 — app catalogue affordances, focus visibility, and per-app atmosphere */
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{
+  outline:2px solid var(--accent2,#9a8cff);
+  outline-offset:4px;
+}
+.app-tile{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  box-shadow:inset 0 1px rgba(255,255,255,.045),0 10px 28px rgba(0,0,0,.12);
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease;
+}
+.app-tile:before{
+  content:"";
+  position:absolute;inset:0 0 auto;height:2px;
+  background:linear-gradient(90deg,var(--a),var(--b));
+  opacity:.72;
+}
+.app-tile:after{
+  content:"";
+  position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(--b) 13%,transparent),transparent 52%);
+  opacity:.7;
+}
+.app-tile:hover{
+  transform:translateY(-5px);
+  border-color:color-mix(in srgb,var(--a) 68%,#34364d);
+  box-shadow:0 18px 40px rgba(0,0,0,.24),0 0 24px color-mix(in srgb,var(--a) 10%,transparent),inset 0 1px rgba(255,255,255,.07);
+}
+.app-tile:active{transform:translateY(-1px) scale(.995)}
+.tile-icon{
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 8px 22px color-mix(in srgb,var(--a) 20%,transparent),inset 0 1px rgba(255,255,255,.28);
+  transition:transform .22s ease,box-shadow .22s ease;
+}
+.tile-icon:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(145deg,rgba(255,255,255,.32),transparent 48%);
+}
+.app-tile:hover .tile-icon{
+  transform:translateY(-2px) rotate(-3deg);
+  box-shadow:0 12px 28px color-mix(in srgb,var(--a) 28%,transparent),inset 0 1px rgba(255,255,255,.36);
+}
+.tile-open{display:inline-flex;align-items:center;gap:7px;margin-top:5px}
+.app-count{letter-spacing:.02em}
+.app-search input:focus-visible{border-color:#9c8aff;box-shadow:0 0 0 4px rgba(156,138,255,.13)}
+.app-filter{transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease}
+.app-filter:hover{transform:translateY(-1px);border-color:#a99aff}
+.app-empty{margin-top:8px}
+.app-art .art-grid{opacity:.8}
+.app-art .art-orbit{pointer-events:none}
+.app-main[data-app="JT Design"] .app-art{background:radial-gradient(ellipse at 70% 28%,rgba(242,139,200,.19),transparent 48%),linear-gradient(145deg,#171320,#0c0d16 72%)}
+.app-main[data-app="JT Code"] .app-art{background:radial-gradient(ellipse at 70% 28%,rgba(101,217,244,.17),transparent 48%),linear-gradient(145deg,#111827,#0c0d16 72%)}
+.app-main[data-app="JT Studio"] .app-art{background:radial-gradient(ellipse at 70% 28%,rgba(114,229,203,.17),transparent 48%),linear-gradient(145deg,#10201f,#0c0d16 72%)}
+.app-main[data-app="JT Motion"] .app-art{background:radial-gradient(ellipse at 70% 28%,rgba(255,181,107,.18),transparent 48%),linear-gradient(145deg,#211820,#0c0d16 72%)}
+.app-main[data-app="JT Cloud"] .app-art{background:radial-gradient(ellipse at 70% 28%,rgba(99,201,248,.17),transparent 48%),linear-gradient(145deg,#111a27,#0c0d16 72%)}
+.app-main[data-app="JT AI Core"] .app-art{background:radial-gradient(ellipse at 70% 28%,rgba(101,225,231,.17),transparent 48%),linear-gradient(145deg,#15172a,#0c0d16 72%)}
+.app-main[data-app="JT App Manager"] .app-art{background:radial-gradient(ellipse at 70% 28%,rgba(105,224,195,.16),transparent 48%),linear-gradient(145deg,#171629,#0c0d16 72%)}
+@media(max-width:620px){
+  .app-tile{padding:17px}
+  .app-tile:hover{transform:translateY(-2px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .app-tile,.tile-icon,.app-filter{transition:none}
+  .app-tile:hover,.app-tile:active,.app-filter:hover,.app-tile:hover .tile-icon{transform:none}
+}
