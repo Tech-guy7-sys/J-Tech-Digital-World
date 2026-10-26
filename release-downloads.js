@@ -42,8 +42,8 @@
       }
 
       const assets = Array.isArray(release.assets) ? release.assets : [];
-      const setup = assets.find((asset) => /^Agent-Jeff-Setup-.+-x64\.exe$/i.test(asset.name));
-      const portable = assets.find((asset) => /^Agent-Jeff-Windows-x64-.+-portable\.zip$/i.test(asset.name));
+      const setup = assets.find((asset) => /^(?:JT-Desktop-Agent|Agent-Jeff)-Setup-.+-x64\.exe$/i.test(asset.name));
+      const portable = assets.find((asset) => /^(?:JT-Desktop-Agent|Agent-Jeff)-Windows-x64-.+-portable\.zip$/i.test(asset.name));
       const checksums = assets.find((asset) => /^SHA256SUMS\.txt$/i.test(asset.name));
 
       if (!setup) {
