@@ -1,0 +1,79 @@
+{
+  "product": "JT Code",
+  "category": "Software development",
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "id": "web-landing",
+      "name": "Responsive Landing Page",
+      "files": [
+        {
+          "path": "index.html",
+          "purpose": "Semantic page structure"
+        },
+        {
+          "path": "styles.css",
+          "purpose": "Responsive design tokens and layout"
+        },
+        {
+          "path": "app.js",
+          "purpose": "Accessible interactions"
+        }
+      ],
+      "checks": [
+        "Responsive layout",
+        "Keyboard accessibility",
+        "No unsafe eval",
+        "Validate user input"
+      ]
+    },
+    {
+      "id": "api-client",
+      "name": "API Client",
+      "files": [
+        {
+          "path": "src/client.ts",
+          "purpose": "Typed request wrapper"
+        },
+        {
+          "path": "src/types.ts",
+          "purpose": "Request and response types"
+        },
+        {
+          "path": "tests/client.test.ts",
+          "purpose": "Success and error-path tests"
+        }
+      ],
+      "checks": [
+        "Timeout and cancellation",
+        "Handle non-2xx responses",
+        "Never hardcode secrets",
+        "Test malformed responses"
+      ]
+    },
+    {
+      "id": "node-cli",
+      "name": "Node.js CLI Tool",
+      "files": [
+        {
+          "path": "src/index.ts",
+          "purpose": "CLI entry point"
+        },
+        {
+          "path": "src/commands",
+          "purpose": "Command handlers"
+        },
+        {
+          "path": "tests",
+          "purpose": "Unit tests"
+        }
+      ],
+      "checks": [
+        "Validate arguments",
+        "Readable errors",
+        "No destructive action without confirmation",
+        "Document usage"
+      ]
+    }
+  ]
+}
