@@ -19,7 +19,7 @@ const electronBuilder = path.join(shellDir, "node_modules", "electron-builder", 
 const targets = platform === "win" ? ["nsis", "zip"] : platform === "mac" ? ["zip"] : ["AppImage", "deb", "rpm", "zip"];
 for (const appId of apps) {
   console.log("\n=== Packaging " + appId + " for " + platform + "/" + arch + " ===");
-  const args = [electronBuilder, "--config", "electron-builder.config.cjs", "--" + platform, ...targets, "--" + arch];
+  const args = [electronBuilder, "--config", "electron-builder.config.cjs", "--" + platform, ...targets, "--" + arch, "--publish=never"];
   const result = spawnSync(process.execPath, args, {
     cwd: shellDir, stdio: "inherit",
     env: { ...process.env, JT_APP_ID: appId, JT_ARCH: arch, JT_RELEASE_VERSION: version }
