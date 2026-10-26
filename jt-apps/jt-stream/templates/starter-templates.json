@@ -1,0 +1,96 @@
+{
+  "product": "JT Stream",
+  "category": "Live streaming and recording",
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "id": "talk-show",
+      "name": "Talk Show",
+      "scenes": [
+        {
+          "name": "Starting Soon",
+          "sources": [
+            "Countdown",
+            "Background music"
+          ]
+        },
+        {
+          "name": "Live Host",
+          "sources": [
+            "Camera",
+            "Microphone",
+            "Lower third"
+          ]
+        },
+        {
+          "name": "Guest Interview",
+          "sources": [
+            "Guest source",
+            "Name tag"
+          ]
+        },
+        {
+          "name": "Break",
+          "sources": [
+            "BRB card",
+            "Music"
+          ]
+        },
+        {
+          "name": "Closing",
+          "sources": [
+            "Credits",
+            "End card"
+          ]
+        }
+      ],
+      "checks": [
+        "Test mic levels",
+        "Check echo and latency",
+        "Confirm overlays are readable",
+        "Test local recording"
+      ]
+    },
+    {
+      "id": "game-stream",
+      "name": "Gameplay Stream",
+      "scenes": [
+        {
+          "name": "Starting Soon",
+          "sources": [
+            "Countdown",
+            "Music"
+          ]
+        },
+        {
+          "name": "Gameplay",
+          "sources": [
+            "Game capture",
+            "Microphone",
+            "Camera overlay"
+          ]
+        },
+        {
+          "name": "Full Camera",
+          "sources": [
+            "Camera",
+            "Microphone"
+          ]
+        },
+        {
+          "name": "Ending",
+          "sources": [
+            "Credits",
+            "End card"
+          ]
+        }
+      ],
+      "checks": [
+        "Verify capture source",
+        "Check audio balance",
+        "Hide private notifications",
+        "Test recording"
+      ]
+    }
+  ]
+}
