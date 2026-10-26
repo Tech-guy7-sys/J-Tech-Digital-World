@@ -1,0 +1,56 @@
+{
+  "product": "JT AI Agent",
+  "category": "AI workspace and research",
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "id": "research-brief",
+      "name": "Research Brief",
+      "steps": [
+        "Define question and scope",
+        "Collect and cite sources",
+        "Compare evidence and uncertainty",
+        "Summarize findings",
+        "List open questions"
+      ],
+      "outputs": [
+        "Executive summary",
+        "Evidence table",
+        "Sources",
+        "Next actions"
+      ]
+    },
+    {
+      "id": "coding-session",
+      "name": "Coding Session",
+      "steps": [
+        "Clarify acceptance criteria",
+        "Inspect existing files",
+        "Plan minimal changes",
+        "Implement and test",
+        "Review diff and limitations"
+      ],
+      "outputs": [
+        "Changed files",
+        "Test results",
+        "Known gaps"
+      ]
+    },
+    {
+      "id": "project-plan",
+      "name": "Project Plan",
+      "steps": [
+        "Define outcome",
+        "Break down milestones",
+        "Identify dependencies and risks",
+        "Assign next actions",
+        "Set review checkpoints"
+      ],
+      "outputs": [
+        "Milestones",
+        "Risks",
+        "Action list"
+      ]
+    }
+  ]
+}
