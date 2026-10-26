@@ -1,0 +1,42 @@
+name: Enforce No Central Releases
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: enforce-no-central-releases
+  cancel-in-progress: false
+
+jobs:
+  remove-central-releases:
+    name: Remove releases and tags from the company repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete all releases and their tags
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tags="$(gh release list --limit 100 --json tagName --jq '.[].tagName')"
+          if [ -z "$tags" ]; then
+            echo "No GitHub Releases remain in the J Tech Digital World company repository."
+            exit 0
+          fi
+          while IFS= read -r tag; do
+            [ -n "$tag" ] || continue
+            echo "Removing company-repository release and associated tag: $tag"
+            gh release delete "$tag" --yes --cleanup-tag
+          done <<< "$tags"
+          remaining="$(gh release list --limit 100 --json tagName --jq 'length')"
+          if [ "$remaining" != "0" ]; then
+            echo "Expected zero releases, found $remaining." >&2
+            exit 1
+          fi
+          echo "Verified: no GitHub Releases remain in the company repository."
