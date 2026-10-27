@@ -5,6 +5,42 @@
 <title>JT Digital World — Make more of your ideas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="modern-ui.css"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="jt-home-creator.css"><link rel="stylesheet" href="jt-quick-launch.css"><link rel="stylesheet" href="/jt-theme-toggle.css">
+
+<style id="jt-idea-engine-styles">
+.jt-idea-engine{max-width:1240px;margin:0 auto;padding:76px clamp(20px,5vw,72px);position:relative}
+.jt-idea-engine:before{content:"";position:absolute;inset:34px 20px;background:radial-gradient(ellipse at 15% 35%,#9e8aff13,transparent 40%),radial-gradient(ellipse at 90% 80%,#62e1d414,transparent 38%);pointer-events:none;z-index:-1}
+.jie-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:26px}
+.jie-kicker{font:700 10px monospace;letter-spacing:2px;color:#79e5d8}
+.jie-head h2{font:800 clamp(29px,4vw,48px)/1.08 Manrope,sans-serif;letter-spacing:-1.8px;margin:12px 0 0;max-width:650px}
+.jie-head h2 span{background:linear-gradient(100deg,#b4a2ff,#70e3d9);color:transparent;background-clip:text}
+.jie-head p{font-size:12px;line-height:1.8;color:#a4a6ba;max-width:330px;margin:0}
+.jie-panel{border:1px solid #34334e;border-radius:23px;overflow:hidden;background:linear-gradient(130deg,#141522,#0b0d17 75%);box-shadow:0 25px 90px #0003}
+.jie-topline{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px 20px;border-bottom:1px solid #2b2c40;color:#a3a5bd;font:700 9px monospace;letter-spacing:1.5px}
+.jie-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#75e2d6;box-shadow:0 0 12px #75e2d688;margin-right:8px}
+.jie-body{display:grid;grid-template-columns:.95fr 1.05fr}
+.jie-choices{padding:24px;border-right:1px solid #2b2c40}
+.jie-choices>p{font-size:12px;color:#9b9db3;margin:0 0 14px}
+.jie-choice{width:100%;display:flex;align-items:center;gap:13px;text-align:left;padding:14px;margin:8px 0;border:1px solid #2c2d43;border-radius:13px;background:#11131f;color:#f5f5ff;cursor:pointer;transition:border-color .2s,transform .2s}
+.jie-choice:hover{transform:translateX(3px);border-color:#8e82d8}
+.jie-choice[aria-pressed=true]{border-color:#78dfd3;background:linear-gradient(100deg,#25223e,#142527)}
+.jie-symbol{display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;border-radius:11px;background:#27243d;color:#a9a0ff;font-size:17px}
+.jie-choice strong{display:block;font:700 12px Manrope,sans-serif}
+.jie-choice small{display:block;color:#989bb2;font-size:10px;margin-top:4px;line-height:1.5}
+.jie-output{padding:clamp(24px,4vw,42px);display:flex;flex-direction:column;justify-content:center;min-height:330px}
+.jie-output-label{font:700 9px monospace;letter-spacing:1.5px;color:#78dfd3}
+.jie-output h3{font:800 clamp(23px,3vw,34px)/1.15 Manrope,sans-serif;letter-spacing:-1px;margin:16px 0 10px}
+.jie-output>p{font-size:12px;line-height:1.8;color:#a2a5bc;margin:0 0 22px;max-width:480px}
+.jie-route{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.jie-route span{padding:8px 10px;border:1px solid #33344b;border-radius:8px;background:#141624;font-size:10px;color:#d6d6e7}
+.jie-route span:before{content:"↗ ";color:#76e2d6}
+.jie-actions{display:flex;gap:10px;flex-wrap:wrap}
+.jie-primary,.jie-secondary{display:inline-flex;align-items:center;justify-content:center;padding:12px 15px;border-radius:10px;font-size:11px;font-weight:800;text-decoration:none}
+.jie-primary{background:linear-gradient(105deg,#b4a2ff,#70e3d9);color:#11131b}
+.jie-secondary{border:1px solid #36374d;color:#e6e6f4}
+.jie-foot{padding:12px 20px;border-top:1px solid #2b2c40;font-size:10px;line-height:1.6;color:#777b94}
+@media(max-width:760px){.jie-head{align-items:start;flex-direction:column}.jie-body{grid-template-columns:1fr}.jie-choices{border-right:0;border-bottom:1px solid #2b2c40}.jie-output{min-height:0}}
+@media(prefers-reduced-motion:reduce){.jie-choice{transition:none}.jie-choice:hover{transform:none}}
+</style>
 </head>
 <body class="jtw-home">
 <header class="jtw-header"><a class="jtw-brand" href="/home.html" aria-label="JT Digital World home"><span class="jtw-mark">JT</span><span><strong>J TECH</strong><small>DIGITAL WORLD</small></span></a>
@@ -22,6 +58,30 @@
 <div class="jtw-preview-cards"><a href="/jt-apps/jt-motion/"><span class="jtw-mini-icon jtw-mini-motion">▶</span><strong>JT Motion</strong><small>Video & storytelling</small><b>↗</b></a><a href="/jt-apps/jt-studio/"><span class="jtw-mini-icon jtw-mini-audio">♫</span><strong>JT Studio</strong><small>Sound & production</small><b>↗</b></a><a href="/jt-apps/jt-design/"><span class="jtw-mini-icon jtw-mini-design">◈</span><strong>JT Design</strong><small>Visual creativity</small><b>↗</b></a><a href="/jt-apps/jt-code/"><span class="jtw-mini-icon jtw-mini-code">&lt;/&gt;</span><strong>JT Code</strong><small>Build & develop</small><b>↗</b></a></div><div class="jtw-preview-footer"><span><i></i> Your workspace is ready to explore</span><span>JT DIGITAL WORLD</span></div></div></div>
 <div class="jtw-floating-badge jtw-badge-ai"><span>✦</span><div><strong>Jeff AI</strong><small>Your creative copilot</small></div><i>●</i></div><div class="jtw-floating-badge jtw-badge-sync"><span>↗</span><div><strong>One connected world</strong><small>Tools that work together</small></div></div></div>
 <div class="jtw-hero-foot"><span>ONE ECOSYSTEM. MANY WAYS TO CREATE.</span><a href="#platform">SCROLL TO EXPLORE <b>↓</b></a></div></section>
+
+<section class="jt-idea-engine" id="idea-engine" aria-labelledby="jie-title">
+<div class="jie-head"><div><span class="jie-kicker">JT IDEA ENGINE / 001</span><h2 id="jie-title">Don't just open apps.<br><span>Start with a mission.</span></h2></div><p>Choose what you're trying to achieve. Get a practical route through JT tools—without pretending unfinished integrations are already live.</p></div>
+<div class="jie-panel">
+<div class="jie-topline"><span><i class="jie-dot"></i>MISSION PLANNER</span><span>LOCAL INTERACTIVE PREVIEW</span></div>
+<div class="jie-body">
+<div class="jie-choices" role="group" aria-label="Choose a project mission">
+<p>What's on your mind today?</p>
+<button class="jie-choice" type="button" data-jie="product" aria-pressed="true"><span class="jie-symbol">✳</span><span><strong>Launch a new idea</strong><small>From rough thought to first prototype</small></span></button>
+<button class="jie-choice" type="button" data-jie="creative" aria-pressed="false"><span class="jie-symbol">◈</span><span><strong>Make something creative</strong><small>Visuals, sound, stories and motion</small></span></button>
+<button class="jie-choice" type="button" data-jie="developer" aria-pressed="false"><span class="jie-symbol">&lt;/&gt;</span><span><strong>Build a real product</strong><small>Code, debug, document and iterate</small></span></button>
+<button class="jie-choice" type="button" data-jie="organize" aria-pressed="false"><span class="jie-symbol">⌘</span><span><strong>Get my projects in order</strong><small>Files, app discovery and workflow</small></span></button>
+</div>
+<div class="jie-output" aria-live="polite">
+<span class="jie-output-label" id="jie-label">YOUR STARTING ROUTE / PRODUCT</span>
+<h3 id="jie-output-title">Turn the idea into a first version.</h3>
+<p id="jie-output-copy">Clarify who the product helps and the problem it solves. Then sketch the experience before committing to a build.</p>
+<div class="jie-route" id="jie-route"><span>JT AI Agent</span><span>JT Design</span><span>JT Code</span></div>
+<div class="jie-actions"><a class="jie-primary" id="jie-primary" href="/jt-apps/">Explore the right tools ↗</a><a class="jie-secondary" href="/features.html">See platform features</a></div>
+</div>
+</div>
+<div class="jie-foot">Concept planner only. Recommendations are local; AI responses, cloud sync and cross-app actions require their respective integrations to be implemented and configured.</div>
+</div>
+</section>
 <section class="jtw-platform-section" id="platform"><div class="jtw-section-head"><div><span class="jtw-kicker">ONE PLATFORM, MORE POSSIBILITIES</span><h2>Everything you need<br>to <span>make it happen.</span></h2></div><p>Move between creative work, development and AI assistance without losing sight of the idea that started it all.</p></div>
 <div class="jtw-product-grid">
 <a class="jtw-product" href="/jt-apps/jt-motion/"><div class="jtw-product-top"><span class="jtw-product-icon">▶</span><span class="jtw-product-arrow">↗</span></div><div class="jtw-product-art jtw-art-video"><div class="jtw-video-frame"><div class="jtw-frame-sun"></div><div class="jtw-frame-mountain"></div><div class="jtw-frame-horizon"></div><span>YOUR STORY IN MOTION</span><i>▶</i></div><div class="jtw-timeline-art"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="jtw-product-label">VIDEO CREATION</div><h3>JT Motion</h3><p>Plan scenes, organise media and shape a visual story.</p><span class="jtw-product-link">Explore Motion <b>→</b></span></a>
@@ -36,4 +96,6 @@
 <section class="jtw-final-cta"><div class="jtw-cta-orb"></div><div><span class="jtw-kicker">YOUR NEXT CHAPTER STARTS HERE</span><h2>Make room for<br><span>what's possible.</span></h2><p>Explore the JT tools and find the right place to begin.</p></div><div class="jtw-cta-buttons"><a class="jtw-button" href="/jt-apps/">Explore the platform <span>→</span></a><a class="jtw-outline-button" href="/download.html">View releases</a></div></section></main>
 <footer class="jtw-footer"><a class="jtw-brand" href="/home.html"><span class="jtw-mark">JT</span><span><strong>J TECH</strong><small>DIGITAL WORLD</small></span></a><p>Tools for ideas in motion.</p><nav><a href="/jt-apps/">Apps</a><a href="/features.html">Platform</a><a href="/download.html">Downloads</a><a href="/support.html">Support</a><a href="/signin.html">Log in</a></nav><small>© 2026 J Tech Digital World · Built for people who make things happen.</small></footer>
 <script>(()=>{const m=document.getElementById('jtw-menu'),n=document.getElementById('jtw-navigation');if(m&&n){m.addEventListener('click',()=>{const o=n.classList.toggle('jtw-open');m.setAttribute('aria-expanded',String(o));m.setAttribute('aria-label',o?'Close navigation':'Open navigation');});n.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{n.classList.remove('jtw-open');m.setAttribute('aria-expanded','false');}));}const es=document.querySelectorAll('.jtw-product,.jtw-workflow-grid>a,.jtw-ai-visual,.jtw-ai-copy');if('IntersectionObserver'in window){es.forEach(e=>e.classList.add('jtw-reveal'));const ob=new IntersectionObserver(xs=>xs.forEach(x=>{if(x.isIntersecting){x.target.classList.add('jtw-in');ob.unobserve(x.target);}}),{threshold:.08});es.forEach(e=>ob.observe(e));}else es.forEach(e=>e.classList.add('jtw-in'));})();</script><script src="/jt-quick-launch.js" defer></script><script src="/jt-theme-toggle.js" defer></script>
+
+<script id="jt-idea-engine-script">(()=>{const data={product:{label:"YOUR STARTING ROUTE / PRODUCT",title:"Turn the idea into a first version.",copy:"Clarify who the product helps and the problem it solves. Then sketch the experience before committing to a build.",route:["JT AI Agent","JT Design","JT Code"],href:"/jt-apps/",cta:"Explore the right tools ↗"},creative:{label:"YOUR STARTING ROUTE / CREATIVE",title:"Give the idea a look, a sound and a story.",copy:"Establish a visual direction, map your sound ideas, then plan the scenes. Export your work as you go so your ideas stay portable.",route:["JT Design","JT Studio","JT Motion"],href:"/jt-apps/?mission=create",cta:"Explore creative apps ↗"},developer:{label:"YOUR STARTING ROUTE / BUILD",title:"Build in small steps. Verify every one.",copy:"Define a thin first version, keep the implementation understandable, and run checks before treating a build as ready to ship.",route:["JT Code","JT AI Agent","JT App Manager"],href:"/jt-apps/?mission=build",cta:"Explore developer tools ↗"},organize:{label:"YOUR STARTING ROUTE / WORKFLOW",title:"Make your projects easier to find and finish.",copy:"Organise project records, export backups and review app build information. Desktop automation remains in JT Desktop Agent and requires explicit approval.",route:["JT Cloud","JT App Manager","JT Desktop Agent"],href:"/jt-apps/?mission=organize",cta:"Explore productivity tools ↗"}};const buttons=[...document.querySelectorAll("[data-jie]")];const title=document.getElementById("jie-output-title"),copy=document.getElementById("jie-output-copy"),label=document.getElementById("jie-label"),route=document.getElementById("jie-route"),link=document.getElementById("jie-primary");buttons.forEach(b=>b.addEventListener("click",()=>{buttons.forEach(x=>x.setAttribute("aria-pressed",String(x===b)));const d=data[b.dataset.jie];if(!d)return;label.textContent=d.label;title.textContent=d.title;copy.textContent=d.copy;route.replaceChildren(...d.route.map(name=>{const tag=document.createElement("span");tag.textContent=name;return tag}));link.href=d.href;link.textContent=d.cta;}));})();</script>
 </body></html>
