@@ -60,3 +60,21 @@ input[type=range]{width:100%;height:15px;margin:0;cursor:pointer}.meter-label{di
 @media(max-width:450px){.top-status{display:none}.studio-topbar nav{margin-left:auto}.studio-topbar nav a{font-size:10px}.preview-panel,.scene-panel{padding:10px}.scene-list{gap:6px}.scene-choice{padding:6px}.scene-thumb{height:48px}.preview-head{align-items:flex-start;flex-direction:column}.preview-badges{justify-content:flex-start}.scene-choice strong{font-size:9px}.scene-choice small{font-size:7px}.recording-controls{gap:7px}.record-button,.stop-button{padding:0 9px}.studio-footer{flex-direction:column;align-items:flex-start}}
 
 .jt-hotkey-panel{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}.jt-hotkey-panel>label{display:block;margin:10px 0 7px;color:#bfc1d1;font-size:11px}.jt-hotkey-panel select{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;background:#0b0c14;color:var(--text)}.hotkey-grid{display:grid;grid-template-columns:1fr;gap:7px;margin:12px 0}.hotkey-grid span{font-size:10px;color:#b8bacd;display:flex;align-items:center;gap:4px}.hotkey-grid kbd{font:700 10px system-ui;padding:3px 5px;border:1px solid #3a3b52;border-radius:5px;background:#191a29;color:#f5f5fb}.jt-hotkey-panel>small{display:block;color:var(--muted);font-size:10px;line-height:1.5}
+
+/* JT Stream creator-console visual polish */
+.studio-topbar{background:linear-gradient(100deg,#0b0c16f5,#171326ed 62%,#0d1421ed);border-bottom-color:#39334f;box-shadow:0 12px 36px #00000020}
+.brand-mark{background:linear-gradient(135deg,#ff8ab6,#b6a0ff 52%,#72e5df);box-shadow:0 0 0 1px #ffffff18,0 8px 28px #a38fff35}
+.studio-heading{position:relative;isolation:isolate;padding:clamp(20px,3vw,32px);border:1px solid #37324f;border-radius:22px;background:radial-gradient(ellipse at 88% 0%,#ff8ab620,transparent 36%),radial-gradient(ellipse at 100% 100%,#8a9bff18,transparent 44%),linear-gradient(120deg,#141421,#10121d 72%);overflow:hidden}
+.studio-heading:after{content:"JT / STREAM";position:absolute;right:24px;bottom:17px;color:#a6a0c43b;font:800 11px monospace;letter-spacing:3px;pointer-events:none}
+.permission-note{box-shadow:0 8px 24px #00000014;border-color:#454064;background:linear-gradient(110deg,#191629,#121520)}
+.studio-grid .panel,.recording-bar.panel,.stage-boundary{box-shadow:0 12px 32px #0000001c,inset 0 1px #ffffff04}
+.source-card{transition:border-color .18s ease,transform .18s ease,background .18s ease}
+.source-card:hover{border-color:#51466e;background:linear-gradient(145deg,#191a2b,#12131f)}
+.wide-button,.record-button,.stop-button{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
+.wide-button:hover,.record-button:hover:not(:disabled),.stop-button:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 7px 20px #00000028}
+.scene-choice{transition:border-color .16s ease,background .16s ease,transform .16s ease}
+.scene-choice:hover{transform:translateY(-2px)}
+#programCanvas{border:1px solid #48415e;box-shadow:0 0 0 5px #ffffff03,0 20px 60px #00000045}
+.studio-footer{border-top:1px solid #29283e;padding-top:18px}
+@media(prefers-reduced-motion:reduce){.source-card,.wide-button,.record-button,.stop-button,.scene-choice{transition:none}.wide-button:hover,.record-button:hover:not(:disabled),.stop-button:hover:not(:disabled),.scene-choice:hover{transform:none}}
+@media(max-width:720px){.studio-heading{align-items:flex-start;flex-direction:column}.studio-heading:after{right:14px;bottom:10px;font-size:8px}.top-status{display:none}}
