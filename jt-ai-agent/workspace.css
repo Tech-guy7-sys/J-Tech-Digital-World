@@ -30,3 +30,16 @@ html[data-jt-theme="dark"] .message-actions button:hover{background:#2b2648;bord
 #jtAppBridgeButton{white-space:nowrap}
 html[data-jt-theme="dark"] .bridge-label,html[data-jt-theme="dark"] .bridge-check{color:#b4b8d0}
 html[data-jt-theme="dark"] .bridge-select,html[data-jt-theme="dark"] #jtBridgeTask{background:#10111d;border-color:#3b3d54;color:#f0f0fa}
+
+/* JT AI Agent compact workspace finish */
+.app-shell{grid-template-columns:232px minmax(0,1fr)}
+.sidebar{padding:20px 14px}
+.main{min-width:0}
+.topbar{min-height:64px;padding:0 22px}
+.conversation{padding:20px clamp(16px,3vw,36px)}
+.welcome{max-width:700px}
+.suggestions{gap:9px}
+.suggestions button{min-height:68px;padding:12px}
+.composer-wrap{padding:12px clamp(14px,3vw,34px) 16px}
+.composer{border-radius:17px}
+@media(max-width:760px){.app-shell{grid-template-columns:1fr}.sidebar{padding:14px}.topbar{padding:0 14px}.conversation{padding:15px 12px}.composer-wrap{padding:9px 12px 12px}}
