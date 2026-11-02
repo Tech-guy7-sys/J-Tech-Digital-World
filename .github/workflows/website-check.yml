@@ -1,0 +1,29 @@
+name: JT website build check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check Jeff AI function syntax
+        run: node --check functions/api/jeff.js
+      - name: Check website chat scripts
+        run: |
+          node --check jeff-website-chat.js
+          node --check jeff-chat-widget.js
+      - name: Build Cloudflare Pages output
+        run: npm run build:website
+      - name: Verify Pages Function source remains at project root
+        run: test -f functions/api/jeff.js
