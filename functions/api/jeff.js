@@ -39,7 +39,7 @@ function extractText(provider, data) {
 async function openRouterCore(messages, env, systemPrompt) {
   const key = envValue(env, "OPENROUTER_API_KEY");
   if (!key) return json({ error: "provider_not_configured", message: "JT AI Core is not connected yet. Add OPENROUTER_API_KEY as a Cloudflare Pages secret, then redeploy." }, 503);
-  const base = envValue(env, "OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1").replace(/\\/$/, "");
+  const base = envValue(env, "OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1").replace(/\/$/, "");
   const models = [
     "nvidia/nemotron-3-ultra-550b-a55b:free",
     "google/gemma-4-26b-a4b-it:free"
