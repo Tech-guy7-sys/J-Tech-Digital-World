@@ -28,6 +28,7 @@ const publicFiles = [
   "style.css",
   "script.js",
   "jeff-website-chat.js",
+  "jeff-chat-widget.js",
   "release-downloads.js",
   "_headers"
 ];
