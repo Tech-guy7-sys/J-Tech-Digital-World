@@ -43,3 +43,6 @@ html[data-jt-theme="dark"] .bridge-select,html[data-jt-theme="dark"] #jtBridgeTa
 .composer-wrap{padding:12px clamp(14px,3vw,34px) 16px}
 .composer{border-radius:17px}
 @media(max-width:760px){.app-shell{grid-template-columns:1fr}.sidebar{padding:14px}.topbar{padding:0 14px}.conversation{padding:15px 12px}.composer-wrap{padding:9px 12px 12px}}
+
+/* Improved response contrast and typography */
+.message-row.assistant .message-content{color:#f4f5ff;font-size:14px;line-height:1.85;letter-spacing:.005em}.message-row.assistant .message-body{color:#f4f5ff}.message-row.assistant .message-label{color:#b8b2d5}.message-row.assistant .typing{color:#d5caff}.message-row.user .message-content{color:#f5f6ff}
