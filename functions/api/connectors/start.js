@@ -1,7 +1,7 @@
 import {db,currentUser,randomToken,hash} from "../_auth.js";
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store"}});
 const providers={
- github:{client:"GITHUB_CLIENT_ID",authorize:"https://github.com/login/oauth/authorize",scope:"read:user user:email repo"},
+ github:{client:"GITHUB_CLIENT_ID",authorize:"https://github.com/login/oauth/authorize",scope:"read:user user:email"},
  google:{client:"GOOGLE_CLIENT_ID",authorize:"https://accounts.google.com/o/oauth2/v2/auth",scope:"openid email profile https://www.googleapis.com/auth/drive.readonly",extra:{access_type:"offline",prompt:"consent"}}
 };
 export async function onRequestGet({request,env}){
