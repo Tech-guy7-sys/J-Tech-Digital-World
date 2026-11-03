@@ -35,6 +35,8 @@ jobs:
           test -f dist/index.html
           test -f dist/home.html
           test -f dist/apps.html
+          test -f dist/google7018b6a6a6547361.html
+          grep -qx 'google-site-verification: google7018b6a6a6547361.html' dist/google7018b6a6a6547361.html
           test -f dist/style.css
           test -f functions/api/jeff.js
 
