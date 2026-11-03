@@ -16,6 +16,7 @@ const publicFiles = [
   "blog.html",
   "download.html",
   "features.html",
+  "integrations.html",
   "pricing.html",
   "sandbox.html",
   "signin.html",
