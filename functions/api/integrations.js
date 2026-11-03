@@ -4,7 +4,7 @@ const AI_PROVIDERS = [
   { id: "anthropic", name: "Anthropic Claude", secrets: ["ANTHROPIC_API_KEY"] }
 ];
 const CONNECTORS = [
-  ["github","GitHub","Developer tools","Repositories, branches, issues and pull requests","read","GitHub OAuth app + callback URL"],
+  ["github","GitHub","Developer tools","Link your GitHub identity. Repository access will use a separate read-only GitHub App installation.","read","GitHub OAuth app for identity; GitHub App with read-only repository permissions for project access"],
   ["google-drive","Google Drive","Google","Search and read files the user authorises","read","Google Cloud OAuth client + consent screen"],
   ["gmail","Gmail","Google","Search messages and prepare drafts; sending requires separate approval","read","Google Cloud OAuth client + Gmail scopes"],
   ["google-calendar","Google Calendar","Google","Read calendars and create approved events","read-write","Google Cloud OAuth client + Calendar scopes"],
