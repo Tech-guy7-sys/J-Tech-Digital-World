@@ -69,7 +69,8 @@ export async function onRequestPost({ request, env }) {
   }
   const openRouterKey = value(env, "OPENROUTER_API_KEY");
   const geminiKey = value(env, "GEMINI_API_KEY");
-  if (!openRouterKey && !geminiKey) return json({ error: "provider_not_configured", message: "No AI provider secret is configured on this deployment." }, 503);
+  const anthropicKey = value(env, "ANTHROPIC_API_KEY");
+  if (!openRouterKey && !geminiKey && !anthropicKey) return json({ error: "provider_not_configured", message: "No AI provider secret is configured on this deployment." }, 503);
 
   let payload;
   try { payload = await request.json(); }
@@ -164,5 +165,5 @@ export async function onRequestPost({ request, env }) {
     if (typeof reply === "string" && reply.trim()) return json({ reply: reply.trim(), answer: reply.trim(), provider: "OpenRouter", profile: "J Tech AI Core v1", model });
     lastStatus = 502;
   }
-
+  return json({ error: "providers_unavailable", message: "All configured free AI providers are temporarily unavailable. Please retry shortly." }, lastStatus);
 }
