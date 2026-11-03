@@ -7,6 +7,7 @@ const out = path.join(root, "dist");
 
 const publicFiles = [
   "index.html",
+  "google7018b6a6a6547361.html",
   "home.html",
   "about.html",
   "about-app.html",
