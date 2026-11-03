@@ -46,3 +46,5 @@ html[data-jt-theme="dark"] .bridge-select,html[data-jt-theme="dark"] #jtBridgeTa
 
 /* Improved response contrast and typography */
 .message-row.assistant .message-content{color:#f4f5ff;font-size:14px;line-height:1.85;letter-spacing:.005em}.message-row.assistant .message-body{color:#f4f5ff}.message-row.assistant .message-label{color:#b8b2d5}.message-row.assistant .typing{color:#d5caff}.message-row.user .message-content{color:#f5f6ff}
+
+.sidebar-search{height:36px;margin:8px 2px 5px;padding:0 9px;display:flex;align-items:center;gap:8px;border:1px solid #292a3b;border-radius:8px;background:#12131e;color:#8f91a7}.sidebar-search input{min-width:0;width:100%;border:0;outline:0;background:transparent;color:#e9e9f5;font:11px 'DM Sans',sans-serif}.sidebar-search input::placeholder{color:#77798e}.sidebar-search:focus-within{border-color:#7565ad}
