@@ -31,7 +31,12 @@ const publicFiles = [
   "jeff-website-chat.js",
   "jeff-chat-widget.js",
   "release-downloads.js",
-  "_headers"
+  "_headers",
+  "_redirects",
+  "robots.txt",
+  "sitemap.xml",
+  "favicon.svg",
+  "login.html"
 ];
 
 const publicDirectories = ["assets", "jt-ai-agent", "jt-apps"];
