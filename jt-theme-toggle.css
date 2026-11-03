@@ -92,3 +92,21 @@ html[data-jt-theme="light"] .settings-button{background:#f3f4fb!important;color:
 html[data-jt-theme="light"] .jt-theme-toggle{color:#3e4260!important;background:#f2f3fb!important;border-color:#dfe3ef!important}
 html[data-jt-theme="light"] .top-actions .jt-theme-toggle{min-height:34px;padding:7px 9px}
 @media(max-width:700px){html[data-jt-theme="light"] .sidebar{box-shadow:12px 0 36px rgba(45,55,100,.10)}}
+
+
+/* Jeff AI light-mode response visibility fix */
+html[data-jt-theme="light"] body:has(.app-shell) .messages{color:#25283f!important}
+html[data-jt-theme="light"] body:has(.app-shell) .message-row{color:#25283f!important}
+html[data-jt-theme="light"] body:has(.app-shell) .message-content{color:#25283f!important}
+html[data-jt-theme="light"] body:has(.app-shell) .message-row.assistant .message-content{background:#fff!important;border:1px solid #e3e7f1!important;border-radius:14px;padding:13px 16px;box-shadow:0 8px 26px rgba(45,55,100,.045)}
+html[data-jt-theme="light"] body:has(.app-shell) .message-row.user .message-content{background:#e9e8ff!important;border:1px solid #dcd9ff!important;color:#29274d!important}
+html[data-jt-theme="light"] body:has(.app-shell) .message-label{color:#69718b!important}
+html[data-jt-theme="light"] body:has(.app-shell) .message-avatar{background:#eeefff!important;color:#51478e!important}
+html[data-jt-theme="light"] body:has(.app-shell) .message-row.user .message-avatar{background:#e3e6f3!important;color:#414965!important}
+html[data-jt-theme="light"] body:has(.app-shell) .message-actions button{color:#5c6380!important;border-color:#dfe3ef!important;background:#f7f8fd!important}
+html[data-jt-theme="light"] body:has(.app-shell) .typing{color:#6655ad!important}
+html[data-jt-theme="light"] body:has(.app-shell) .project-panel{background:#fff!important;color:#292d49!important;border-color:#dfe4f0!important;box-shadow:0 20px 60px rgba(40,48,90,.15)!important}
+html[data-jt-theme="light"] body:has(.app-shell) .project-panel p,
+html[data-jt-theme="light"] body:has(.app-shell) .project-panel-actions span{color:#69718b!important}
+html[data-jt-theme="light"] body:has(.app-shell) .provider-picker select{color:#525a76!important;background:#f7f8fd!important}
+html[data-jt-theme="light"] body:has(.app-shell) .toast{background:#fff!important;color:#292d49!important;border-color:#dfe4f0!important;box-shadow:0 12px 35px rgba(40,48,90,.12)!important}
