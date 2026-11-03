@@ -27,6 +27,12 @@ function messagesFrom(payload) {
   messages.push({ role: "user", content: payload.message.trim() });
   return messages;
 }
+function isEnabled(env) {
+  // An explicit setting wins; otherwise a configured provider key enables the service.
+  const override = value(env, "JEFF_API_ENABLED");
+  if (override) return override.toLowerCase() === "true";
+  return Boolean(value(env, "OPENROUTER_API_KEY"));
+}
 function originAllowed(request) {
   const origin = request.headers.get("origin");
   if (!origin) return true;
@@ -35,7 +41,7 @@ function originAllowed(request) {
 }
 
 export async function onRequestGet({ env }) {
-  const enabled = value(env, "JEFF_API_ENABLED", "false").toLowerCase() === "true";
+  const enabled = isEnabled(env);
   const configured = Boolean(value(env, "OPENROUTER_API_KEY"));
   return json({
     service: "Jeff AI",
@@ -55,7 +61,7 @@ export async function onRequestPost({ request, env }) {
   }
   const declaredLength = Number(request.headers.get("content-length") || 0);
   if (declaredLength > 16000) return json({ error: "request_too_large", message: "The request is too large." }, 413);
-  if (value(env, "JEFF_API_ENABLED", "false").toLowerCase() !== "true") {
+  if (!isEnabled(env)) {
     return json({ error: "service_disabled", message: "Jeff AI is not enabled on this website deployment." }, 503);
   }
   const key = value(env, "OPENROUTER_API_KEY");
