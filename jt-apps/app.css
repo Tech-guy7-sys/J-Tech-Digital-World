@@ -22,3 +22,35 @@ html[data-jt-theme="light"] body:has(.app-top) .feature p,
 html[data-jt-theme="light"] body:has(.app-top) .workspace-card p{color:#65708a!important}
 html[data-jt-theme="light"] body:has(.app-top) .app-eyebrow,
 html[data-jt-theme="light"] body:has(.app-top) .workspace-card .label{color:#6657ad!important}
+
+
+/* JT VISUAL REFRESH 2026 — app landing pages */
+:root{--jt-radius:18px;--jt-ease:cubic-bezier(.2,.75,.25,1)}
+.app-top{box-shadow:0 8px 30px #00000012}
+.app-brand{transition:transform .2s var(--jt-ease)}
+.app-brand:hover{transform:translateY(-1px)}
+.app-mark{position:relative;isolation:isolate;overflow:hidden}
+.app-mark:after{content:"";position:absolute;inset:-60% auto -60% -45%;width:35%;transform:rotate(25deg);background:#ffffff55;filter:blur(7px);transition:left .45s var(--jt-ease)}
+.app-brand:hover .app-mark:after{left:130%}
+.app-nav a{padding:9px 10px;border-radius:9px;transition:background .18s,color .18s}
+.app-nav a:hover{background:color-mix(in srgb,var(--accent) 11%,transparent)}
+.app-hero{position:relative}
+.app-hero-copy{position:relative;z-index:1}
+.app-hero h1{text-wrap:balance}
+.app-hero p{max-width:560px}
+.app-art{isolation:isolate}
+.app-art:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 20%,#ffffff09 48%,transparent 72%);transform:translateX(-100%);animation:jt-art-sheen 8s ease-in-out infinite}
+@keyframes jt-art-sheen{0%,55%{transform:translateX(-100%)}85%,100%{transform:translateX(100%)}}
+.feature,.workspace-card{position:relative;overflow:hidden;border-radius:16px}
+.feature:before,.workspace-card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);opacity:.0;transition:opacity .2s}
+.feature:hover:before,.workspace-card:hover:before{opacity:1}
+.feature:hover,.workspace-card:hover{transform:translateY(-3px)}
+.app-button{transition:transform .18s var(--jt-ease),box-shadow .18s,border-color .18s}
+.app-button:hover{transform:translateY(-2px);box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 20%,transparent)}
+.app-button:active{transform:translateY(0) scale(.985)}
+.app-main h2,.app-main h3{ text-wrap:balance}
+.bottom-note{align-items:center}
+html[data-jt-theme="light"] body:has(.app-top) .app-art{background:radial-gradient(ellipse at 50% 25%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 58%),linear-gradient(145deg,#fff,#eef1fb)!important;border-color:#dfe4f2!important;box-shadow:0 24px 60px rgba(45,55,100,.09)}
+html[data-jt-theme="light"] body:has(.app-top) .floating-panel{background:rgba(255,255,255,.9)!important;border-color:#dfe4f2!important;color:#252943!important;box-shadow:0 12px 30px rgba(45,55,100,.1)}
+html[data-jt-theme="light"] body:has(.app-top) .floating-panel small{color:#66708a!important}
+@media(prefers-reduced-motion:reduce){.app-art:after{animation:none}.app-brand,.app-button,.feature,.workspace-card{transition:none}}
