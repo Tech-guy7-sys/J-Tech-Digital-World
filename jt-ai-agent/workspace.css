@@ -48,3 +48,63 @@ html[data-jt-theme="dark"] .bridge-select,html[data-jt-theme="dark"] #jtBridgeTa
 .message-row.assistant .message-content{color:#f4f5ff;font-size:14px;line-height:1.85;letter-spacing:.005em}.message-row.assistant .message-body{color:#f4f5ff}.message-row.assistant .message-label{color:#b8b2d5}.message-row.assistant .typing{color:#d5caff}.message-row.user .message-content{color:#f5f6ff}
 
 .sidebar-search{height:36px;margin:8px 2px 5px;padding:0 9px;display:flex;align-items:center;gap:8px;border:1px solid #292a3b;border-radius:8px;background:#12131e;color:#8f91a7}.sidebar-search input{min-width:0;width:100%;border:0;outline:0;background:transparent;color:#e9e9f5;font:11px 'DM Sans',sans-serif}.sidebar-search input::placeholder{color:#77798e}.sidebar-search:focus-within{border-color:#7565ad}
+
+
+/* JT AI Agent — polished conversation canvas and complete light-mode contrast */
+.main{background:radial-gradient(ellipse at 55% 0%,#211c3b 0%,#0d0e19 42%,#090a12 82%)}
+.topbar{backdrop-filter:blur(16px);background:#0c0d16c9}
+.welcome-symbol{filter:drop-shadow(0 12px 28px #8063f322)}
+.suggestions button{position:relative;overflow:hidden}
+.suggestions button:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent,#ffffff09,transparent);transform:translateX(-110%);transition:transform .5s}
+.suggestions button:hover:after{transform:translateX(110%)}
+.message-row.assistant .message-content{max-width:100%}
+.message-row.assistant .message-body{font-size:14px;line-height:1.9}
+.message-row.user .message-content{max-width:min(82%,680px)}
+.composer{box-shadow:0 18px 55px #0004,0 0 0 1px #ffffff05}
+.send-button{transition:transform .16s,filter .16s}
+.send-button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.send-button:active{transform:scale(.96)}
+html[data-jt-theme="light"] body{background:#f4f6fc!important;color:#20233d!important}
+html[data-jt-theme="light"] .sidebar{background:rgba(255,255,255,.94)!important;border-right-color:#e1e5f0!important;box-shadow:8px 0 35px rgba(48,58,100,.035)}
+html[data-jt-theme="light"] .brand,html[data-jt-theme="light"] .brand b{color:#252943!important}
+html[data-jt-theme="light"] .brand small,html[data-jt-theme="light"] .side-label,html[data-jt-theme="light"] .recent-head{color:#77809a!important}
+html[data-jt-theme="light"] .new-chat{background:linear-gradient(110deg,#f3f1ff,#edfaff)!important;border-color:#e0e3f0!important;color:#373957!important}
+html[data-jt-theme="light"] .side-link{color:#59617c!important}
+html[data-jt-theme="light"] .side-link.active,html[data-jt-theme="light"] .side-link:hover{background:#eeedff!important;color:#3b356c!important}
+html[data-jt-theme="light"] .recent-open{color:#59617c!important}
+html[data-jt-theme="light"] .recent-item.active,html[data-jt-theme="light"] .recent-item:hover{background:#f0f1fa!important}
+html[data-jt-theme="light"] .recent-item.active .recent-open{color:#282b49!important}
+html[data-jt-theme="light"] .model-pill{border-color:#e4e7f1!important}
+html[data-jt-theme="light"] .model-pill b,html[data-jt-theme="light"] .profile-link b{color:#303450!important}
+html[data-jt-theme="light"] .model-pill small,html[data-jt-theme="light"] .profile-link small{color:#77809a!important}
+html[data-jt-theme="light"] .main{background:radial-gradient(ellipse at 52% 0%,#eeedff 0%,#f7f8fd 47%,#f4f6fc 100%)!important}
+html[data-jt-theme="light"] .topbar{background:rgba(255,255,255,.82)!important;border-bottom-color:#e3e7f1!important}
+html[data-jt-theme="light"] .breadcrumb{color:#4c5370!important}
+html[data-jt-theme="light"] .breadcrumb b,html[data-jt-theme="light"] .crumb-sep{color:#8189a1!important}
+html[data-jt-theme="light"] .secure-label{color:#65708b!important}
+html[data-jt-theme="light"] .settings-button{color:#59617c!important}
+html[data-jt-theme="light"] .welcome h1{color:#252943!important}
+html[data-jt-theme="light"] .welcome>p{color:#626b85!important}
+html[data-jt-theme="light"] .welcome-eyebrow{color:#6d60a8!important}
+html[data-jt-theme="light"] .suggestions button{background:linear-gradient(135deg,#fff,#f8f9ff)!important;border-color:#e1e5f0!important;color:#292d49!important;box-shadow:0 10px 28px rgba(45,55,100,.045)}
+html[data-jt-theme="light"] .suggestions button:hover{background:#fff!important;border-color:#bdb4f5!important;box-shadow:0 15px 35px rgba(70,65,130,.09)}
+html[data-jt-theme="light"] .suggestions b{color:#303450!important}
+html[data-jt-theme="light"] .suggestions small{color:#737d97!important}
+html[data-jt-theme="light"] .suggest-arrow{color:#858ba3!important}
+html[data-jt-theme="light"] .messages{color:#252943!important}
+html[data-jt-theme="light"] .message-row.assistant .message-content,html[data-jt-theme="light"] .message-row.assistant .message-body{color:#252943!important}
+html[data-jt-theme="light"] .message-row.assistant .message-label{color:#6d668f!important}
+html[data-jt-theme="light"] .message-row.user .message-content{background:#ecebff!important;border-color:#dddafa!important;color:#292b49!important}
+html[data-jt-theme="light"] .message-row.user .message-avatar{background:#e7e9f5!important;color:#434a69!important}
+html[data-jt-theme="light"] .message-row.assistant .message-avatar{background:linear-gradient(140deg,#e6e0ff,#d9f4f5)!important;color:#51458b!important}
+html[data-jt-theme="light"] .composer{background:rgba(255,255,255,.96)!important;border-color:#dfe4f0!important;box-shadow:0 15px 45px rgba(45,55,100,.09)!important}
+html[data-jt-theme="light"] .composer textarea{color:#252943!important}
+html[data-jt-theme="light"] .composer textarea::placeholder{color:#8a91a7!important}
+html[data-jt-theme="light"] .tool-button,html[data-jt-theme="light"] .send-side>span{color:#6d7590!important}
+html[data-jt-theme="light"] .provider-picker select{color:#454b68!important}
+html[data-jt-theme="light"] .composer-disclaimer{color:#8189a0!important}
+html[data-jt-theme="light"] .composer-disclaimer a{color:#625a9d!important}
+html[data-jt-theme="light"] .toast{background:#fff!important;border-color:#dfe4f0!important;color:#303450!important;box-shadow:0 12px 35px rgba(45,55,100,.12)}
+html[data-jt-theme="light"] .message-actions button{background:#fff!important;border-color:#dfe3ef!important;color:#59617c!important}
+html[data-jt-theme="light"] .message-actions button:hover{background:#f0efff!important;color:#49417d!important}
+@media(prefers-reduced-motion:reduce){.suggestions button:after{display:none}.send-button{transition:none}}
