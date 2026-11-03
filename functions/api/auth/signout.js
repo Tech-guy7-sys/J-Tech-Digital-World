@@ -1,0 +1,2 @@
+import {db,reply,sameOrigin,cookie,currentUser,hash,cookieHeader} from "../_auth.js";
+export async function onRequestPost({request,env}){if(!sameOrigin(request))return reply({error:"Origin not allowed."},403);const d=db(env);const token=cookie(request);if(d&&token)await d.prepare("DELETE FROM sessions WHERE token_hash=?").bind(await hash(token)).run();return reply({ok:true},200,{"set-cookie":cookieHeader("",0)})}
