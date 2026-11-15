@@ -53,6 +53,20 @@ export async function cloudUser(request, env, { mutate = false, requireBucket = 
   return { db: d, user, bucket: env?.JT_CLOUD_BUCKET || null };
 }
 
+export function limitUploadStream(body, expectedBytes) {
+  let received = 0;
+  return body.pipeThrough(new TransformStream({
+    transform(chunk, controller) {
+      received += chunk.byteLength;
+      if (received > expectedBytes || received > MAX_FILE_BYTES) throw new Error("Upload size exceeded the declared limit.");
+      controller.enqueue(chunk);
+    },
+    flush() {
+      if (received !== expectedBytes) throw new Error("Upload size did not match the declared file size.");
+    }
+  }));
+}
+
 export function uploadMetadata(request) {
   const name = safeFilename(request.headers.get("x-jt-file-name") || "");
   const size = Number(request.headers.get("x-jt-file-size") || request.headers.get("content-length"));
