@@ -100,7 +100,7 @@ try {
     });
   };
   response = await invoke({ message: "test Groq", model: "groq" }, {
-    env: { JEFF_API_ENABLED: "true", GROQ_API_KEY: "test-groq-key" }
+    env: { JEFF_API_ENABLED: "true", GROQ_API_KEY: "test-groq-key", GROQ_FREE_TIER_CONFIRMED: "true" }
   });
   result = await response.json();
   assert.equal(response.status, 200);
@@ -116,7 +116,7 @@ try {
     return new Response(JSON.stringify({ error: { message: "quota exceeded" } }), { status: 429 });
   };
   response = await invoke({ message: "test Gemini", model: "gemini-2.5-flash" }, {
-    env: { JEFF_API_ENABLED: "true", GEMINI_API_KEY: "test-gemini-key" }
+    env: { JEFF_API_ENABLED: "true", GEMINI_API_KEY: "test-gemini-key", GEMINI_FREE_TIER_CONFIRMED: "true" }
   });
   result = await response.json();
   assert.equal(response.status, 429);
@@ -126,5 +126,12 @@ try {
 } finally {
   globalThis.fetch = originalFetch;
 }
+
+// A provider key alone is not enough: Gemini must be explicitly confirmed as a free-tier project.
+response = await invoke({ message: "test Gemini without free confirmation", model: "gemini-2.5-flash" }, {
+  env: { JEFF_API_ENABLED: "true", GEMINI_API_KEY: "test-gemini-key" }
+});
+assert.equal(response.status, 503);
+assert.equal((await response.json()).error, "provider_not_configured");
 
 console.log("Jeff AI free-only gateway tests passed (provider calls mocked; no live provider was tested).");
