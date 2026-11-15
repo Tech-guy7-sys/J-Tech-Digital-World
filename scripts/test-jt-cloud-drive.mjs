@@ -19,11 +19,14 @@ test("JT Cloud stores file blobs and folder metadata in IndexedDB", () => {
   assert.match(script, /blob:file\.slice\(/);
 });
 
-test("Folder creation and rename use accessible in-page dialogs", () => {
+test("Folder creation, rename and deletion use accessible in-page dialogs", () => {
   assert.match(script, /data-cloud-folder-dialog/);
   assert.match(script, /data-cloud-folder-form/);
   assert.match(script, /data-cloud-folder-cancel/);
-  assert.doesNotMatch(script, /prompt\(/);
+  assert.match(script, /data-cloud-delete-dialog/);
+  assert.match(script, /data-cloud-delete-form/);
+  assert.match(script, /data-cloud-delete-cancel/);
+  assert.doesNotMatch(script, /prompt\(|confirm\(/);
 });
 
 test("JT Cloud supports upload, download, delete, folder navigation and moves", () => {
