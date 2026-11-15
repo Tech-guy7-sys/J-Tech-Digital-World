@@ -33,6 +33,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Check cloud and AI workspace JavaScript syntax
+        run: |
+          node --check functions/api/cloud/_shared.js
+          node --check functions/api/cloud/files.js
+          node --check "functions/api/cloud/files/[id].js"
+          node --check functions/api/cloud/usage.js
+          node --check jt-apps/jt-cloud-remote.js
+          node --check jt-apps/jt-ai-core/core-status.js
+          node --check jt-apps/workspace-home.js
+          node --check jt-ai-agent/workspace.js
+          node --check functions/api/jeff.js
       - name: Run JT Cloud regression tests
         run: npm run test:jt-cloud
       - name: Build website for Cloudflare Pages
