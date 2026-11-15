@@ -20,10 +20,16 @@ function value(env, key, fallback = "") {
   const item = env?.[key];
   return typeof item === "string" && item.trim() ? item.trim() : fallback;
 }
+function geminiFreeKey(env) {
+  return value(env, "GEMINI_FREE_TIER_CONFIRMED").toLowerCase() === "true" ? value(env, "GEMINI_API_KEY") : "";
+}
+function groqFreeKey(env) {
+  return value(env, "GROQ_FREE_TIER_CONFIRMED").toLowerCase() === "true" ? value(env, "GROQ_API_KEY") : "";
+}
 function isEnabled(env) {
   const override = value(env, "JEFF_API_ENABLED");
   if (override) return override.toLowerCase() === "true";
-  return Boolean(value(env, "OPENROUTER_API_KEY") || value(env, "GEMINI_API_KEY") || value(env, "GROQ_API_KEY"));
+  return Boolean(value(env, "OPENROUTER_API_KEY") || geminiFreeKey(env) || groqFreeKey(env));
 }
 function originAllowed(request) {
   const origin = request.headers.get("origin");
@@ -76,8 +82,8 @@ export async function onRequestGet({ env }) {
   const enabled = isEnabled(env);
   const providers = [
     { id: "openrouter", label: "OpenRouter free models", configured: Boolean(value(env, "OPENROUTER_API_KEY")) },
-    { id: "google-ai-studio", label: "Gemini free tier", configured: Boolean(value(env, "GEMINI_API_KEY")) },
-    { id: "groq", label: "Groq free tier", configured: Boolean(value(env, "GROQ_API_KEY")) }
+    { id: "google-ai-studio", label: "Gemini free tier", configured: Boolean(geminiFreeKey(env)) },
+    { id: "groq", label: "Groq free tier", configured: Boolean(groqFreeKey(env)) }
   ];
   const configured = providers.some(provider => provider.configured);
   return json({
@@ -91,8 +97,8 @@ export async function onRequestGet({ env }) {
     providers,
     models: OPENROUTER_FREE_MODELS,
     optionalModels: [
-      { id: GEMINI_MODEL, provider: "Google AI Studio", configured: Boolean(value(env, "GEMINI_API_KEY")), costClass: "free-tier-only-project-required" },
-      { id: "groq/" + GROQ_MODEL, provider: "Groq", configured: Boolean(value(env, "GROQ_API_KEY")), costClass: "free-tier" }
+      { id: GEMINI_MODEL, provider: "Google AI Studio", configured: Boolean(geminiFreeKey(env)), costClass: "free-tier-only-project-required" },
+      { id: "groq/" + GROQ_MODEL, provider: "Groq", configured: Boolean(groqFreeKey(env)), costClass: "free-tier" }
     ]
   }, enabled && configured ? 200 : 503);
 }
