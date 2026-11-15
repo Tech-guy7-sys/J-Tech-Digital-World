@@ -28,10 +28,10 @@ export async function onRequestDelete({ request, env, params }) {
   if (auth.error) return auth.error;
   const id = String(params?.id || "");
   if (!/^[0-9a-f-]{36}$/i.test(id)) return cloudReply({ error: "file_not_found" }, 404);
-  const file = await auth.db.prepare("SELECT id,object_key,size_bytes FROM cloud_files WHERE id=? AND user_id=? AND status='ready' LIMIT 1").bind(id, auth.user.id).first();
+  const file = await auth.db.prepare("SELECT id,object_key,size_bytes,status,updated_at FROM cloud_files WHERE id=? AND user_id=? AND status IN ('ready','deleting') LIMIT 1").bind(id, auth.user.id).first();
   if (!file) return cloudReply({ error: "file_not_found" }, 404);
   const now = Math.floor(Date.now() / 1000);
-  const claim = await auth.db.prepare("UPDATE cloud_files SET status='deleting',updated_at=? WHERE id=? AND user_id=? AND status='ready'").bind(now, id, auth.user.id).run();
+  const claim = await auth.db.prepare("UPDATE cloud_files SET status='deleting',updated_at=? WHERE id=? AND user_id=? AND (status='ready' OR (status='deleting' AND updated_at<?))").bind(now, id, auth.user.id, now - 30).run();
   if (claim.meta?.changes !== 1) return cloudReply({ error: "delete_in_progress", message: "This file is already being deleted. Refresh the file list." }, 409);
   try { await auth.bucket.delete(file.object_key); }
   catch {
