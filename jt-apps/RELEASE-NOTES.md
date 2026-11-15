@@ -53,3 +53,13 @@
 - Added file sorting by newest, oldest, name, and largest size.
 - Added per-file Star/Unstar actions stored with the local file record in IndexedDB.
 - Kept these discovery features local to the current browser vault; they do not introduce cloud sync or server-side file storage.
+
+## Unreleased — JT Cloud file intake improvements
+
+### Added
+- Added drag-and-drop file import to the current folder, with a visible drop target state.
+- Added duplicate filename detection within the destination folder; existing files are retained and duplicate incoming names are skipped with a clear status message.
+- Kept duplicate handling folder-scoped, so the same filename can still be used in different folders.
+
+### Storage boundary
+- Drag-and-drop and duplicate detection operate entirely in the browser's IndexedDB vault. They do not upload content to JT servers or enable cross-device synchronization.
