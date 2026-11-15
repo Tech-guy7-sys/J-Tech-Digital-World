@@ -39,3 +39,7 @@
 - Browser storage is managed by the browser and may be cleared or evicted. The storage estimate describes the whole website origin, not a dedicated JT Cloud quota.
 - A real multi-device cloud service still requires authenticated backend APIs, object storage (for example, Cloudflare R2), per-user access controls, server-side quota accounting, and a tested upload/download authorization flow.
 - Existing local project boards remain browser-local and separate from the file-content vault.
+
+### Usability refinement
+- Replaced native browser prompt-based folder creation and rename with an accessible in-page dialog, after browser smoke testing showed native prompts were not reliably actionable in the workspace.
+- Added duplicate folder-name checks within the same parent folder.
