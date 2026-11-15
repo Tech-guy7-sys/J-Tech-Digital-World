@@ -5,7 +5,8 @@
 **Status:** Pull request / release candidate. Not published or deployed.
 
 ### Added
-- JT AI Core automatic routing is restricted to explicitly free OpenRouter model IDs.
+- JT AI Core defaults to OpenRouter's dedicated `openrouter/free` router, which selects from zero-priced free models.
+- Users can explicitly select Gemini 2.5 Flash or Gemini 2.5 Flash-Lite when the Google project remains on its free tier.
 - Optional Gemini 2.5 Flash and Groq routes are available only when their API key and free-tier confirmation setting are both present.
 - Provider health metadata reports a free-only cost policy and confirms that paid fallback is disabled.
 - Groq free-tier chat routing is available through its OpenAI-compatible endpoint.
@@ -23,5 +24,5 @@
 
 ### Verification
 - Automated gateway tests mock provider HTTP responses. They verify routing and paid-fallback prevention, not live provider availability.
-- Live Gemini and Groq smoke tests have not been performed.
+- Mocked tests cover OpenRouter free routing, Gemini Flash-Lite, and quota handling. Live OpenRouter and Gemini smoke tests have not yet been performed.
 - The release must not be published until GitHub Actions passes and the deployed gateway is smoke-tested with eligible free-tier credentials.
