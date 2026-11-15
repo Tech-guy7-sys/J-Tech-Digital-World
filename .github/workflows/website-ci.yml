@@ -48,6 +48,9 @@ jobs:
           node --check scripts/build-site.mjs
           node --check jt-ai-agent/workspace.js
           node --check functions/api/jeff.js
+          node --check functions/api/integrations.js
+          node --check functions/api/create-image.js
+          node --check jt-apps/jt-design/image-studio.js
           node --check jt-apps/jt-stream/studio.js
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
@@ -60,6 +63,7 @@ jobs:
           node --check release-downloads.js
       - name: Test JT AI gateway request validation
         run: node scripts/test-jeff-api.mjs
+          node scripts/test-image-api.mjs
       - name: Build public website files
         run: npm run build:website
       - name: Verify required output
@@ -74,8 +78,13 @@ jobs:
           test -f dist/jt-apps/jt-stream/studio.html
           test -f dist/jt-apps/jt-stream/studio.css
           test -f dist/jt-ai-agent/workspace.js
+          test -f dist/jt-apps/jt-design/image-studio.js
+          grep -q "jtImageStudio" dist/jt-apps/jt-design/index.html
+          grep -q "image-studio.js" dist/jt-apps/jt-design/index.html
           grep -q 'providerSelect' dist/jt-ai-agent/index.html
-          grep -q 'provider:providerSelect.value' dist/jt-ai-agent/workspace.js
+          grep -q 'model:providerSelect.value' dist/jt-ai-agent/workspace.js
+          ! grep -q 'claude-sonnet' dist/jt-ai-agent/index.html
+          grep -q 'free-tier-only' functions/api/jeff.js
           test -f dist/jt-apps/jt-stream/studio.js
           test -f dist/jt-apps/workspace-tools.js
           test -f dist/jt-apps/pro-workspaces.js

@@ -1,0 +1,11 @@
+import assert from "node:assert/strict";
+import { onRequestPost } from "../functions/api/create-image.js";
+async function invoke(body,options={}){const {origin="https://jt.example",env={},contentType="application/json"}=options;return onRequestPost({request:new Request("https://jt.example/api/create-image",{method:"POST",headers:{"content-type":contentType,origin},body:typeof body==="string"?body:JSON.stringify(body)}),env})}
+const freeEnv={CLOUDFLARE_WORKERS_PLAN:"free",CLOUDFLARE_AI_FREE_TIER_CONFIRMED:"true",AI:{run:async(model,input)=>{assert.equal(model,"@cf/black-forest-labs/flux-1-schnell");assert.equal(input.prompt,"A polished JT technology logo concept");return{image:"aGVsbG8="}}}};
+let response=await invoke({prompt:"A polished JT technology logo concept"},{env:freeEnv});assert.equal(response.status,200);let data=await response.json();assert.equal(data.costPolicy,"free-tier-only");assert.equal(data.provider,"Cloudflare Workers AI");assert.equal(data.imageDataUrl,"data:image/jpeg;base64,aGVsbG8=");
+response=await invoke({prompt:"A polished JT technology logo concept"},{env:{AI:freeEnv.AI,CLOUDFLARE_WORKERS_PLAN:"paid",CLOUDFLARE_AI_FREE_TIER_CONFIRMED:"true"}});assert.equal(response.status,503);assert.equal((await response.json()).error,"free_tier_not_confirmed");
+response=await invoke({prompt:"A polished JT technology logo concept"},{env:{CLOUDFLARE_WORKERS_PLAN:"free",CLOUDFLARE_AI_FREE_TIER_CONFIRMED:"true"}});assert.equal(response.status,503);assert.equal((await response.json()).error,"workers_ai_binding_missing");
+response=await invoke({prompt:"short"},{env:freeEnv});assert.equal(response.status,400);assert.equal((await response.json()).error,"prompt_too_short");
+response=await invoke({prompt:"A polished JT technology logo concept"},{env:freeEnv,origin:"https://other.example"});assert.equal(response.status,403);
+const failingEnv={...freeEnv,AI:{run:async()=>{throw new Error("quota")}}};response=await invoke({prompt:"A polished JT technology logo concept"},{env:failingEnv});assert.equal(response.status,503);assert.equal((await response.json()).error,"free_image_service_unavailable");
+console.log("JT Design free-only image API tests passed (Workers AI binding mocked; no live image generation was performed).");

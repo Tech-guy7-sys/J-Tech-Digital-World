@@ -1,17 +1,43 @@
-# JTech AI Core Provider Policy
+# JT AI Core Free-Only Provider Policy
 
-End users see only **Jeff AI** and **JTech AI Core**. The implementation can use Google Gemini and OpenAI models behind the shared provider abstraction; provider names and routing remain out of normal end-user UI.
+JT-hosted products use **free-tier inference only**. The provider identity is abstracted behind Jeff AI / JT AI Core, but the privacy/settings surface must accurately disclose the upstream provider and data-use terms.
 
-| Plan | Internal provider pool |
-|---|---|
-| Free | Gemini, local Ollama |
-| Student | Gemini, local Ollama, MiniMax |
-| Premium | Gemini, local Ollama, MiniMax, OpenRouter, Hugging Face, OpenAI |
-| Pro | Gemini, local Ollama, MiniMax, OpenRouter, Hugging Face, Cloudflare AI, Groq, OpenAI |
-| Business | Gemini, local Ollama, MiniMax, OpenRouter, Hugging Face, Cloudflare AI, Groq, OpenAI |
+## Allowed provider routes
 
-Current defaults (all can be overridden in deployment configuration): Gemini `gemini-3.8-flash` and OpenAI `gpt-6-astra`. These defaults were checked against the providers’ public model documentation on 2026-10-09; confirm availability for the actual API project before release.
+| Provider | JT use | Conditions |
+|---|---|---|
+| OpenRouter free models | JT AI Core v1 default routing | Only model IDs explicitly ending in :free. Free model catalogue and limits change. Never route to paid models. |
+| Google Gemini Developer API | Optional Gemini 2.5 Flash route | Must use a project that remains on Google's free tier. Free-tier prompts/responses may be used to improve Google products; do not send confidential data. |
+| Groq | Optional chat and transcription route | Use only its free tier and currently free model IDs. Respect organization-level quotas. |
 
-## Response style
+Cloudflare Workers AI is enabled for JT Design image generation through @cf/black-forest-labs/flux-1-schnell only when the Cloudflare Workers Free plan is explicitly confirmed and the Pages AI binding is configured. Its free allocation is 10,000 Neurons/day; on the Free plan requests fail after the allocation. Some models require paid billing, so JT must keep an explicit model allowlist. NVIDIA API Catalog endpoints are trial/evaluation only under the trial terms and are not approved for JT production.
 
-Jeff AI uses a provider-neutral response-quality prompt inspired by broad qualities users expect from modern assistants: direct answers, adaptable detail, clean structure, practical examples, careful synthesis, clear uncertainty, and honest reporting of what was and was not tested. It does not claim to be ChatGPT or Gemini. Response profiles available to apps are `balanced`, `concise`, `detailed`, `tutor`, `technical`, and `creative`. Apps may pass `preferences.responseStyle`, `preferences.language`, and optional `preferences.customInstructions` to the shared core. The OpenAI API is separate from a ChatGPT subscription and requires an OpenAI API key with API billing enabled. Gemini requires a Google AI API key. Configure keys as server environment secrets; never commit credentials or expose them in renderer/client code. Provider availability, model access, pricing, and quotas can change.
+## Prohibited
+
+- No paid OpenAI API, Anthropic API, paid OpenRouter model, paid Gemini tier, or any other billable provider route.
+- No automatic upgrade, credit purchase, paid fallback, or hidden billing.
+- No local inference provider in the hosted provider selector.
+- OpenArt is not an API provider: it offers a limited trial-credit account, has no public API/API keys, and its CLI uses account credits. Do not build a fake API integration.
+
+## Routing rules
+
+1. Default JT AI Core v1 route remains sequential OpenRouter free model fallback.
+2. Optional Gemini and Groq routes are explicitly selected; no hidden provider switching.
+3. Automatic mode may fall back only to a verified free-tier route.
+4. A 429/quota error never triggers a paid route. Return a clear free-quota message.
+5. Provider credentials remain server-side Cloudflare secrets. Never expose them in browser code, localStorage, repository commits, logs, or release notes.
+6. A configured key is not proof of free billing. Gemini must use a free-tier project; Groq and OpenRouter accounts must remain on their free tiers.
+7. Free-tier provider data may be retained or reviewed. Disclose the actual upstream provider and data terms before users submit sensitive content.
+8. Mock tests do not prove a live provider is connected. Mark a provider connected only after a successful live smoke test.
+9. Verify model IDs, account/region eligibility, quota, commercial terms, and data policy before every release.
+
+## Provider setup
+
+- OPENROUTER_API_KEY — OpenRouter account restricted to free model IDs.
+- GEMINI_API_KEY — Google AI Studio key from a project that remains on the free tier.
+- GEMINI_FREE_TIER_CONFIRMED=true — operator attestation that the Google project is still on the free tier. This is not independent billing verification.
+- GROQ_API_KEY — Groq free-tier API key.
+- GROQ_FREE_TIER_CONFIRMED=true — operator attestation that the Groq account remains on its free tier. This is not independent billing verification.
+- Cloudflare Pages Workers AI binding named AI, plus CLOUDFLARE_WORKERS_PLAN=free and CLOUDFLARE_AI_FREE_TIER_CONFIRMED=true. These are operator attestations, not independent billing verification.
+
+The gateway rejects legacy Claude/Anthropic routes and does not expose paid OpenAI/Anthropic connectors as JT AI Core providers.
