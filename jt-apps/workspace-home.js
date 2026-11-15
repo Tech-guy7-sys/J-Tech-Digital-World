@@ -58,6 +58,15 @@
           <label>Goal or next steps<textarea name="notes" maxlength="1200" rows="4" placeholder="What are you working on?"></textarea></label>
           <div class="jt-wh-dialog-actions"><button type="button" data-jt-action="close">Cancel</button><button class="jt-wh-primary" value="create">Create project</button></div>
         </form>
+      </dialog>
+      <dialog class="jt-wh-dialog" data-jt-edit-dialog>
+        <form method="dialog" data-jt-edit-form>
+          <span class="jt-wh-kicker">PROJECT NOTES</span><h3>Edit project details</h3>
+          <input type="hidden" name="id">
+          <label>Project name<input name="name" maxlength="80" required></label>
+          <label>Goal or next steps<textarea name="notes" maxlength="1200" rows="4"></textarea></label>
+          <div class="jt-wh-dialog-actions"><button type="button" data-jt-edit-close>Cancel</button><button class="jt-wh-primary" value="save">Save changes</button></div>
+        </form>
       </dialog>`;
     hero.insertAdjacentElement("afterend", section);
     const $ = selector => section.querySelector(selector);
@@ -95,7 +104,7 @@
       const edit=event.target.closest("[data-jt-project-edit]");
       const remove=event.target.closest("[data-jt-project-delete]");
       if(open){const p=projects.find(x=>x.id===open.dataset.jtProjectOpen);if(p){activeId=p.id;p.updatedAt=new Date().toISOString();persist();render($("[data-jt-search]").value);setStatus("Active project: "+p.name);}return;}
-      if(edit){const p=projects.find(x=>x.id===edit.dataset.jtProjectEdit);if(p){const notes=prompt("Update project notes",p.notes||"");if(notes!==null){p.notes=notes.slice(0,1200);p.updatedAt=new Date().toISOString();persist();render($("[data-jt-search]").value);}}return;}
+      if(edit){const p=projects.find(x=>x.id===edit.dataset.jtProjectEdit);if(p){const form=$("[data-jt-edit-form]");form.elements.id.value=p.id;form.elements.name.value=p.name;form.elements.notes.value=p.notes||"";$("[data-jt-edit-dialog]").showModal();form.elements.name.focus();}return;}
       if(remove){const p=projects.find(x=>x.id===remove.dataset.jtProjectDelete);if(p&&confirm("Delete the project entry '"+p.name+"' from this browser? Export a backup first if needed.")){projects=projects.filter(x=>x.id!==p.id);if(activeId===p.id)activeId="";persist();render($("[data-jt-search]").value);}return;}
       const submit=event.target.closest("[value='create']");
       if(submit) return;
@@ -105,6 +114,8 @@
       const now=new Date().toISOString();const project={id:crypto.randomUUID?crypto.randomUUID():"jt-"+Date.now(),name,notes:String(data.get("notes")||"").slice(0,1200),createdAt:now,updatedAt:now};
       projects.unshift(project);activeId=project.id;persist();render($("[data-jt-search]").value);$("[data-jt-dialog]").close();event.currentTarget.reset();setStatus("Created project: "+name);
     });
+    $("[data-jt-edit-form]").addEventListener("submit",event=>{event.preventDefault();const data=new FormData(event.currentTarget);const p=projects.find(x=>x.id===String(data.get("id")));const name=String(data.get("name")||"").trim();if(!p||!name)return;p.name=name.slice(0,80);p.notes=String(data.get("notes")||"").slice(0,1200);p.updatedAt=new Date().toISOString();persist();render($("[data-jt-search]").value);$("[data-jt-edit-dialog]").close();setStatus("Updated project: "+p.name);});
+    $("[data-jt-edit-close]").addEventListener("click",()=>$("[data-jt-edit-dialog]").close());
     $("[data-jt-search]").addEventListener("input",event=>render(event.target.value));
     $("[data-jt-import-file]").addEventListener("change",async event=>{
       const file=event.target.files?.[0];if(!file)return;
