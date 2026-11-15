@@ -38,6 +38,7 @@
         <button type="button" data-jt-action="tools">Open workspace tools ↗</button>
         <button type="button" data-jt-action="export">Export project list ↓</button>
         <button type="button" data-jt-action="import">Import project list ↑</button>
+        <a class="jt-wh-primary" href="/jt-ai-agent/?app=${encodeURIComponent(app)}">Ask Jeff AI ↗</a>
         <input type="file" accept="application/json,.json" hidden data-jt-import-file>
       </div>
       <div class="jt-wh-overview" aria-label="Project overview"><div><span data-jt-total>0</span><small>Total projects</small></div><div><span data-jt-active>None</span><small>Active project</small></div><div><span data-jt-updated>—</span><small>Latest update</small></div></div>
