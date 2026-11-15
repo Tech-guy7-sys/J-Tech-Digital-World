@@ -150,3 +150,22 @@ html[data-jt-theme="light"] .prompt-ideas button:hover{background:#f5f3ff;border
 html[data-jt-theme="light"] .followup-suggestions>span{color:#7a8298}
 html[data-jt-theme="light"] .followup-suggestions button{background:#fff;border-color:#dfe3ef;color:#59617c}
 html[data-jt-theme="light"] .followup-suggestions button:hover{background:#f5f3ff;border-color:#bcb3ed;color:#433b7b}
+
+/* JT AI Agent — organisation, prompt library and message controls */
+.recent-item{gap:2px}.recent-item .recent-open{min-width:0;flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.recent-pin,.recent-folder{flex:0 0 22px;width:22px;height:26px;border:0;border-radius:6px;background:transparent;color:#8c8fa8;cursor:pointer;font-size:13px;padding:0}
+.recent-pin:hover,.recent-folder:hover{background:#2a2940;color:#e8e3ff}
+.recent-pin[aria-label="Pin conversation"]{color:#b8a5ff}
+.recent-folder{font-size:12px}
+.jt-prompt-library{position:fixed;top:auto;bottom:105px;left:260px;right:auto;width:min(520px,calc(100vw - 290px));max-height:65vh;overflow:auto;z-index:20}
+.jt-prompt-items{display:grid;gap:7px;max-height:42vh;overflow:auto}
+.jt-prompt-row{display:flex;align-items:stretch;gap:6px}
+.jt-prompt-use{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px;text-align:left;border:1px solid #e0e4f0;border-radius:10px;padding:10px;background:#f8f9ff;color:#303450;cursor:pointer}
+.jt-prompt-use b{font-size:11px}.jt-prompt-use small{font-size:10px;line-height:1.5;color:#737b94;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.jt-prompt-remove{width:34px;border:1px solid #e0e4f0;border-radius:9px;background:#fff;color:#8b6683;cursor:pointer}
+.jt-prompt-empty{font-size:11px;line-height:1.6;color:#737b94}
+html[data-jt-theme="dark"] .recent-pin:hover,html[data-jt-theme="dark"] .recent-folder:hover{background:#29283e;color:#f1edff}
+html[data-jt-theme="dark"] .jt-prompt-use{background:#1b1c2d;border-color:#393b52;color:#ececff}
+html[data-jt-theme="dark"] .jt-prompt-use small,html[data-jt-theme="dark"] .jt-prompt-empty{color:#a2a5bb}
+html[data-jt-theme="dark"] .jt-prompt-remove{background:#24253a;border-color:#3b3d56;color:#d7b6d0}
+@media(max-width:760px){.jt-prompt-library{left:12px;bottom:110px;width:calc(100vw - 24px)}.recent-pin,.recent-folder{flex-basis:20px;width:20px}}
