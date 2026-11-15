@@ -35,6 +35,8 @@ Candidate free endpoints such as Cloudflare Workers AI and NVIDIA Build may be e
 
 - OPENROUTER_API_KEY — OpenRouter account restricted to free model IDs.
 - GEMINI_API_KEY — Google AI Studio key from a project that remains on the free tier.
+- GEMINI_FREE_TIER_CONFIRMED=true — operator attestation that the Google project is still on the free tier. This is not independent billing verification.
 - GROQ_API_KEY — Groq free-tier API key.
+- GROQ_FREE_TIER_CONFIRMED=true — operator attestation that the Groq account remains on its free tier. This is not independent billing verification.
 
 The gateway rejects legacy Claude/Anthropic routes and does not expose paid OpenAI/Anthropic connectors as JT AI Core providers.
