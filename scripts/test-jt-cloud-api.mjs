@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { safeFilename, uploadMetadata, encodeCursor, decodeCursor, sameOriginMutation } from "../functions/api/cloud/_shared.js";
+import { safeFilename, uploadMetadata, limitUploadStream, encodeCursor, decodeCursor, sameOriginMutation } from "../functions/api/cloud/_shared.js";
 import { onRequestGet, onRequestPost } from "../functions/api/cloud/files.js";
 import { onRequestGet as downloadFile, onRequestDelete } from "../functions/api/cloud/files/[id].js";
 
@@ -20,6 +20,8 @@ const uploadRequest = new Request("https://jt.example/api/cloud/files", {
 assert.equal(sameOriginMutation(uploadRequest), true);
 assert.deepEqual(uploadMetadata(uploadRequest), { name: "notes.txt", size: 5, mime: "text/plain" });
 assert.equal(sameOriginMutation(new Request("https://jt.example/api/cloud/files", { method: "POST" })), false);
+assert.equal(await new Response(limitUploadStream(new Blob(["hello"]).stream(), 5)).text(), "hello");
+await assert.rejects(() => new Response(limitUploadStream(new Blob(["hello"]).stream(), 4)).text());
 
 const unauthenticatedEnv = { JT_AUTH_DB: { prepare() { return { bind() { return { first: async () => null }; } }; } } };
 let response = await onRequestGet({ request: new Request("https://jt.example/api/cloud/files"), env: unauthenticatedEnv });
