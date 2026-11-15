@@ -64,3 +64,11 @@ test("JT Cloud file manager has responsive and reduced-motion styling", () => {
   assert.match(css, /@media\(max-width:650px\)/);
   assert.match(css, /prefers-reduced-motion:reduce/);
 });
+
+test("JT Cloud supports drag-and-drop import and skips duplicate names within the destination folder", () => {
+  assert.match(script, /dataTransfer\?\.files/);
+  assert.match(script, /dragover/);
+  assert.match(script, /new Set\(state\.files\.filter\(f=>f\.folderId===state\.folderId\)/);
+  assert.match(script, /skipped .* duplicate name/);
+  assert.match(css, /\.jtc-items\.is-dragging/);
+});
