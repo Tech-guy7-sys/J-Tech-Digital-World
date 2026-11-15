@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/jt-ecosystem-visual-refresh
+      - feat/jt-cloud-r2-jeff-ai-workspace
   pull_request:
     branches:
       - main
