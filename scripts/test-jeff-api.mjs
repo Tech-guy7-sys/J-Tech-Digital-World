@@ -89,7 +89,7 @@ try {
   assert.equal(response.status, 200);
   assert.equal(result.provider, "OpenRouter");
   assert.equal(result.profile, "JT AI Core v1 · Free");
-  assert.ok(calls[0].body.model.endsWith(":free"));
+  assert.equal(calls[0].body.model, "openrouter/free");
 
   // Explicit Groq selection uses only the Groq API and the configured free-tier model.
   calls = [];
@@ -108,6 +108,21 @@ try {
   assert.equal(calls.length, 1);
   assert.equal(calls[0].url, "https://api.groq.com/openai/v1/chat/completions");
   assert.equal(calls[0].body.model, "openai/gpt-oss-20b");
+
+  // Gemini 2.5 Flash-Lite uses the same free-tier gate and never triggers a paid fallback.
+  calls = [];
+  globalThis.fetch = async (url, init) => {
+    calls.push({ url: String(url), body: JSON.parse(init.body) });
+    return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: "Flash-Lite works." }] } }] }), { status: 200 });
+  };
+  response = await invoke({ message: "test Gemini Flash-Lite", model: "gemini-2.5-flash-lite" }, {
+    env: { JEFF_API_ENABLED: "true", GEMINI_API_KEY: "test-gemini-key", GEMINI_FREE_TIER_CONFIRMED: "true" }
+  });
+  result = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(result.model, "gemini-2.5-flash-lite");
+  assert.equal(calls.length, 1);
+  assert.ok(calls[0].url.includes("gemini-2.5-flash-lite"));
 
   // Gemini quota errors remain errors; they do not trigger another provider or a paid fallback.
   calls = [];
