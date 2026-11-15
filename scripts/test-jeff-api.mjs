@@ -50,7 +50,7 @@ response = await invoke({ message: "hello", model: "claude-sonnet-4-20250514" },
   env: { JEFF_API_ENABLED: "true", ANTHROPIC_API_KEY: "must-not-be-used" }
 });
 assert.equal(response.status, 503); // An Anthropic-only secret cannot enable this free-only gateway.
-assert.equal((await response.json()).error, "service_disabled");
+assert.equal((await response.json()).error, "provider_not_configured");
 
 response = await invoke({ message: "hello", model: "claude-sonnet-4-20250514" }, {
   env: { JEFF_API_ENABLED: "true", OPENROUTER_API_KEY: "test-key" }
