@@ -10,7 +10,7 @@ JT-hosted products use **free-tier inference only**. The provider identity is ab
 | Google Gemini Developer API | Optional Gemini 2.5 Flash route | Must use a project that remains on Google's free tier. Free-tier prompts/responses may be used to improve Google products; do not send confidential data. |
 | Groq | Optional chat and transcription route | Use only its free tier and currently free model IDs. Respect organization-level quotas. |
 
-Candidate free endpoints such as Cloudflare Workers AI and NVIDIA Build may be evaluated separately, but are not enabled in the current gateway until their adapter, quota checks, production terms and tests exist.
+Cloudflare Workers AI is enabled for JT Design image generation through @cf/black-forest-labs/flux-1-schnell only when the Cloudflare Workers Free plan is explicitly confirmed and the Pages AI binding is configured. Its free allocation is 10,000 Neurons/day; on the Free plan requests fail after the allocation. Some models require paid billing, so JT must keep an explicit model allowlist. NVIDIA API Catalog endpoints are trial/evaluation only under the trial terms and are not approved for JT production.
 
 ## Prohibited
 
@@ -38,5 +38,6 @@ Candidate free endpoints such as Cloudflare Workers AI and NVIDIA Build may be e
 - GEMINI_FREE_TIER_CONFIRMED=true — operator attestation that the Google project is still on the free tier. This is not independent billing verification.
 - GROQ_API_KEY — Groq free-tier API key.
 - GROQ_FREE_TIER_CONFIRMED=true — operator attestation that the Groq account remains on its free tier. This is not independent billing verification.
+- Cloudflare Pages Workers AI binding named AI, plus CLOUDFLARE_WORKERS_PLAN=free and CLOUDFLARE_AI_FREE_TIER_CONFIRMED=true. These are operator attestations, not independent billing verification.
 
 The gateway rejects legacy Claude/Anthropic routes and does not expose paid OpenAI/Anthropic connectors as JT AI Core providers.
