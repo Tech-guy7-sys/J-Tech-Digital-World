@@ -48,4 +48,69 @@ const crossOrigin = new Request("https://jt.example/api/cloud/files", {
 response = await onRequestPost({ request: crossOrigin, env: missingBindingEnv });
 assert.equal(response.status, 403);
 
-console.log("JT Cloud remote API foundation tests passed (R2/D1 operations require configured Cloudflare bindings).");
+const sqlSeen = [];
+let storedBody = "";
+let storedKey = "";
+const mockD1 = {
+  prepare(sql) {
+    sqlSeen.push(sql);
+    return {
+      bind() {
+        return {
+          first: async () => sql.includes("FROM sessions") ? { id: "user-1", name: "Test", email: "test@example.com" } : null,
+          all: async () => ({ results: [] }),
+          run: async () => ({ meta: { changes: 1 } })
+        };
+      }
+    };
+  }
+};
+const mockBucket = {
+  async put(key, body) { storedKey = key; storedBody = await new Response(body).text(); return { etag: "mock-etag" }; },
+  async delete() {},
+  async get() { throw new Error("Ownership test should not reach R2."); }
+};
+const validUpload = new Request("https://jt.example/api/cloud/files", {
+  method: "POST",
+  headers: {
+    origin: "https://jt.example", cookie: "jt_session=valid-session",
+    "x-jt-file-name": encodeURIComponent("notes.txt"), "x-jt-file-size": "5", "content-type": "text/plain"
+  },
+  body: "hello"
+});
+response = await onRequestPost({ request: validUpload, env: { JT_AUTH_DB: mockD1, JT_CLOUD_BUCKET: mockBucket } });
+assert.equal(response.status, 201);
+assert.equal(storedBody, "hello");
+assert.match(storedKey, /^users\\/user-1\\//);
+assert.ok(sqlSeen.some(sql => sql.includes("WHERE user_id=? AND used_bytes+?<=quota_bytes")));
+
+const mismatchedUpload = new Request("https://jt.example/api/cloud/files", {
+  method: "POST",
+  headers: {
+    origin: "https://jt.example", cookie: "jt_session=valid-session",
+    "x-jt-file-name": "notes.txt", "x-jt-file-size": "4", "content-type": "text/plain"
+  },
+  body: "hello"
+});
+response = await onRequestPost({ request: mismatchedUpload, env: { JT_AUTH_DB: mockD1, JT_CLOUD_BUCKET: mockBucket } });
+assert.equal(response.status, 502);
+
+let r2Read = false;
+const ownershipDb = {
+  prepare(sql) {
+    return { bind() { return { first: async () => {
+      if (sql.includes("FROM sessions")) return { id: "user-1", name: "Test", email: "test@example.com" };
+      if (sql.includes("FROM cloud_files")) return null;
+      return null;
+    } }; } };
+  }
+};
+response = await downloadFile({
+  request: new Request("https://jt.example/api/cloud/files/123e4567-e89b-12d3-a456-426614174000", { headers: { cookie: "jt_session=valid-session" } }),
+  env: { JT_AUTH_DB: ownershipDb, JT_CLOUD_BUCKET: { async get() { r2Read = true; return null; } } },
+  params: { id: "123e4567-e89b-12d3-a456-426614174000" }
+});
+assert.equal(response.status, 404);
+assert.equal(r2Read, false);
+
+console.log("JT Cloud API tests passed: auth gates, validation, streaming size, upload mock and ownership isolation.");
