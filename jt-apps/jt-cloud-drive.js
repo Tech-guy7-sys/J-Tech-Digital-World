@@ -4,7 +4,7 @@
   if (!root) return;
   const DB_NAME = "jt-cloud-drive-files-v1";
   const ROOT_ID = "root";
-  const state = { db: null, folders: [], files: [], folderId: ROOT_ID, query: "", editingFolderId: null, pendingDelete: null };
+  const state = { db: null, folders: [], files: [], folderId: ROOT_ID, query: "", editingFolderId: null, pendingDelete: null, view: "all", sort: "newest" };
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const id = () => globalThis.crypto?.randomUUID ? crypto.randomUUID() : "jt-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
   const fmtSize = n => { if (!Number.isFinite(n) || n < 0) return "—"; if (n < 1024) return n+" B"; const units=["KB","MB","GB","TB"]; let v=n/1024, i=0; while(v>=1024 && i<units.length-1){v/=1024;i++;} return v.toFixed(v>=10?1:2)+" "+units[i]; };
@@ -41,10 +41,13 @@
     root.querySelector("[data-cloud-current-name]").textContent=folderName(state.folderId);
     const q=state.query.trim().toLowerCase();
     const visibleFolders=state.folders.filter(f=>(q?true:(f.parentId||ROOT_ID)===state.folderId)&&(!q||f.name.toLowerCase().includes(q)));
-    const visibleFiles=state.files.filter(f=>(q?true:f.folderId===state.folderId)&&(!q||[f.name,f.type,folderName(f.folderId)].join(" ").toLowerCase().includes(q)));
+    let visibleFiles=state.files.filter(f=>(q?true:f.folderId===state.folderId)&&(!q||[f.name,f.type,folderName(f.folderId)].join(" ").toLowerCase().includes(q)));
+    if(state.view==="starred")visibleFiles=visibleFiles.filter(f=>f.starred);
+    if(state.view==="recent")visibleFiles=visibleFiles.filter(f=>Date.now()-new Date(f.addedAt).getTime()<7*86400000);
+    visibleFiles.sort((a,b)=>state.sort==="name"?a.name.localeCompare(b.name):state.sort==="size"?b.size-a.size:state.sort==="oldest"?new Date(a.addedAt)-new Date(b.addedAt):new Date(b.addedAt)-new Date(a.addedAt));
     root.querySelector("[data-cloud-result-count]").textContent=(visibleFolders.length+visibleFiles.length)+" items";
     const folderRows=visibleFolders.map(f=>'<article class="jtc-item jtc-folder-item"><button class="jtc-item-main" type="button" data-open-folder="'+esc(f.id)+'"><span class="jtc-file-icon folder">▰</span><span class="jtc-item-name"><b>'+esc(f.name)+'</b><small>Folder · '+fmtDate(f.createdAt)+'</small></span></button><div class="jtc-item-actions"><button type="button" data-rename-folder="'+esc(f.id)+'">Rename</button><button type="button" data-delete-folder="'+esc(f.id)+'">Delete</button></div></article>').join("");
-    const fileRows=visibleFiles.map(f=>'<article class="jtc-item"><span class="jtc-file-icon">'+esc((f.name.split(".").pop()||"FILE").slice(0,4).toUpperCase())+'</span><span class="jtc-item-name"><b title="'+esc(f.name)+'">'+esc(f.name)+'</b><small>'+esc(f.type||"Unknown type")+' · '+fmtSize(f.size)+' · '+fmtDate(f.addedAt)+'</small></span><label class="jtc-move-label"><span>Move to</span><select data-move-file="'+esc(f.id)+'" aria-label="Move '+esc(f.name)+'">'+folderOptions(f.folderId)+'</select></label><div class="jtc-item-actions"><button type="button" data-download-file="'+esc(f.id)+'">Download</button><button type="button" data-delete-file="'+esc(f.id)+'">Delete</button></div></article>').join("");
+    const fileRows=visibleFiles.map(f=>'<article class="jtc-item"><span class="jtc-file-icon">'+esc((f.name.split(".").pop()||"FILE").slice(0,4).toUpperCase())+'</span><span class="jtc-item-name"><b title="'+esc(f.name)+'">'+esc(f.name)+'</b><small>'+esc(f.type||"Unknown type")+" · "+fmtSize(f.size)+" · "+fmtDate(f.addedAt)+'</small></span><label class="jtc-move-label"><span>Move to</span><select data-move-file="'+esc(f.id)+'" aria-label="Move '+esc(f.name)+'">'+folderOptions(f.folderId)+'</select></label><div class="jtc-item-actions"><button type="button" data-star-file="'+esc(f.id)+'">'+(f.starred?"★ Starred":"☆ Star")+'</button><button type="button" data-download-file="'+esc(f.id)+'">Download</button><button type="button" data-delete-file="'+esc(f.id)+'">Delete</button></div></article>').join("");
     root.querySelector("[data-cloud-items]").innerHTML=folderRows+fileRows||'<div class="jtc-empty"><span>☁</span><b>'+(q?"No matching files or folders":"This folder is empty")+'</b><p>'+(q?"Try a different search.":"Create a folder or add files from this device to get started.")+'</p></div>';
   };
   const folderOptions = selected => '<option value="root" '+(selected===ROOT_ID?"selected":"")+'>All files</option>'+state.folders.map(f=>'<option value="'+esc(f.id)+'" '+(f.id===selected?"selected":"")+'>'+esc(ancestors(f.id).map(x=>x.name).join(" / "))+'</option>').join("");
@@ -79,7 +82,7 @@
       <div class="jtc-drive-layout">
         <aside class="jtc-drive-sidebar"><div class="jtc-sidebar-title"><b>YOUR LIBRARY</b><button type="button" data-new-folder>＋ Folder</button></div><nav data-cloud-folder-tree aria-label="Folders"></nav><div class="jtc-sidebar-note"><b>Local storage notice</b><p>Files stay in this browser on this device. Browser data can be cleared or evicted. Use Download to keep a separate copy. Other devices cannot see these files.</p></div></aside>
         <section class="jtc-drive-main"><div class="jtc-drive-toolbar"><div><div class="jtc-breadcrumb" data-cloud-breadcrumb></div><h3 data-cloud-current-name>All files</h3><small data-cloud-result-count>0 items</small></div><div class="jtc-toolbar-actions"><label class="jtc-upload-button">＋ Add files<input type="file" multiple data-cloud-upload hidden></label><button type="button" data-new-folder>＋ New folder</button></div></div>
-          <label class="jtc-search"><span>⌕</span><input type="search" data-cloud-search placeholder="Search files and folders across this vault…" aria-label="Search files and folders"><kbd>SEARCH</kbd></label>
+          <div class="jtc-view-controls"><button type="button" data-view="all">All files</button><button type="button" data-view="starred">Starred</button><button type="button" data-view="recent">Recent · 7 days</button><label>Sort <select data-cloud-sort><option value="newest">Newest</option><option value="oldest">Oldest</option><option value="name">Name</option><option value="size">Largest</option></select></label></div><label class="jtc-search"><span>⌕</span><input type="search" data-cloud-search placeholder="Search files and folders across this vault…" aria-label="Search files and folders"><kbd>SEARCH</kbd></label>
           <div class="jtc-column-head"><span>NAME</span><span>DESTINATION</span><span>ACTIONS</span></div>
           <div class="jtc-items" data-cloud-items><div class="jtc-empty"><b>Loading your vault…</b></div></div>
           <div class="jtc-drive-footer"><span data-cloud-status role="status">Opening local file vault…</span><button type="button" data-refresh-storage>Refresh storage estimate</button></div>
@@ -104,6 +107,8 @@
       </dialog>
     </div>`;
   root.addEventListener("click",async event=>{
+    const star=event.target.closest("[data-star-file]");if(star){const file=state.files.find(item=>item.id===star.dataset.starFile);if(!file)return;file.starred=!file.starred;await run(["files"],"readwrite",tx=>tx.objectStore("files").put(file));render();status(file.starred?"Added to Starred.":"Removed from Starred.");return;}
+    const view=event.target.closest("[data-view]");if(view){state.view=view.dataset.view;render();return;}
     const open=event.target.closest("[data-open-folder]");if(open){state.folderId=open.dataset.openFolder;state.query="";root.querySelector("[data-cloud-search]").value="";render();return;}
     const create=event.target.closest("[data-new-folder]");if(create){state.editingFolderId=null;const form=root.querySelector("[data-cloud-folder-form]");form.reset();root.querySelector("[data-cloud-folder-dialog-title]").textContent="Create a folder";root.querySelector("[data-cloud-folder-submit]").textContent="Create folder";root.querySelector("[data-cloud-folder-dialog]").showModal();form.elements.folderName.focus();return;}
     const rename=event.target.closest("[data-rename-folder]");if(rename){const folder=state.folders.find(f=>f.id===rename.dataset.renameFolder);if(!folder)return;state.editingFolderId=folder.id;const form=root.querySelector("[data-cloud-folder-form]");form.reset();form.elements.folderName.value=folder.name;root.querySelector("[data-cloud-folder-dialog-title]").textContent="Rename folder";root.querySelector("[data-cloud-folder-submit]").textContent="Save name";root.querySelector("[data-cloud-folder-dialog]").showModal();form.elements.folderName.focus();return;}
@@ -146,5 +151,6 @@
     if(event.target.matches("[data-move-file]")){const file=state.files.find(f=>f.id===event.target.dataset.moveFile);if(!file)return;file.folderId=event.target.value;await run(["files"],"readwrite",tx=>tx.objectStore("files").put(file));await refresh();status("File moved to "+folderName(file.folderId)+".");}
   });
   root.querySelector("[data-cloud-search]")?.addEventListener("input",event=>{state.query=event.target.value;render();});
+  root.querySelector("[data-cloud-sort]")?.addEventListener("change",event=>{state.sort=event.target.value;render();});
   (async()=>{try{if(!("indexedDB" in window))throw new Error("This browser does not support the local file vault.");state.db=await openDb();await refresh();status("Local file vault ready. No server upload or cloud sync is active.");}catch(error){status(error.message||"Could not start the local file vault.",true);root.querySelector("[data-cloud-items]").innerHTML='<div class="jtc-empty"><b>Local vault unavailable</b><p>Try a supported browser with site storage enabled.</p></div>';}})();
 })();
