@@ -69,10 +69,15 @@
   };
   const upload = async files => {
     if(!files.length)return;
-    status("Saving "+files.length+" file(s) in this browser…");
+    const existing=new Set(state.files.filter(f=>f.folderId===state.folderId).map(f=>f.name.toLocaleLowerCase()));
+    const accepted=[],duplicates=[];
+    for(const file of files){const key=file.name.toLocaleLowerCase();if(existing.has(key)){duplicates.push(file.name);continue;}existing.add(key);accepted.push(file);}
+    if(!accepted.length){status("No files added: all selected names already exist in this folder.",true);return;}
+    status("Saving "+accepted.length+" file(s) in this browser…");
     try{
-      await run(["files"],"readwrite",tx=>files.forEach(file=>tx.objectStore("files").add({id:id(),name:file.name,size:file.size,type:file.type||"",lastModified:file.lastModified||0,addedAt:new Date().toISOString(),folderId:state.folderId,blob:file.slice(0,file.size,file.type||"application/octet-stream")})));
-      await refresh();status("Saved "+files.length+" file(s) to this browser's local vault. Nothing was uploaded to a server.");
+      await run(["files"],"readwrite",tx=>accepted.forEach(file=>tx.objectStore("files").add({id:id(),name:file.name,size:file.size,type:file.type||"",lastModified:file.lastModified||0,addedAt:new Date().toISOString(),folderId:state.folderId,blob:file.slice(0,file.size,file.type||"application/octet-stream")})));
+      await refresh();
+      status("Saved "+accepted.length+" file(s) locally"+(duplicates.length?"; skipped "+duplicates.length+" duplicate name(s)":"")+". Nothing was uploaded to a server.");
     }catch(error){status(error?.name==="QuotaExceededError"?"Browser storage is full. Remove files or choose smaller files.":"Could not save files: "+(error?.message||"storage error"),true);}
   };
   root.innerHTML=`
@@ -146,6 +151,10 @@
       root.querySelector("[data-cloud-folder-dialog]").close();state.editingFolderId=null;await refresh();
     }catch(error){status(error.message||"Could not save folder.",true);}
   });
+  const dropTarget=root.querySelector("[data-cloud-items]");
+  ["dragenter","dragover"].forEach(type=>dropTarget.addEventListener(type,event=>{event.preventDefault();dropTarget.classList.add("is-dragging");}));
+  ["dragleave","dragend"].forEach(type=>dropTarget.addEventListener(type,event=>{if(!dropTarget.contains(event.relatedTarget))dropTarget.classList.remove("is-dragging");}));
+  dropTarget.addEventListener("drop",async event=>{event.preventDefault();dropTarget.classList.remove("is-dragging");const dropped=[...(event.dataTransfer?.files||[])];if(dropped.length)await upload(dropped);});
   root.addEventListener("change",async event=>{
     if(event.target.matches("[data-cloud-upload]")){await upload([...event.target.files||[]]);event.target.value="";return;}
     if(event.target.matches("[data-move-file]")){const file=state.files.find(f=>f.id===event.target.dataset.moveFile);if(!file)return;file.folderId=event.target.value;await run(["files"],"readwrite",tx=>tx.objectStore("files").put(file));await refresh();status("File moved to "+folderName(file.folderId)+".");}
