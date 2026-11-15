@@ -8,3 +8,16 @@ html[data-jt-theme="light"] .jtc-drive{background:linear-gradient(145deg,#fff,#f
 @media(max-width:900px){.jtc-storage-strip{grid-template-columns:repeat(3,1fr)}.jtc-storage-origin{grid-column:1/-1}.jtc-drive-layout{grid-template-columns:1fr}.jtc-drive-sidebar nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}.jtc-sidebar-note{margin-top:12px}}
 @media(max-width:650px){.jtc-drive-head{display:block}.jtc-local-badge{margin-top:13px}.jtc-storage-strip{grid-template-columns:1fr 1fr}.jtc-storage-origin{grid-column:1/-1}.jtc-drive-toolbar{align-items:flex-start;flex-direction:column}.jtc-toolbar-actions{width:100%}.jtc-column-head{display:none}.jtc-item{grid-template-columns:minmax(0,1fr) auto;gap:7px}.jtc-item-name{grid-column:1}.jtc-move-label{grid-column:1/-1;padding-left:42px}.jtc-item-actions{grid-column:2;grid-row:1}.jtc-item-actions button{padding:6px}.jtc-drive-footer{align-items:flex-start;flex-direction:column}.jtc-drive-sidebar nav{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.jtc-storage-track i,.jtc-item{transition:none}}
+
+.jtc-folder-dialog{width:min(420px,calc(100% - 28px));border:1px solid var(--jt-line);border-radius:18px;padding:22px;background:#111c30;color:#f4f6ff;box-shadow:0 24px 80px #0009}
+.jtc-folder-dialog::backdrop{background:#030713bb;backdrop-filter:blur(5px)}
+.jtc-folder-dialog h3{font:700 20px Manrope,sans-serif;margin:8px 0 18px}
+.jtc-folder-dialog label{display:grid;gap:7px;color:#aebbd1;font-size:10px}
+.jtc-folder-dialog input{width:100%;padding:12px;border:1px solid var(--jt-line);border-radius:9px;background:#0b1423;color:#f4f6ff;font-size:12px}
+.jtc-folder-dialog form>div{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.jtc-folder-dialog button{border:1px solid var(--jt-line);border-radius:9px;padding:10px 13px;background:#192740;color:#dce7fb;font-size:10px;font-weight:700;cursor:pointer}
+.jtc-folder-dialog .jtc-folder-save{border:0;background:linear-gradient(110deg,var(--accent),var(--accent2));color:#091221}
+html[data-jt-theme="light"] .jtc-folder-dialog{background:#fff;color:#202941;border-color:#dfe5f0}
+html[data-jt-theme="light"] .jtc-folder-dialog label{color:#52617a}
+html[data-jt-theme="light"] .jtc-folder-dialog input{background:#f8f9fd;color:#202941;border-color:#dfe5f0}
+html[data-jt-theme="light"] .jtc-folder-dialog button:not(.jtc-folder-save){background:#fff;color:#35425a;border-color:#dfe5f0}
