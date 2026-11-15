@@ -1,3 +1,32 @@
+## Unreleased — Private JT Cloud remote storage foundation
+
+### Added
+- Added authenticated Pages Functions endpoints for private per-user file listing, upload, download, deletion, and storage usage.
+- Added D1 schema for remote file metadata and per-user storage quota accounting.
+- Added server-generated R2 object keys, ownership-scoped database lookups, strict same-origin mutation checks, upload validation, 25 MiB initial upload limit, pagination, and private attachment downloads.
+- Added a separate remote-storage panel in JT Cloud with remote upload, search, download, delete, and usage display. The existing browser-local vault remains available and separate.
+- Added an explicit setup guide for the required private R2 bucket binding and D1 migration.
+
+### Boundaries and prerequisites
+- Remote APIs return a clear unavailable response until the Cloudflare R2 binding and D1 schema are configured in the relevant environment.
+- Remote folders and automatic local-to-cloud migration are not included in this increment.
+- Local IndexedDB files are never uploaded or deleted automatically.
+- No bucket was created, no public access was enabled, and no production settings were changed.
+
+## Unreleased — Jeff AI workspace improvements
+
+### Added
+- Passed the user's saved project context and selected text/code attachments through the server-side Jeff AI gateway, with strict size caps and explicit untrusted-reference framing.
+- Added Groq as a selectable free-tier provider in the Jeff AI workspace.
+- Added full-text conversation search across titles and message content.
+- Added export of all local conversations as a JSON backup.
+- Added a live provider readiness check in the workspace status area.
+
+### Boundaries
+- Conversation history and project context remain browser-local.
+- AI provider credentials remain server-side; the provider readiness endpoint exposes status only.
+- Provider tests mock upstream requests and do not claim live provider availability.
+
 # JT Apps — Release Notes
 
 ## Unreleased — Workspace experience expansion
