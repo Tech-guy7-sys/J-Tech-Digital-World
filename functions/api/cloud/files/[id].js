@@ -28,13 +28,18 @@ export async function onRequestDelete({ request, env, params }) {
   if (auth.error) return auth.error;
   const id = String(params?.id || "");
   if (!/^[0-9a-f-]{36}$/i.test(id)) return cloudReply({ error: "file_not_found" }, 404);
-  const file = await auth.db.prepare("SELECT id,object_key,size_bytes FROM cloud_files WHERE id=? AND user_id=? AND status IN ('ready','deleting') LIMIT 1").bind(id, auth.user.id).first();
+  const file = await auth.db.prepare("SELECT id,object_key,size_bytes FROM cloud_files WHERE id=? AND user_id=? AND status='ready' LIMIT 1").bind(id, auth.user.id).first();
   if (!file) return cloudReply({ error: "file_not_found" }, 404);
   const now = Math.floor(Date.now() / 1000);
-  await auth.db.prepare("UPDATE cloud_files SET status='deleting',updated_at=? WHERE id=? AND user_id=?").bind(now, id, auth.user.id).run();
+  const claim = await auth.db.prepare("UPDATE cloud_files SET status='deleting',updated_at=? WHERE id=? AND user_id=? AND status='ready'").bind(now, id, auth.user.id).run();
+  if (claim.meta?.changes !== 1) return cloudReply({ error: "delete_in_progress", message: "This file is already being deleted. Refresh the file list." }, 409);
   try { await auth.bucket.delete(file.object_key); }
-  catch { return cloudReply({ error: "delete_pending", message: "Deletion is pending. Retry the operation later." }, 502); }
-  await auth.db.prepare("DELETE FROM cloud_files WHERE id=? AND user_id=?").bind(id, auth.user.id).run();
+  catch {
+    await auth.db.prepare("UPDATE cloud_files SET status='ready',updated_at=? WHERE id=? AND user_id=? AND status='deleting'").bind(now, id, auth.user.id).run().catch(() => {});
+    return cloudReply({ error: "delete_failed", message: "The file could not be deleted. You can retry." }, 502);
+  }
+  const removed = await auth.db.prepare("DELETE FROM cloud_files WHERE id=? AND user_id=? AND status='deleting'").bind(id, auth.user.id).run();
+  if (removed.meta?.changes !== 1) return cloudReply({ error: "delete_cleanup_pending", message: "The object was removed; metadata cleanup needs to be retried." }, 502);
   await auth.db.prepare("UPDATE cloud_storage_usage SET used_bytes=MAX(0,used_bytes-?),updated_at=? WHERE user_id=?").bind(file.size_bytes, now, auth.user.id).run();
   return cloudReply({ ok: true, deleted: id });
 }
