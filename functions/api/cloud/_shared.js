@@ -22,14 +22,17 @@ export function safeFilename(raw) {
 }
 
 export function encodeCursor(createdAt, id) {
-  return btoa(unescape(encodeURIComponent(String(createdAt) + "|" + String(id))))
-    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  const bytes = new TextEncoder().encode(String(createdAt) + "|" + String(id));
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
 export function decodeCursor(value) {
   if (!value || typeof value !== "string" || value.length > 512) return null;
   try {
-    const raw = decodeURIComponent(escape(atob(value.replace(/-/g, "+").replace(/_/g, "/"))));
+    const binary = atob(value.replace(/-/g, "+").replace(/_/g, "/"));
+    const raw = new TextDecoder().decode(Uint8Array.from(binary, char => char.charCodeAt(0)));
     const split = raw.indexOf("|");
     if (split < 1) return null;
     const createdAt = Number(raw.slice(0, split));
@@ -68,7 +71,10 @@ export function limitUploadStream(body, expectedBytes) {
 }
 
 export function uploadMetadata(request) {
-  const name = safeFilename(request.headers.get("x-jt-file-name") || "");
+  const rawName = request.headers.get("x-jt-file-name") || "";
+  let decodedName = rawName;
+  try { decodedName = decodeURIComponent(rawName); } catch {}
+  const name = safeFilename(decodedName);
   const size = Number(request.headers.get("x-jt-file-size") || request.headers.get("content-length"));
   const mime = (request.headers.get("content-type") || "application/octet-stream").split(";")[0].trim().toLowerCase();
   if (!name) return { error: "invalid_filename" };
