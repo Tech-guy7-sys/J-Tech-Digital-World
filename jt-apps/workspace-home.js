@@ -67,6 +67,13 @@
           <label>Goal or next steps<textarea name="notes" maxlength="1200" rows="4"></textarea></label>
           <div class="jt-wh-dialog-actions"><button type="button" data-jt-edit-close>Cancel</button><button class="jt-wh-primary" value="save">Save changes</button></div>
         </form>
+      </dialog>
+      <dialog class="jt-wh-dialog" data-jt-delete-dialog>
+        <form method="dialog" data-jt-delete-form>
+          <span class="jt-wh-kicker">CONFIRM DELETE</span><h3>Delete this project entry?</h3>
+          <p data-jt-delete-copy></p><input type="hidden" name="id">
+          <div class="jt-wh-dialog-actions"><button type="button" data-jt-delete-cancel>Cancel</button><button class="jt-wh-danger" value="delete">Delete project</button></div>
+        </form>
       </dialog>`;
     hero.insertAdjacentElement("afterend", section);
     const $ = selector => section.querySelector(selector);
@@ -105,7 +112,7 @@
       const remove=event.target.closest("[data-jt-project-delete]");
       if(open){const p=projects.find(x=>x.id===open.dataset.jtProjectOpen);if(p){activeId=p.id;p.updatedAt=new Date().toISOString();persist();render($("[data-jt-search]").value);setStatus("Active project: "+p.name);}return;}
       if(edit){const p=projects.find(x=>x.id===edit.dataset.jtProjectEdit);if(p){const form=$("[data-jt-edit-form]");form.elements.id.value=p.id;form.elements.name.value=p.name;form.elements.notes.value=p.notes||"";$("[data-jt-edit-dialog]").showModal();form.elements.name.focus();}return;}
-      if(remove){const p=projects.find(x=>x.id===remove.dataset.jtProjectDelete);if(p&&confirm("Delete the project entry '"+p.name+"' from this browser? Export a backup first if needed.")){projects=projects.filter(x=>x.id!==p.id);if(activeId===p.id)activeId="";persist();render($("[data-jt-search]").value);}return;}
+      if(remove){const p=projects.find(x=>x.id===remove.dataset.jtProjectDelete);if(p){$("[data-jt-delete-form]").elements.id.value=p.id;$("[data-jt-delete-copy]").textContent="This removes '"+p.name+"' from this browser's project board. It does not delete files in your other apps."; $("[data-jt-delete-dialog]").showModal();}return;}
       const submit=event.target.closest("[value='create']");
       if(submit) return;
     });
@@ -116,6 +123,8 @@
     });
     $("[data-jt-edit-form]").addEventListener("submit",event=>{event.preventDefault();const data=new FormData(event.currentTarget);const p=projects.find(x=>x.id===String(data.get("id")));const name=String(data.get("name")||"").trim();if(!p||!name)return;p.name=name.slice(0,80);p.notes=String(data.get("notes")||"").slice(0,1200);p.updatedAt=new Date().toISOString();persist();render($("[data-jt-search]").value);$("[data-jt-edit-dialog]").close();setStatus("Updated project: "+p.name);});
     $("[data-jt-edit-close]").addEventListener("click",()=>$("[data-jt-edit-dialog]").close());
+    $("[data-jt-delete-form]").addEventListener("submit",event=>{event.preventDefault();const id=String(new FormData(event.currentTarget).get("id")||"");const p=projects.find(x=>x.id===id);if(!p)return;projects=projects.filter(x=>x.id!==id);if(activeId===id)activeId="";persist();render($("[data-jt-search]").value);$("[data-jt-delete-dialog]").close();setStatus("Deleted project entry: "+p.name);});
+    $("[data-jt-delete-cancel]").addEventListener("click",()=>$("[data-jt-delete-dialog]").close());
     $("[data-jt-search]").addEventListener("input",event=>render(event.target.value));
     $("[data-jt-import-file]").addEventListener("change",async event=>{
       const file=event.target.files?.[0];if(!file)return;
