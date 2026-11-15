@@ -19,6 +19,10 @@ const uploadRequest = new Request("https://jt.example/api/cloud/files", {
 });
 assert.equal(sameOriginMutation(uploadRequest), true);
 assert.deepEqual(uploadMetadata(uploadRequest), { name: "notes.txt", size: 5, mime: "text/plain" });
+const encodedNameRequest = new Request("https://jt.example/api/cloud/files", { method: "POST", headers: {
+  "x-jt-file-name": encodeURIComponent("project notes.txt"), "x-jt-file-size": "5", "content-type": "text/plain"
+}, body: "hello" });
+assert.equal(uploadMetadata(encodedNameRequest).name, "project notes.txt");
 assert.equal(sameOriginMutation(new Request("https://jt.example/api/cloud/files", { method: "POST" })), false);
 assert.equal(await new Response(limitUploadStream(new Blob(["hello"]).stream(), 5)).text(), "hello");
 await assert.rejects(() => new Response(limitUploadStream(new Blob(["hello"]).stream(), 4)).text());
