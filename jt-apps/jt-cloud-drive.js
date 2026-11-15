@@ -4,7 +4,7 @@
   if (!root) return;
   const DB_NAME = "jt-cloud-drive-files-v1";
   const ROOT_ID = "root";
-  const state = { db: null, folders: [], files: [], folderId: ROOT_ID, query: "", editingFolderId: null };
+  const state = { db: null, folders: [], files: [], folderId: ROOT_ID, query: "", editingFolderId: null, pendingDelete: null };
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const id = () => globalThis.crypto?.randomUUID ? crypto.randomUUID() : "jt-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
   const fmtSize = n => { if (!Number.isFinite(n) || n < 0) return "—"; if (n < 1024) return n+" B"; const units=["KB","MB","GB","TB"]; let v=n/1024, i=0; while(v>=1024 && i<units.length-1){v/=1024;i++;} return v.toFixed(v>=10?1:2)+" "+units[i]; };
@@ -94,15 +94,38 @@
           <div><button type="button" data-cloud-folder-cancel>Cancel</button><button class="jtc-folder-save" type="submit" data-cloud-folder-submit>Create folder</button></div>
         </form>
       </dialog>
+      <dialog class="jtc-folder-dialog" data-cloud-delete-dialog>
+        <form data-cloud-delete-form>
+          <span class="jtc-kicker">CONFIRM DELETE</span>
+          <h3>Remove this item?</h3>
+          <p data-cloud-delete-copy></p>
+          <div><button type="button" data-cloud-delete-cancel>Cancel</button><button class="jtc-delete-confirm" type="submit">Delete</button></div>
+        </form>
+      </dialog>
     </div>`;
   root.addEventListener("click",async event=>{
     const open=event.target.closest("[data-open-folder]");if(open){state.folderId=open.dataset.openFolder;state.query="";root.querySelector("[data-cloud-search]").value="";render();return;}
     const create=event.target.closest("[data-new-folder]");if(create){state.editingFolderId=null;const form=root.querySelector("[data-cloud-folder-form]");form.reset();root.querySelector("[data-cloud-folder-dialog-title]").textContent="Create a folder";root.querySelector("[data-cloud-folder-submit]").textContent="Create folder";root.querySelector("[data-cloud-folder-dialog]").showModal();form.elements.folderName.focus();return;}
     const rename=event.target.closest("[data-rename-folder]");if(rename){const folder=state.folders.find(f=>f.id===rename.dataset.renameFolder);if(!folder)return;state.editingFolderId=folder.id;const form=root.querySelector("[data-cloud-folder-form]");form.reset();form.elements.folderName.value=folder.name;root.querySelector("[data-cloud-folder-dialog-title]").textContent="Rename folder";root.querySelector("[data-cloud-folder-submit]").textContent="Save name";root.querySelector("[data-cloud-folder-dialog]").showModal();form.elements.folderName.focus();return;}
-    const deleteFolder=event.target.closest("[data-delete-folder]");if(deleteFolder){const folder=state.folders.find(f=>f.id===deleteFolder.dataset.deleteFolder);if(!folder)return;if(state.folders.some(f=>f.parentId===folder.id)||state.files.some(f=>f.folderId===folder.id)){status("Move or delete the folder's contents first.",true);return;}if(!confirm("Delete the empty folder '"+folder.name+"'?"))return;await run(["folders"],"readwrite",tx=>tx.objectStore("folders").delete(folder.id));await refresh();status("Empty folder deleted.");return;}
+    const deleteFolder=event.target.closest("[data-delete-folder]");if(deleteFolder){const folder=state.folders.find(f=>f.id===deleteFolder.dataset.deleteFolder);if(!folder)return;if(state.folders.some(f=>f.parentId===folder.id)||state.files.some(f=>f.folderId===folder.id)){status("Move or delete the folder's contents first.",true);return;}state.pendingDelete={type:"folder",id:folder.id};root.querySelector("[data-cloud-delete-copy]").textContent="Delete the empty folder '"+folder.name+"' from this browser?";root.querySelector("[data-cloud-delete-dialog]").showModal();return;}
     const downloadButton=event.target.closest("[data-download-file]");if(downloadButton){const file=state.files.find(f=>f.id===downloadButton.dataset.downloadFile);if(!file)return;const url=URL.createObjectURL(file.blob);const a=document.createElement("a");a.href=url;a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);status("Download prepared: "+file.name);return;}
-    const deleteFile=event.target.closest("[data-delete-file]");if(deleteFile){const file=state.files.find(f=>f.id===deleteFile.dataset.deleteFile);if(!file||!confirm("Delete '"+file.name+"' from this browser's local vault?"))return;await run(["files"],"readwrite",tx=>tx.objectStore("files").delete(file.id));await refresh();status("Removed "+file.name+" from this browser's vault.");return;}
+    const deleteFile=event.target.closest("[data-delete-file]");if(deleteFile){const file=state.files.find(f=>f.id===deleteFile.dataset.deleteFile);if(!file)return;state.pendingDelete={type:"file",id:file.id};root.querySelector("[data-cloud-delete-copy]").textContent="Delete '"+file.name+"' from this browser's local vault?";root.querySelector("[data-cloud-delete-dialog]").showModal();return;}
     if(event.target.closest("[data-refresh-storage]")){await renderStorage();status("Storage estimate refreshed.");}
+  });
+  root.querySelector("[data-cloud-delete-cancel]")?.addEventListener("click",()=>{state.pendingDelete=null;root.querySelector("[data-cloud-delete-dialog]").close();});
+  root.querySelector("[data-cloud-delete-form]")?.addEventListener("submit",async event=>{
+    event.preventDefault();const pending=state.pendingDelete;if(!pending)return;
+    try{
+      if(pending.type==="folder"){
+        const folder=state.folders.find(f=>f.id===pending.id);if(!folder)return;
+        if(state.folders.some(f=>f.parentId===folder.id)||state.files.some(f=>f.folderId===folder.id)){status("This folder is no longer empty.",true);return;}
+        await run(["folders"],"readwrite",tx=>tx.objectStore("folders").delete(folder.id));status("Empty folder deleted.");
+      }else{
+        const file=state.files.find(f=>f.id===pending.id);if(!file)return;
+        await run(["files"],"readwrite",tx=>tx.objectStore("files").delete(file.id));status("File removed from this browser vault.");
+      }
+      state.pendingDelete=null;root.querySelector("[data-cloud-delete-dialog]").close();await refresh();
+    }catch(error){status(error.message||"Could not delete this item.",true);}
   });
   root.querySelector("[data-cloud-folder-cancel]")?.addEventListener("click",()=>root.querySelector("[data-cloud-folder-dialog]").close());
   root.querySelector("[data-cloud-folder-form]")?.addEventListener("submit",async event=>{
