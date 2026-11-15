@@ -25,3 +25,17 @@
 - Hardened project backup import by validating names and identifiers, avoiding duplicate IDs, and reporting the actual number of new records imported.
 - Kept the local-only storage disclosure visible; these changes do not introduce cloud synchronization.
 - Verified the active-project selection survives reload and that deleting a temporary test entry returns the board to its original state.
+
+## Unreleased — JT Cloud local file workspace
+
+### Added
+- Added a dedicated JT Cloud file workspace with nested folder navigation, breadcrumbs, folder creation/rename/deletion (empty folders only), and file listing.
+- Added multi-file import into browser-managed IndexedDB, file search across the local vault, folder moves, file deletion, and downloads of the stored original file contents.
+- Added file count, folder count, local file-byte totals, browser-origin storage usage/quota estimates, and the browser storage persistence state when supported.
+- Added regression tests and a dedicated GitHub Actions workflow for the JT Cloud workspace and static Pages build.
+
+### Storage and service boundaries
+- Files and folders are stored in IndexedDB for the current browser origin and device; they are not uploaded to JT servers and do not sync across devices.
+- Browser storage is managed by the browser and may be cleared or evicted. The storage estimate describes the whole website origin, not a dedicated JT Cloud quota.
+- A real multi-device cloud service still requires authenticated backend APIs, object storage (for example, Cloudflare R2), per-user access controls, server-side quota accounting, and a tested upload/download authorization flow.
+- Existing local project boards remain browser-local and separate from the file-content vault.
