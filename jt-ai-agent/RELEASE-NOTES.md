@@ -1,12 +1,13 @@
 # JT AI Agent — Release Notes
 
-## 0.2.0 — Free-only AI routing (draft, 15 November 2026)
+## 0.2.1 — OpenRouter and Gemini model selection (draft, 15 November 2026)
 
-**Status:** Pull request / release candidate. Not published or deployed.
+**Status:** Merged to the main branch. Automated website build and gateway checks passed. Live provider smoke tests and deployed-endpoint verification are still pending. No public product release has been published.
 
 ### Added
 - JT AI Core defaults to OpenRouter's dedicated `openrouter/free` router, which selects from zero-priced free models.
 - Users can explicitly select Gemini 2.5 Flash or Gemini 2.5 Flash-Lite when the Google project remains on its free tier.
+- The browser model selector sends only approved model identifiers to the server-side Pages Function; provider credentials remain in Cloudflare secrets.
 - Optional Gemini 2.5 Flash and Groq routes are available only when their API key and free-tier confirmation setting are both present.
 - Provider health metadata reports a free-only cost policy and confirms that paid fallback is disabled.
 - Groq free-tier chat routing is available through its OpenAI-compatible endpoint.
@@ -24,5 +25,6 @@
 
 ### Verification
 - Automated gateway tests mock provider HTTP responses. They verify routing and paid-fallback prevention, not live provider availability.
-- Mocked tests cover OpenRouter free routing, Gemini Flash-Lite, and quota handling. Live OpenRouter and Gemini smoke tests have not yet been performed.
+- GitHub Actions website build, JavaScript syntax, gateway validation tests, and static build checks passed for the merged change.
+- Live OpenRouter and Gemini smoke tests have not yet been performed because Cloudflare secret values and the deployed runtime cannot be inspected from the repository.
 - The release must not be published until GitHub Actions passes and the deployed gateway is smoke-tested with eligible free-tier credentials.
