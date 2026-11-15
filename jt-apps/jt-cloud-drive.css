@@ -30,3 +30,8 @@ html[data-jt-theme="light"] .jtc-folder-dialog button:not(.jtc-folder-save){back
 .jtc-view-controls label{display:flex;align-items:center;gap:6px;margin-left:auto;color:#9baac3;font-size:9px}
 html[data-jt-theme="light"] .jtc-view-controls>button,html[data-jt-theme="light"] .jtc-view-controls select{background:#fff;color:#35425a;border-color:#dfe5f0}
 html[data-jt-theme="light"] .jtc-view-controls label{color:#65718a}
+
+/* Drag-and-drop feedback for the local file vault */
+.jtc-items{min-height:150px;transition:border-color .16s,background .16s}
+.jtc-items.is-dragging{outline:2px dashed var(--accent);outline-offset:3px;background:color-mix(in srgb,var(--accent) 9%,transparent);border-radius:12px}
+.jtc-items.is-dragging::after{content:"Drop files to save them in this browser";display:block;padding:18px;text-align:center;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.3px}
