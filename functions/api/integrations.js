@@ -1,7 +1,7 @@
 const AI_PROVIDERS = [
-  { id: "openrouter", name: "Jeff AI free models", secrets: ["OPENROUTER_API_KEY"] },
-  { id: "google-ai-studio", name: "Google AI Studio / Gemini", secrets: ["GEMINI_API_KEY"] },
-  { id: "anthropic", name: "Anthropic Claude", secrets: ["ANTHROPIC_API_KEY"] }
+  { id: "openrouter", name: "OpenRouter free models", costClass: "free-tier", secrets: ["OPENROUTER_API_KEY"] },
+  { id: "google-ai-studio", name: "Google Gemini free tier", costClass: "free-tier-project-required", secrets: ["GEMINI_API_KEY"] },
+  { id: "groq", name: "Groq free tier", costClass: "free-tier", secrets: ["GROQ_API_KEY"] }
 ];
 const CONNECTORS = [
   ["github","GitHub","Developer tools","Link your GitHub identity. Repository access will use a separate read-only GitHub App installation.","read","GitHub OAuth app for identity; GitHub App with read-only repository permissions for project access"],
@@ -25,12 +25,14 @@ const CONNECTORS = [
   ["stripe","Stripe","Business","Read account data; financial mutations require explicit approval","read","Stripe restricted key or OAuth"],
   ["supabase","Supabase","Developer tools","Inspect selected projects and resources","read","Supabase access token stored server-side"],
   ["vercel","Vercel","Developer tools","Inspect projects and deployments","read","Vercel OAuth app or scoped token"],
-  ["cloudflare","Cloudflare","Developer tools","Inspect Pages, Workers, DNS and D1 resources","read-write","Cloudflare scoped API token"],
-  ["openai","OpenAI API","AI providers","Use configured models through JT AI Core","read","OPENAI_API_KEY server secret"],
-  ["anthropic","Anthropic API","AI providers","Use Claude through JT AI Core","read","ANTHROPIC_API_KEY server secret"]
+  ["cloudflare","Cloudflare","Developer tools","Inspect Pages, Workers, DNS and D1 resources","read-write","Cloudflare scoped API token"]
 ];
 export async function onRequestGet({env}) {
-  const providers = AI_PROVIDERS.map(p => ({id:p.id,name:p.name,configured:p.secrets.every(k=>Boolean(env?.[k])),requiredSecrets:p.secrets}));
+  const providers = AI_PROVIDERS.map(p => ({
+    id:p.id,name:p.name,costClass:p.costClass,
+    configured:p.secrets.every(k=>Boolean(env?.[k])),
+    requiredSecrets:p.secrets
+  }));
   const connectors = CONNECTORS.map(([id,name,category,description,access,setup]) => ({
     id,name,category,description,access,
     status: id==="github" && Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) ? "oauth_configured" : id==="google-drive" && Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) ? "oauth_configured" : id==="cloudflare" && Boolean(env?.CLOUDFLARE_API_TOKEN && env?.CLOUDFLARE_ACCOUNT_ID) ? "credentials_configured" : "setup_required",
@@ -41,8 +43,10 @@ export async function onRequestGet({env}) {
   }));
   return new Response(JSON.stringify({
     product:"Jeff AI Connectors Hub",
-    version:1,
+    version:2,
     architecture:"server-side OAuth/API adapters with least-privilege scopes",
+    costPolicy:"free-tier-only",
+    paidAiProvidersEnabled:false,
     providers,
     connectors,
     accountStorageConfigured:Boolean(env?.JT_AUTH_DB),
