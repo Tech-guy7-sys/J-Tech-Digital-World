@@ -14,6 +14,7 @@
 - No bucket was created, no public access was enabled, and no production settings were changed.
 
 ## Unreleased — Jeff AI workspace improvements
+- Added a Stop control while a provider request is running; cancelling aborts the in-flight browser request and keeps the prompt in the conversation.
 
 ### Added
 - Passed the user's saved project context and selected text/code attachments through the server-side Jeff AI gateway, with strict size caps and explicit untrusted-reference framing.
