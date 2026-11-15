@@ -45,3 +45,11 @@
 - Added duplicate folder-name checks within the same parent folder.
 
 - Replaced native browser confirmation prompts for folder and file deletion with accessible in-page confirmation dialogs after smoke testing showed native prompts were not reliably actionable in browser automation.
+
+## Unreleased — JT Cloud file discovery
+
+### Added
+- Added Starred and Recent (last seven days) file views.
+- Added file sorting by newest, oldest, name, and largest size.
+- Added per-file Star/Unstar actions stored with the local file record in IndexedDB.
+- Kept these discovery features local to the current browser vault; they do not introduce cloud sync or server-side file storage.
