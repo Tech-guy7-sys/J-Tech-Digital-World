@@ -135,3 +135,5 @@ html[data-jt-theme="light"] .jt-wh-dialog input,html[data-jt-theme="light"] .jt-
 @media(max-width:850px){.jt-wh-content{grid-template-columns:1fr}.jt-wh-side{order:-1}.jt-wh-quick{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:600px){.jt-wh-head,.jt-wh-section-head{display:block}.jt-wh-status{display:inline-flex;margin-top:13px}.jt-wh-search{margin-top:12px;width:100%}.jt-wh-search input{width:100%;max-width:none}.jt-wh-project-grid{grid-template-columns:1fr}.jt-wh-quick{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.jt-workspace-home *{transition:none!important;scroll-behavior:auto!important}}
+
+.jt-wh-dialog .jt-wh-danger{background:linear-gradient(110deg,#ef8d9b,#d95c7b);border:0;color:#230b12}
