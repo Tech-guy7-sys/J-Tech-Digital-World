@@ -113,8 +113,8 @@ export async function onRequestPost({ request, env }) {
   if (!isEnabled(env)) return json({ error: "service_disabled", message: "Jeff AI is not enabled on this website deployment." }, 503);
 
   const openRouterKey = value(env, "OPENROUTER_API_KEY");
-  const geminiKey = value(env, "GEMINI_API_KEY");
-  const groqKey = value(env, "GROQ_API_KEY");
+  const geminiKey = geminiFreeKey(env);
+  const groqKey = groqFreeKey(env);
   if (!openRouterKey && !geminiKey && !groqKey) {
     return json({ error: "provider_not_configured", message: "No approved free-tier AI provider secret is configured." }, 503);
   }
