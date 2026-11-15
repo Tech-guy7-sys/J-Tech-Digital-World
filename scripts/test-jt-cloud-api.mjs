@@ -81,7 +81,7 @@ const validUpload = new Request("https://jt.example/api/cloud/files", {
 response = await onRequestPost({ request: validUpload, env: { JT_AUTH_DB: mockD1, JT_CLOUD_BUCKET: mockBucket } });
 assert.equal(response.status, 201);
 assert.equal(storedBody, "hello");
-assert.match(storedKey, /^users\\/user-1\\//);
+assert.ok(storedKey.startsWith("users/user-1/"));
 assert.ok(sqlSeen.some(sql => sql.includes("WHERE user_id=? AND used_bytes+?<=quota_bytes")));
 
 const mismatchedUpload = new Request("https://jt.example/api/cloud/files", {
