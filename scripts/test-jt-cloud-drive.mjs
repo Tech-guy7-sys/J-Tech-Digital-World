@@ -29,6 +29,15 @@ test("Folder creation, rename and deletion use accessible in-page dialogs", () =
   assert.doesNotMatch(script, /prompt\(|confirm\(/);
 });
 
+test("JT Cloud supports starred and recent views with selectable sorting", () => {
+  assert.match(script, /data-star-file/);
+  assert.match(script, /data-view="starred"/);
+  assert.match(script, /data-view="recent"/);
+  assert.match(script, /data-cloud-sort/);
+  assert.match(script, /file\.starred=!file\.starred/);
+  assert.match(script, /state\.sort==="size"/);
+});
+
 test("JT Cloud supports upload, download, delete, folder navigation and moves", () => {
   for (const token of ["data-cloud-upload", "data-download-file", "data-delete-file", "data-open-folder", "data-move-file", "data-new-folder", "data-rename-folder", "data-delete-folder"]) {
     assert.ok(script.includes(token), `Missing interaction: ${token}`);
