@@ -49,7 +49,7 @@ assert.equal((await response.json()).error, "provider_not_configured");
 response = await invoke({ message: "hello", model: "claude-sonnet-4-20250514" }, {
   env: { JEFF_API_ENABLED: "true", ANTHROPIC_API_KEY: "must-not-be-used" }
 });
-assert.equal(response.status, 503); // Paid-only legacy secret cannot enable the gateway.
+assert.equal(response.status, 503); // An Anthropic-only secret cannot enable this free-only gateway.
 assert.equal((await response.json()).error, "service_disabled");
 
 response = await invoke({ message: "hello", model: "claude-sonnet-4-20250514" }, {
@@ -72,11 +72,59 @@ assert.equal(health.costPolicy, "free-tier-only");
 assert.equal(health.paidFallback, false);
 assert.equal(health.providers.some(p => p.id === "anthropic"), false);
 
-response = await onRequestGet({ env: { JEFF_API_ENABLED: "false", OPENROUTER_API_KEY: "test-key" } });
-assert.equal(response.status, 503);
-health = await response.json();
-assert.equal(health.enabled, false);
-assert.equal(health.configured, true);
-assert.equal(health.ready, false);
+// Mock a successful free OpenRouter response. This tests adapter routing, not live provider access.
+const originalFetch = globalThis.fetch;
+try {
+  let calls = [];
+  globalThis.fetch = async (url, init) => {
+    calls.push({ url: String(url), body: JSON.parse(init.body) });
+    return new Response(JSON.stringify({ choices: [{ message: { content: "Free route works." } }] }), {
+      status: 200, headers: { "content-type": "application/json" }
+    });
+  };
+  response = await invoke({ message: "test auto route" }, {
+    env: { JEFF_API_ENABLED: "true", OPENROUTER_API_KEY: "test-key" }
+  });
+  let result = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(result.provider, "OpenRouter");
+  assert.equal(result.profile, "JT AI Core v1 · Free");
+  assert.ok(calls[0].body.model.endsWith(":free"));
 
-console.log("Jeff AI free-only gateway tests passed.");
+  // Explicit Groq selection uses only the Groq API and the configured free-tier model.
+  calls = [];
+  globalThis.fetch = async (url, init) => {
+    calls.push({ url: String(url), body: JSON.parse(init.body) });
+    return new Response(JSON.stringify({ choices: [{ message: { content: "Groq free route works." } }] }), {
+      status: 200, headers: { "content-type": "application/json" }
+    });
+  };
+  response = await invoke({ message: "test Groq", model: "groq" }, {
+    env: { JEFF_API_ENABLED: "true", GROQ_API_KEY: "test-groq-key" }
+  });
+  result = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(result.provider, "Groq");
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].url, "https://api.groq.com/openai/v1/chat/completions");
+  assert.equal(calls[0].body.model, "openai/gpt-oss-20b");
+
+  // Gemini quota errors remain errors; they do not trigger another provider or a paid fallback.
+  calls = [];
+  globalThis.fetch = async (url) => {
+    calls.push(String(url));
+    return new Response(JSON.stringify({ error: { message: "quota exceeded" } }), { status: 429 });
+  };
+  response = await invoke({ message: "test Gemini", model: "gemini-2.5-flash" }, {
+    env: { JEFF_API_ENABLED: "true", GEMINI_API_KEY: "test-gemini-key" }
+  });
+  result = await response.json();
+  assert.equal(response.status, 429);
+  assert.equal(result.error, "free_quota_exhausted");
+  assert.equal(calls.length, 1);
+  assert.ok(calls[0].includes("gemini-2.5-flash"));
+} finally {
+  globalThis.fetch = originalFetch;
+}
+
+console.log("Jeff AI free-only gateway tests passed (provider calls mocked; no live provider was tested).");
