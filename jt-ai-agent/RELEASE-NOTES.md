@@ -1,5 +1,25 @@
 # JT AI Agent — Release Notes
 
+## 0.4.0 — Personal workspace tools (draft, 15 November 2026)
+
+**Status:** Implementation branch; awaiting deployment preview diagnosis and review.
+
+### Added
+- Pin and unpin conversations; pinned chats sort above other recent chats.
+- Organise conversations into named folders, with folder labels visible in the recent-chat list.
+- Save, reuse, and delete personal prompt templates in a browser-local prompt library.
+- Edit a previous user message and resend it as a new conversation branch, replacing later turns in that chat.
+- Regenerate the latest assistant answer from its original user prompt.
+- Save project context per conversation, with a separate default context for new chats.
+- Responsive controls and dark/light theme styling for the new workspace tools.
+
+### Storage and behaviour
+- Conversation history, folders, pins, prompt templates, and project context are stored in the current browser's local storage; they are not synchronised across devices or accounts.
+- Editing a message replaces the later turns in that conversation in this browser.
+- Regeneration sends a new request through the currently selected JT AI Core provider. It does not promise identical or deterministic output.
+- The prompt library contains user-authored templates only; it does not add external tools or integrations.
+
+
 ## 0.3.0 — Conversational workspace redesign (draft, 15 November 2026)
 
 **Status:** Implementation branch; awaiting automated checks and merge.
