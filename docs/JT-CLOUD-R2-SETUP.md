@@ -16,16 +16,16 @@ For the Pages project `jt-digital-world-new`:
 1. Open Settings → Bindings → Add → R2 bucket.
 2. Set the variable name to `JT_CLOUD_BUCKET`.
 3. Select the private bucket.
-4. Configure the binding separately for Preview and Production environments.
-5. Save the settings and redeploy the Preview environment first.
+4. Configure the binding in the **Preview environment only** for this branch, using the private test bucket.
+5. Save the settings and redeploy the Preview environment.
 
-Production should remain unchanged until the implementation has passed review and the separate release is approved.
+Do not add the binding to Production yet. Production should remain unchanged until the implementation has passed review and the separate release is approved.
 
 ## 3. Apply the D1 schema
 
-The existing account database is exposed to Pages Functions as `JT_AUTH_DB`. Confirm its actual D1 database name in the Cloudflare dashboard.
+The Pages Function expects a D1 binding named `JT_AUTH_DB`. For Preview, point that binding at a **Preview-safe D1 database** that contains the same required account tables (`users` and `sessions`) as the app expects. Do not point this feature Preview at the Production account database, and do not apply the new schema to Production as part of this task. If no safe Preview database exists yet, create and initialize one using the project's existing account schema before proceeding.
 
-Run the SQL in `db/cloud-schema.sql` against that existing D1 database using the D1 console, or with Wrangler:
+Confirm the Preview database's actual D1 name in Cloudflare. Run the SQL in `db/cloud-schema.sql` against that Preview database using the D1 console, or with Wrangler:
 
 ```powershell
 npx wrangler d1 execute <ACTUAL_D1_DATABASE_NAME> --remote --file=db/cloud-schema.sql
@@ -56,3 +56,15 @@ Do not upload private or important files during initial verification.
 - Remote folders, resumable multipart uploads, sharing links and automatic migration from IndexedDB are not included.
 - The browser-local vault remains separate and is never migrated or deleted automatically.
 - R2 and D1 do not share a transaction. The implementation compensates for upload failures, but operational reconciliation and a scheduled cleanup workflow remain future hardening work.
+
+
+## Jeff AI provider readiness in Preview
+
+The Jeff AI gateway reads provider credentials from server-side Cloudflare Pages environment variables. Production variables are not a substitute for Preview variables. For this feature branch, open the Pages project `jt-digital-world-new` → Settings → Variables and Secrets, select the **Preview** environment, and add:
+
+- `JEFF_API_ENABLED=true` (plain-text variable).
+- `OPENROUTER_API_KEY` (secret; use the existing OpenRouter key without putting it in source code).
+- `GEMINI_API_KEY` (secret, optional).
+- `GEMINI_FREE_TIER_CONFIRMED=true` (plain-text operator confirmation only if the Google AI Studio project is actually on Google's free tier).
+
+Groq is optional and is not needed for the OpenRouter/Gemini setup. Do not set a free-tier confirmation flag unless the account/project has been checked. Save and redeploy Preview, then open `/api/jeff` on the Preview hostname. The endpoint should report `ready: true` and the expected provider `configured` flags. Never paste keys into chat, commit them, or expose them to browser JavaScript. Keep Production settings unchanged during Preview verification.
