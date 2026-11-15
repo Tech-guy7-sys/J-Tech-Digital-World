@@ -43,3 +43,5 @@
 ### Usability refinement
 - Replaced native browser prompt-based folder creation and rename with an accessible in-page dialog, after browser smoke testing showed native prompts were not reliably actionable in the workspace.
 - Added duplicate folder-name checks within the same parent folder.
+
+- Replaced native browser confirmation prompts for folder and file deletion with accessible in-page confirmation dialogs after smoke testing showed native prompts were not reliably actionable in browser automation.
