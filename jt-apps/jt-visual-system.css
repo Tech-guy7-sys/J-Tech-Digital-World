@@ -137,3 +137,15 @@ html[data-jt-theme="light"] .jt-wh-dialog input,html[data-jt-theme="light"] .jt-
 @media(prefers-reduced-motion:reduce){.jt-workspace-home *{transition:none!important;scroll-behavior:auto!important}}
 
 .jt-wh-dialog .jt-wh-danger{background:linear-gradient(110deg,#ef8d9b,#d95c7b);border:0;color:#230b12}
+
+/* Workspace overview metrics */
+.jt-wh-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0 0}
+.jt-wh-overview>div{min-width:0;padding:13px 15px;border:1px solid var(--jt-line);border-radius:13px;background:linear-gradient(145deg,#17243a,#101a2b)}
+.jt-wh-overview span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#f3f6ff;font:700 18px Manrope,sans-serif;letter-spacing:-.4px}
+.jt-wh-overview small{display:block;margin-top:4px;color:#9eacc4;font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+.jt-wh-project.is-active{outline:1px solid color-mix(in srgb,var(--accent) 50%,transparent)}
+.jt-wh-project.is-active .jt-wh-project-icon:after{content:"✓";font-size:8px;margin-left:3px}
+html[data-jt-theme="light"] .jt-wh-overview>div{background:linear-gradient(145deg,#fff,#f2f5fc);border-color:#dfe5f0}
+html[data-jt-theme="light"] .jt-wh-overview span{color:#202941}
+html[data-jt-theme="light"] .jt-wh-overview small{color:#65718a}
+@media(max-width:600px){.jt-wh-overview{grid-template-columns:1fr 1fr}.jt-wh-overview>div:last-child{grid-column:1/-1}}
