@@ -44,7 +44,6 @@ jobs:
           node --check jt-apps/workspace-home.js
           node --check jt-ai-agent/workspace.js
           node --check functions/api/jeff.js
-          node --check jt-ai-agent/workspace.js
       - name: Run JT Cloud regression tests
         run: npm run test:jt-cloud
       - name: Build website for Cloudflare Pages
