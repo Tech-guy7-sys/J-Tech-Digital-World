@@ -24,6 +24,7 @@ const publicFiles = [
   "support.html",
   "modern-ui.css",
   "jt-home-creator.css",
+  "jt-app-section.css",
   "jt-creator-pages.css",
   "jt-theme-toggle.css",
   "jt-theme-toggle.js",
