@@ -28,3 +28,14 @@
 - GitHub Actions website build, JavaScript syntax, gateway validation tests, and static build checks passed for the merged change.
 - Live OpenRouter and Gemini smoke tests have not yet been performed because Cloudflare secret values and the deployed runtime cannot be inspected from the repository.
 - The release must not be published until GitHub Actions passes and the deployed gateway is smoke-tested with eligible free-tier credentials.
+
+
+## 0.3.0 — JT ecosystem visual refresh (in development)
+
+### Changed
+- Introduced a shared JT visual layer for app landing pages, product catalogue cards, the JT AI Agent conversation workspace, and the JT Stream Studio shell.
+- Added richer layered surfaces, clearer hierarchy, refined responsive spacing, keyboard focus states, and coordinated dark/light theme treatments.
+- Preserved each product's existing accent palette and underlying tools; this is a presentation refresh, not a claim that planned capabilities are implemented.
+
+### Verification
+- Visual and responsive browser checks are pending on the Cloudflare preview. This draft is not a public release.
