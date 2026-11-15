@@ -21,3 +21,5 @@ html[data-jt-theme="light"] .jtc-folder-dialog{background:#fff;color:#202941;bor
 html[data-jt-theme="light"] .jtc-folder-dialog label{color:#52617a}
 html[data-jt-theme="light"] .jtc-folder-dialog input{background:#f8f9fd;color:#202941;border-color:#dfe5f0}
 html[data-jt-theme="light"] .jtc-folder-dialog button:not(.jtc-folder-save){background:#fff;color:#35425a;border-color:#dfe5f0}
+
+.jtc-folder-dialog .jtc-delete-confirm{border:0;background:linear-gradient(110deg,#ef91a1,#d95d7c);color:#2b0d16}
