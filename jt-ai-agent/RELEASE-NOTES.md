@@ -1,5 +1,41 @@
 # JT AI Agent — Release Notes
 
+## 0.4.0 — Personal workspace tools (draft, 15 November 2026)
+
+**Status:** Implementation branch; awaiting deployment preview diagnosis and review.
+
+### Added
+- Pin and unpin conversations; pinned chats sort above other recent chats.
+- Organise conversations into named folders, with folder labels visible in the recent-chat list.
+- Save, reuse, and delete personal prompt templates in a browser-local prompt library.
+- Edit a previous user message and resend it as a new conversation branch, replacing later turns in that chat.
+- Regenerate the latest assistant answer from its original user prompt.
+- Save project context per conversation, with a separate default context for new chats.
+- Responsive controls and dark/light theme styling for the new workspace tools.
+
+### Storage and behaviour
+- Conversation history, folders, pins, prompt templates, and project context are stored in the current browser's local storage; they are not synchronised across devices or accounts.
+- Editing a message replaces the later turns in that conversation in this browser.
+- Regeneration sends a new request through the currently selected JT AI Core provider. It does not promise identical or deterministic output.
+- The prompt library contains user-authored templates only; it does not add external tools or integrations.
+
+
+## 0.3.0 — Conversational workspace redesign (draft, 15 November 2026)
+
+**Status:** Implementation branch; awaiting automated checks and merge.
+
+### Added
+- Reworked the welcome screen into a task-focused workspace with six guided starting points: project planning, coding, writing, learning, analysis, and work organisation.
+- Added compact prompt starters for common Copilot-style workflows.
+- Added contextual follow-up actions below assistant responses: practical example, step-by-step plan, and deeper explanation.
+- Refined conversation spacing, message hierarchy, responsive suggestion cards, composer proportions, and dark/light theme styling.
+- Preserved existing chats, file attachments, project context, provider selection, and JT app handoff.
+
+### Notes
+- Suggested prompts are user-triggered prompt templates; they do not imply that browsing, file-system access, or external tools are available unless separately connected.
+- This is a JT-branded design inspired by familiar AI workspace interaction patterns, not a copy of another product's branding or proprietary interface.
+
+
 ## 0.2.1 — OpenRouter and Gemini model selection (draft, 15 November 2026)
 
 **Status:** Merged to the main branch. Automated website build and gateway checks passed. Live provider smoke tests and deployed-endpoint verification are still pending. No public product release has been published.
