@@ -4,7 +4,7 @@
   if (!root) return;
   const DB_NAME = "jt-cloud-drive-files-v1";
   const ROOT_ID = "root";
-  const state = { db: null, folders: [], files: [], folderId: ROOT_ID, query: "" };
+  const state = { db: null, folders: [], files: [], folderId: ROOT_ID, query: "", editingFolderId: null };
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const id = () => globalThis.crypto?.randomUUID ? crypto.randomUUID() : "jt-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
   const fmtSize = n => { if (!Number.isFinite(n) || n < 0) return "—"; if (n < 1024) return n+" B"; const units=["KB","MB","GB","TB"]; let v=n/1024, i=0; while(v>=1024 && i<units.length-1){v/=1024;i++;} return v.toFixed(v>=10?1:2)+" "+units[i]; };
@@ -86,15 +86,37 @@
         </section>
       </div>
       <footer class="jtc-drive-disclosure"><b>Important:</b> Upload here means saving file contents into browser-managed storage on this device. It does not transfer files to JT servers or create cloud backup. A real multi-device JT Cloud service still needs an authenticated storage backend, access controls, and server-side quota tracking.</footer>
+      <dialog class="jtc-folder-dialog" data-cloud-folder-dialog>
+        <form data-cloud-folder-form>
+          <span class="jtc-kicker">FOLDER MANAGEMENT</span>
+          <h3 data-cloud-folder-dialog-title>Create a folder</h3>
+          <label>Folder name<input name="folderName" maxlength="80" required placeholder="e.g. Website assets"></label>
+          <div><button type="button" data-cloud-folder-cancel>Cancel</button><button class="jtc-folder-save" type="submit" data-cloud-folder-submit>Create folder</button></div>
+        </form>
+      </dialog>
     </div>`;
   root.addEventListener("click",async event=>{
     const open=event.target.closest("[data-open-folder]");if(open){state.folderId=open.dataset.openFolder;state.query="";root.querySelector("[data-cloud-search]").value="";render();return;}
-    const create=event.target.closest("[data-new-folder]");if(create){const name=prompt("Name this folder");if(!name||!name.trim())return;const clean=name.trim().slice(0,80);if(state.folders.some(f=>f.parentId===state.folderId&&f.name.toLowerCase()===clean.toLowerCase())){status("A folder with that name already exists here.",true);return;}try{await run(["folders"],"readwrite",tx=>tx.objectStore("folders").add({id:id(),name:clean,parentId:state.folderId,createdAt:new Date().toISOString()}));await refresh();status("Folder created in this browser.");}catch(e){status(e.message,true);}return;}
-    const rename=event.target.closest("[data-rename-folder]");if(rename){const folder=state.folders.find(f=>f.id===rename.dataset.renameFolder);if(!folder)return;const name=prompt("Rename folder",folder.name);if(!name||!name.trim())return;folder.name=name.trim().slice(0,80);await run(["folders"],"readwrite",tx=>tx.objectStore("folders").put(folder));await refresh();status("Folder renamed.");return;}
+    const create=event.target.closest("[data-new-folder]");if(create){state.editingFolderId=null;const form=root.querySelector("[data-cloud-folder-form]");form.reset();root.querySelector("[data-cloud-folder-dialog-title]").textContent="Create a folder";root.querySelector("[data-cloud-folder-submit]").textContent="Create folder";root.querySelector("[data-cloud-folder-dialog]").showModal();form.elements.folderName.focus();return;}
+    const rename=event.target.closest("[data-rename-folder]");if(rename){const folder=state.folders.find(f=>f.id===rename.dataset.renameFolder);if(!folder)return;state.editingFolderId=folder.id;const form=root.querySelector("[data-cloud-folder-form]");form.reset();form.elements.folderName.value=folder.name;root.querySelector("[data-cloud-folder-dialog-title]").textContent="Rename folder";root.querySelector("[data-cloud-folder-submit]").textContent="Save name";root.querySelector("[data-cloud-folder-dialog]").showModal();form.elements.folderName.focus();return;}
     const deleteFolder=event.target.closest("[data-delete-folder]");if(deleteFolder){const folder=state.folders.find(f=>f.id===deleteFolder.dataset.deleteFolder);if(!folder)return;if(state.folders.some(f=>f.parentId===folder.id)||state.files.some(f=>f.folderId===folder.id)){status("Move or delete the folder's contents first.",true);return;}if(!confirm("Delete the empty folder '"+folder.name+"'?"))return;await run(["folders"],"readwrite",tx=>tx.objectStore("folders").delete(folder.id));await refresh();status("Empty folder deleted.");return;}
     const downloadButton=event.target.closest("[data-download-file]");if(downloadButton){const file=state.files.find(f=>f.id===downloadButton.dataset.downloadFile);if(!file)return;const url=URL.createObjectURL(file.blob);const a=document.createElement("a");a.href=url;a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);status("Download prepared: "+file.name);return;}
     const deleteFile=event.target.closest("[data-delete-file]");if(deleteFile){const file=state.files.find(f=>f.id===deleteFile.dataset.deleteFile);if(!file||!confirm("Delete '"+file.name+"' from this browser's local vault?"))return;await run(["files"],"readwrite",tx=>tx.objectStore("files").delete(file.id));await refresh();status("Removed "+file.name+" from this browser's vault.");return;}
     if(event.target.closest("[data-refresh-storage]")){await renderStorage();status("Storage estimate refreshed.");}
+  });
+  root.querySelector("[data-cloud-folder-cancel]")?.addEventListener("click",()=>root.querySelector("[data-cloud-folder-dialog]").close());
+  root.querySelector("[data-cloud-folder-form]")?.addEventListener("submit",async event=>{
+    event.preventDefault();
+    const name=String(new FormData(event.currentTarget).get("folderName")||"").trim().slice(0,80);
+    if(!name)return;
+    const existing=state.folders.find(f=>f.id===state.editingFolderId);
+    const parentId=existing?existing.parentId:state.folderId;
+    if(state.folders.some(f=>f.id!==state.editingFolderId&&f.parentId===parentId&&f.name.toLowerCase()===name.toLowerCase())){status("A folder with that name already exists here.",true);return;}
+    try{
+      if(existing){existing.name=name;await run(["folders"],"readwrite",tx=>tx.objectStore("folders").put(existing));status("Folder renamed.");}
+      else{await run(["folders"],"readwrite",tx=>tx.objectStore("folders").add({id:id(),name,parentId,createdAt:new Date().toISOString()}));status("Folder created in this browser.");}
+      root.querySelector("[data-cloud-folder-dialog]").close();state.editingFolderId=null;await refresh();
+    }catch(error){status(error.message||"Could not save folder.",true);}
   });
   root.addEventListener("change",async event=>{
     if(event.target.matches("[data-cloud-upload]")){await upload([...event.target.files||[]]);event.target.value="";return;}
