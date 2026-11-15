@@ -41,7 +41,7 @@ export async function onRequestPost({ request, env }) {
   if (reserve.meta?.changes !== 1) return cloudReply({ error: "quota_exceeded", message: "This upload would exceed your JT Cloud storage allowance." }, 413);
   let object;
   try {
-    object = await auth.bucket.put(key, request.body, { httpMetadata: { contentType: meta.mime }, customMetadata: { owner: auth.user.id, fileId: id } });
+    object = await auth.bucket.put(key, limitUploadStream(request.body, meta.size), { httpMetadata: { contentType: meta.mime }, customMetadata: { owner: auth.user.id, fileId: id } });
     await auth.db.prepare("INSERT INTO cloud_files (id,user_id,folder_id,object_key,name,mime_type,size_bytes,etag,status,created_at,updated_at) VALUES (?,?,NULL,?,?,?,?,?,'ready',?,?)")
       .bind(id, auth.user.id, key, meta.name, meta.mime, meta.size, object?.etag || null, now, now).run();
   } catch {
