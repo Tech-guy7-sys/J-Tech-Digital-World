@@ -1,4 +1,4 @@
-import { cloudUser, cloudReply, uploadMetadata, encodeCursor, decodeCursor, DEFAULT_QUOTA_BYTES } from "./_shared.js";
+import { cloudUser, cloudReply, uploadMetadata, limitUploadStream, encodeCursor, decodeCursor, DEFAULT_QUOTA_BYTES } from "./_shared.js";
 
 export async function onRequestGet({ request, env }) {
   const auth = await cloudUser(request, env);
