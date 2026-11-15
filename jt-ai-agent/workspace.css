@@ -109,3 +109,10 @@ html[data-jt-theme="light"] .toast{background:#fff!important;border-color:#dfe4f
 html[data-jt-theme="light"] .message-actions button{background:#fff!important;border-color:#dfe3ef!important;color:#59617c!important}
 html[data-jt-theme="light"] .message-actions button:hover{background:#f0efff!important;color:#49417d!important}
 @media(prefers-reduced-motion:reduce){.suggestions button:after{display:none}.send-button{transition:none}}
+
+/* Generation control: allow the user to cancel a long-running provider request. */
+.stop-button{border:1px solid rgba(239,116,116,.35);background:rgba(239,116,116,.09);color:#e89a9a;border-radius:10px;padding:9px 13px;font:inherit;font-size:12px;font-weight:650;cursor:pointer;transition:background .15s,border-color .15s}
+.stop-button:hover:not(:disabled){background:rgba(239,116,116,.16);border-color:rgba(239,116,116,.6)}
+.stop-button:disabled{opacity:.55;cursor:wait}
+.stop-button[hidden]{display:none!important}
+html[data-jt-theme="light"] .stop-button{color:#a43c46;background:#fff3f3;border-color:#f0c8cb}
