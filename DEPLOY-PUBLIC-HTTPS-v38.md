@@ -6,7 +6,7 @@ This package is prepared so the JT Digital World website can be published at a n
 
 Recommended deployment:
 
-Microsoft Edge → HTTPS custom domain → Cloudflare Pages → `Website/public/`
+Microsoft Edge → HTTPS custom domain → Cloudflare Pages → repository root build → `dist/`
 
 The website is a static HTML/CSS/JavaScript site with Cloudflare Pages Functions under `Website/functions/`.
 
@@ -55,12 +55,14 @@ Use these exact build settings:
 | Setting | Value |
 |---|---|
 | Production branch | `main` |
-| Root directory | `Website` |
-| Build command | `exit 0` |
-| Build output directory | `public` |
-|
+| Root directory | **Blank** (repository root) |
+| Build command | `npm run build:website` |
+| Build output directory | `dist` |
+| Node.js version | `22` |
 
-No npm build is required for the current static website.
+These values match the repository's `package.json`, `scripts/build-site.mjs`, and `wrangler.toml`. The build script copies the public website into `dist/`; the Pages Functions source remains in the root-level `functions/` directory. Do not set the root directory to `Website`: this repository does not have a `Website/` directory.
+
+If the existing Cloudflare project still has the old `Website` / `exit 0` / `public` settings, update them in **Workers & Pages → jt-digital-world-new → Settings → Builds & deployments**. Keep the root directory empty. Then save the settings and retry the failed preview deployment.
 
 After the first deployment, Cloudflare will provide a temporary address similar to:
 
@@ -69,6 +71,16 @@ After the first deployment, Cloudflare will provide a temporary address similar 
 Test that address before connecting the custom domain.
 
 ---
+
+## 2A. Verify the build before connecting the domain
+
+From the repository root, run:
+
+```bash
+npm run build:website
+```
+
+Confirm that `dist/index.html`, `dist/home.html`, `dist/apps.html`, and `dist/style.css` exist. The GitHub Actions workflow performs these checks automatically before its optional Wrangler deployment.
 
 ## 3. Add the production custom domain
 
