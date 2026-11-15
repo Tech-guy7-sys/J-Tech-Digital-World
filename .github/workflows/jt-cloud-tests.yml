@@ -10,6 +10,13 @@ on:
     paths:
       - "jt-apps/jt-cloud/**"
       - "jt-apps/jt-cloud-drive.*"
+      - "jt-apps/jt-cloud-remote.*"
+      - "functions/api/cloud/**"
+      - "functions/api/jeff.js"
+      - "db/cloud-schema.sql"
+      - "jt-ai-agent/**"
+      - "scripts/test-jt-cloud-api.mjs"
+      - "scripts/test-jeff-api.mjs"
       - "scripts/test-jt-cloud-drive.mjs"
       - "scripts/build-site.mjs"
       - "package.json"
