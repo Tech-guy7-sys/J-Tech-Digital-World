@@ -1,7 +1,8 @@
 const AI_PROVIDERS = [
   { id: "openrouter", name: "OpenRouter free models", costClass: "free-tier", secrets: ["OPENROUTER_API_KEY"] },
   { id: "google-ai-studio", name: "Google Gemini free tier", costClass: "free-tier-project-required", secrets: ["GEMINI_API_KEY", "GEMINI_FREE_TIER_CONFIRMED"] },
-  { id: "groq", name: "Groq free tier", costClass: "free-tier", secrets: ["GROQ_API_KEY", "GROQ_FREE_TIER_CONFIRMED"] }
+  { id: "groq", name: "Groq free tier", costClass: "free-tier", secrets: ["GROQ_API_KEY", "GROQ_FREE_TIER_CONFIRMED"] },
+  { id: "cloudflare-workers-ai", name: "Cloudflare Workers AI free allocation", costClass: "free-tier-plan-required", secrets: ["CLOUDFLARE_WORKERS_PLAN", "CLOUDFLARE_AI_FREE_TIER_CONFIRMED"], binding: "AI", capabilities: ["image-generation"] }
 ];
 const CONNECTORS = [
   ["github","GitHub","Developer tools","Link your GitHub identity. Repository access will use a separate read-only GitHub App installation.","read","GitHub OAuth app for identity; GitHub App with read-only repository permissions for project access"],
@@ -30,8 +31,9 @@ const CONNECTORS = [
 export async function onRequestGet({env}) {
   const providers = AI_PROVIDERS.map(p => ({
     id:p.id,name:p.name,costClass:p.costClass,
-    configured:p.secrets.every(k=>Boolean(env?.[k])),
-    requiredSecrets:p.secrets
+    configured:p.secrets.every(k=>Boolean(env?.[k])) && (!p.binding || typeof env?.[p.binding]?.run === "function"),
+    requiredSecrets:p.secrets,
+    capabilities:p.capabilities || []
   }));
   const connectors = CONNECTORS.map(([id,name,category,description,access,setup]) => ({
     id,name,category,description,access,
