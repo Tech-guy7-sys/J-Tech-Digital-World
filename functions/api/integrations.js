@@ -1,7 +1,7 @@
 const AI_PROVIDERS = [
   { id: "openrouter", name: "OpenRouter free models", costClass: "free-tier", secrets: ["OPENROUTER_API_KEY"] },
-  { id: "google-ai-studio", name: "Google Gemini free tier", costClass: "free-tier-project-required", secrets: ["GEMINI_API_KEY"] },
-  { id: "groq", name: "Groq free tier", costClass: "free-tier", secrets: ["GROQ_API_KEY"] }
+  { id: "google-ai-studio", name: "Google Gemini free tier", costClass: "free-tier-project-required", secrets: ["GEMINI_API_KEY", "GEMINI_FREE_TIER_CONFIRMED"] },
+  { id: "groq", name: "Groq free tier", costClass: "free-tier", secrets: ["GROQ_API_KEY", "GROQ_FREE_TIER_CONFIRMED"] }
 ];
 const CONNECTORS = [
   ["github","GitHub","Developer tools","Link your GitHub identity. Repository access will use a separate read-only GitHub App installation.","read","GitHub OAuth app for identity; GitHub App with read-only repository permissions for project access"],
