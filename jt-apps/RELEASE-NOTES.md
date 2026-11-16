@@ -157,3 +157,17 @@
 
 ### Storage boundary
 - Drag-and-drop and duplicate detection operate entirely in the browser's IndexedDB vault. They do not upload content to JT servers or enable cross-device synchronization.
+
+## Unreleased — Shared projects and reviewed app handoffs
+
+### Added
+- Added a shared project shelf available across JT app workspaces in the same browser and website origin.
+- Added app-to-app handoff requests with explicit source app, destination app, optional shared project reference, and bounded task text.
+- Added target-app-only approval/decline controls and a completion transition, with a local audit trail.
+- Added cross-tab refresh so changes made in one JT workspace appear in other open JT workspace tabs.
+
+### Permission and storage boundaries
+- Shared projects and handoffs are stored in browser localStorage; they do not sync to the server or across devices.
+- Only project name, project summary, and the specific task text are included. Files, credentials, and desktop permissions are never attached.
+- A handoff is a reviewed task brief, not remote tool execution. Approval does not run actions in another app.
+- Agent Jeff desktop/device control remains isolated to the dedicated Agent Jeff application and its own permission and audit controls.
