@@ -6,6 +6,8 @@ on:
     paths:
       - "desktop/jt-workspace-shell/**"
       - "scripts/build-jt-desktop-apps.mjs"
+      - "scripts/generate-jt-app-icons.mjs"
+      - "scripts/test-jt-app-icons.mjs"
       - "scripts/build-site.mjs"
       - "jt-apps/**"
       - "package.json"
