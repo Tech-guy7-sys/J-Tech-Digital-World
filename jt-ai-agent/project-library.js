@@ -1,0 +1,43 @@
+(()=>{"use strict";
+const panel=document.getElementById("projectPanel");
+const textarea=document.getElementById("projectContextInput");
+const saveButton=document.getElementById("saveProjectContext");
+const status=document.getElementById("projectContextStatus");
+if(!panel||!textarea||!saveButton||document.getElementById("jeffProjectLibrary"))return;
+const LIBRARY_KEY="jt-ai-agent.project-library.v1";
+const ACTIVE_KEY="jt-ai-agent.project-library.active.v1";
+const CONTEXT_KEY="jt-ai-agent.project-context.v1";
+const MAX_PROFILES=12,MAX_CONTEXT=4000;
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const cleanName=value=>String(value||"").trim().replace(/[\u0000-\u001f\u007f]/g,"").slice(0,48);
+const read=(key,fallback)=>{try{const value=JSON.parse(localStorage.getItem(key)||"null");return value??fallback}catch{return fallback}};
+let profiles=read(LIBRARY_KEY,[]);
+if(!Array.isArray(profiles))profiles=[];
+profiles=profiles.filter(p=>p&&typeof p.id==="string"&&typeof p.name==="string"&&typeof p.context==="string").slice(0,MAX_PROFILES).map(p=>({id:p.id,name:cleanName(p.name)||"Project",context:p.context.slice(0,MAX_CONTEXT)}));
+if(!profiles.length){let legacy="";try{legacy=localStorage.getItem(CONTEXT_KEY)||""}catch{}profiles=[{id:uid(),name:legacy.trim()?"My project":"New project",context:legacy.slice(0,MAX_CONTEXT)}]}
+let activeId="";try{activeId=localStorage.getItem(ACTIVE_KEY)||""}catch{}
+if(!profiles.some(p=>p.id===activeId))activeId=profiles[0].id;
+const current=()=>profiles.find(p=>p.id===activeId)||profiles[0];
+const persist=()=>{try{localStorage.setItem(LIBRARY_KEY,JSON.stringify(profiles));localStorage.setItem(ACTIVE_KEY,activeId)}catch{if(status)status.textContent="Browser storage is full; export or remove a project."}};
+const syncCurrent=()=>{const p=current();if(!p)return;p.context=textarea.value.slice(0,MAX_CONTEXT);try{localStorage.setItem(CONTEXT_KEY,p.context)}catch{}persist()};
+const loadCurrent=()=>{const p=current();if(!p)return;textarea.value=p.context;try{localStorage.setItem(CONTEXT_KEY,p.context)}catch{}render();if(status)status.textContent="Active: "+p.name+" · stored in this browser"};
+const toolbar=document.createElement("div");toolbar.id="jeffProjectLibrary";toolbar.className="project-profile-toolbar";
+const label=document.createElement("label");label.className="project-profile-label";label.htmlFor="jeffProjectSelect";label.textContent="PROJECT LIBRARY";
+const select=document.createElement("select");select.id="jeffProjectSelect";select.setAttribute("aria-label","Select saved project context");
+const actions=document.createElement("div");actions.className="project-profile-actions";
+const add=document.createElement("button");add.type="button";add.className="secondary-small";add.textContent="+ New project";
+const remove=document.createElement("button");remove.type="button";remove.className="secondary-small";remove.textContent="Delete";
+const exportButton=document.createElement("button");exportButton.type="button";exportButton.className="secondary-small";exportButton.textContent="Export library";
+const importButton=document.createElement("button");importButton.type="button";importButton.className="secondary-small";importButton.textContent="Import library";const importInput=document.createElement("input");importInput.type="file";importInput.accept=".json,application/json";importInput.hidden=true;importInput.setAttribute("aria-label","Import a JT AI project library backup");actions.append(add,remove,exportButton,importButton);toolbar.append(label,select,actions,importInput);
+panel.insertBefore(toolbar,textarea);
+function render(){select.replaceChildren();profiles.forEach(p=>{const option=document.createElement("option");option.value=p.id;option.textContent=p.name;select.append(option)});select.value=activeId;remove.disabled=profiles.length===1}
+select.addEventListener("change",()=>{syncCurrent();activeId=select.value;loadCurrent()});
+add.addEventListener("click",()=>{if(profiles.length>=MAX_PROFILES){if(status)status.textContent="Project library limit reached (12). Delete or export a project first.";return}const name=cleanName(prompt("Name this project context:"));if(!name)return;if(profiles.some(p=>p.name.toLowerCase()===name.toLowerCase())){if(status)status.textContent="A project with that name already exists.";return}syncCurrent();const p={id:uid(),name,context:""};profiles.push(p);activeId=p.id;persist();loadCurrent();textarea.focus()});
+remove.addEventListener("click",()=>{const p=current();if(profiles.length<=1||!p)return;if(!confirm('Delete the "'+p.name+'" project context from this browser?'))return;profiles=profiles.filter(x=>x.id!==p.id);activeId=profiles[0].id;persist();loadCurrent()});
+saveButton.addEventListener("click",()=>{syncCurrent();if(status)status.textContent="Saved: "+current().name+" · this browser only"});
+document.getElementById("clearProjectContext")?.addEventListener("click",()=>{if(!current())return;current().context="";persist();if(status)status.textContent="Cleared: "+current().name});
+importButton.addEventListener("click",()=>importInput.click());
+importInput.addEventListener("change",async()=>{const file=importInput.files?.[0];importInput.value="";if(!file)return;if(file.size>128*1024){if(status)status.textContent="Import file is too large (128 KB maximum).";return}try{const data=JSON.parse(await file.text());if(data?.type!=="project-context-library"||data?.schemaVersion!==1||!Array.isArray(data.projects)){throw new Error("This is not a supported JT AI project library backup.")}const incoming=data.projects.filter(p=>p&&typeof p.name==="string"&&typeof p.context==="string").slice(0,MAX_PROFILES);if(!incoming.length)throw new Error("The backup contains no valid project contexts.");syncCurrent();let added=0;for(const item of incoming){if(profiles.length>=MAX_PROFILES)break;const name=cleanName(item.name);if(!name||profiles.some(p=>p.name.toLowerCase()===name.toLowerCase()))continue;profiles.push({id:uid(),name,context:item.context.slice(0,MAX_CONTEXT)});added++}if(!added)throw new Error("No new projects were imported. Names may already exist or the library is full.");persist();render();if(status)status.textContent=added+" project context(s) imported. Select one above."}catch(error){if(status)status.textContent=error.message||"Could not import that project library."}});
+exportButton.addEventListener("click",()=>{syncCurrent();const payload={product:"JT AI Agent",type:"project-context-library",schemaVersion:1,exportedAt:new Date().toISOString(),activeProjectId:activeId,projects:profiles};const blob=new Blob([JSON.stringify(payload,null,2)+ "\n"],{type:"application/json;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="jt-ai-project-library.json";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);if(status)status.textContent="Project library exported"});
+render();loadCurrent();
+})();

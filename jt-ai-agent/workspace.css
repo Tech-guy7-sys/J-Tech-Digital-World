@@ -132,3 +132,7 @@ html[data-jt-theme="light"] .stop-button{color:#a43c46;background:#fff3f3;border
 .recent-folder-select{max-width:72px;min-width:0;border:0;background:#171824;color:#85879b;border-radius:5px;padding:4px 2px;font:9px 'DM Sans',sans-serif}
 .recent-folder-select:focus,.chat-folder-controls select:focus,.chat-folder-controls button:focus-visible,.recent-pin:focus-visible{outline:2px solid #9a7cff;outline-offset:2px}
 @media(max-width:760px){.recent-folder-select{max-width:64px}.chat-folder-controls button{padding:7px 6px}}
+
+/* Jeff AI project context library */
+.project-profile-toolbar{display:grid;grid-template-columns:1fr;gap:7px;margin:0 0 12px;padding:11px;border:1px solid #e2e5f0;border-radius:12px;background:#f7f8fd}.project-profile-label{font-size:9px;font-weight:800;letter-spacing:1.2px;color:#777f98}.project-profile-toolbar select{width:100%;min-width:0;padding:9px 10px;border:1px solid #dfe3ef;border-radius:9px;background:#fff;color:#252943;font:12px inherit}.project-profile-actions{display:flex;gap:7px;flex-wrap:wrap}.project-profile-actions button{padding:7px 9px}.project-profile-actions button:disabled{opacity:.45;cursor:not-allowed}html[data-jt-theme="dark"] .project-profile-toolbar{background:#1b1c2c;border-color:#35374d}html[data-jt-theme="dark"] .project-profile-label{color:#a2a5bb}html[data-jt-theme="dark"] .project-profile-toolbar select{background:#111220;border-color:#35374d;color:#f0f0fb}
+@media(max-width:560px){.project-panel{right:12px;left:12px;width:auto}.project-profile-actions button{flex:1}}
