@@ -8,7 +8,8 @@
     "test:jt-cloud": "node --test scripts/test-jt-cloud-drive.mjs scripts/test-jt-cloud-api.mjs && node scripts/test-jeff-api.mjs",
     "test:jeff-context": "node --test scripts/test-jeff-project-context.mjs",
     "test:jt-workspace": "node --test scripts/test-jt-workspace-shell.mjs",
-    "test:jt-design": "node --test scripts/test-jt-design-image-import.mjs scripts/test-jt-design-templates.mjs"
+    "test:jt-design": "node --test scripts/test-jt-design-image-import.mjs scripts/test-jt-design-templates.mjs",
+    "test:jt-workspace-dashboard": "node --test scripts/test-jt-workspace-dashboard.mjs"
   },
   "engines": {
     "node": ">=22"
