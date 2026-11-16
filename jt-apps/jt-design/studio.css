@@ -45,3 +45,10 @@ body{background:#eef1f5;color:#202938}
 .ds-toast{border-radius:8px;font-size:11px}
 @media(max-width:1000px){.ds-workspace{grid-template-columns:200px minmax(0,1fr) 250px}}
 @media(max-width:760px){.ds-topbar{height:auto;min-height:60px}.ds-workspace{height:auto;min-height:calc(100vh - 100px)}.ds-stage{padding:18px}}
+
+/* Precision editing controls */
+.ds-handle{pointer-events:all;cursor:nwse-resize}
+.ds-snap-toggle{display:inline-flex;align-items:center;gap:5px;color:#697487;font-size:9px;white-space:nowrap;cursor:pointer}
+.ds-snap-toggle input{width:13px;height:13px;accent-color:#5148b8;margin:0}
+.ds-zoom{flex-wrap:wrap}
+@media(max-width:760px){.ds-snap-toggle{font-size:8px}.ds-presets{gap:5px}.ds-canvas-toolbar{padding:0 9px}}
