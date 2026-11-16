@@ -79,10 +79,11 @@ const palettes = {"jt-ai-agent":[38,174,255],"jt-ai-core":[104,115,255],"jt-app-
 for (const appId of apps) {
   const [accentR, accentG, accentB] = palettes[appId];
   const images = sizes.map(size => png(size, [accentR, accentG, accentB]));
-  const icoHeader = Buffer.alloc(6 + images.length * 16);
-  icoHeader.writeUInt16LE(0,0); icoHeader.writeUInt16LE(1,2); icoHeader.writeUInt16LE(images.length,4);
+  const icoImages = images.slice(0, 7);
+  const icoHeader = Buffer.alloc(6 + icoImages.length * 16);
+  icoHeader.writeUInt16LE(0,0); icoHeader.writeUInt16LE(1,2); icoHeader.writeUInt16LE(icoImages.length,4);
   let offset = icoHeader.length;
-  images.forEach((img, i) => {
+  icoImages.forEach((img, i) => {
     const pos = 6 + i * 16;
     icoHeader[pos] = sizes[i] === 256 ? 0 : sizes[i];
     icoHeader[pos+1] = sizes[i] === 256 ? 0 : sizes[i];
