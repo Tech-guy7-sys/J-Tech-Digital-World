@@ -56,6 +56,8 @@ jobs:
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
           node --check jt-apps/command-deck.js
+          node --check jt-apps/shared-workspace-core.js
+          node --check jt-apps/shared-workspace.js
           grep -q "AI coding-agent handoff" jt-apps/pro-workspaces.js
           grep -q "Cloud provider connectors" jt-apps/pro-workspaces.js
           grep -q "Provider and agent compatibility" jt-apps/pro-workspaces.js
@@ -65,6 +67,8 @@ jobs:
       - name: Test JT AI gateway request validation
         run: node scripts/test-jeff-api.mjs
           node scripts/test-image-api.mjs
+      - name: Test shared JT project notes and handoff permissions
+        run: node scripts/test-shared-workspace.mjs
       - name: Build public website files
         run: npm run build:website
       - name: Verify required output
