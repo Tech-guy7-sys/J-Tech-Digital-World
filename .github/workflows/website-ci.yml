@@ -13,6 +13,7 @@ on:
       - "scripts/build-site.mjs"
       - "functions/**"
       - "scripts/test-jeff-api.mjs"
+      - "scripts/test-jeff-project-context.mjs"
       - "package.json"
       - "wrangler.toml"
       - ".github/workflows/website-ci.yml"
@@ -47,6 +48,7 @@ jobs:
         run: |
           node --check scripts/build-site.mjs
           node --check jt-ai-agent/workspace.js
+          node --check jt-ai-agent/project-context.js
           node --check functions/api/jeff.js
           node --check functions/api/integrations.js
           node --check functions/api/create-image.js
@@ -67,6 +69,8 @@ jobs:
       - name: Test JT AI gateway request validation
         run: node scripts/test-jeff-api.mjs
           node scripts/test-image-api.mjs
+      - name: Test opt-in Jeff AI shared project context
+        run: node scripts/test-jeff-project-context.mjs
       - name: Test shared JT project notes and handoff permissions
         run: node scripts/test-shared-workspace.mjs
       - name: Build public website files
@@ -83,6 +87,8 @@ jobs:
           test -f dist/jt-apps/jt-stream/studio.html
           test -f dist/jt-apps/jt-stream/studio.css
           test -f dist/jt-ai-agent/workspace.js
+          test -f dist/jt-ai-agent/project-context.js
+          grep -q type=module dist/jt-ai-agent/index.html
           test -f dist/jt-apps/jt-design/image-studio.js
           grep -q "jtImageStudio" dist/jt-apps/jt-design/index.html
           grep -q "image-studio.js" dist/jt-apps/jt-design/index.html
