@@ -19,6 +19,8 @@ on:
       - "jt-apps/workspace-home.js"
       - "jt-apps/workspace-tools.js"
       - "jt-apps/pro-workspaces.js"
+      - "jt-apps/app-power-tools.js"
+      - "jt-apps/app.js"
       - "jt-apps/RELEASE-NOTES.md"
       - "pricing.html"
       - "scripts/test-jt-cloud-api.mjs"
@@ -49,6 +51,8 @@ jobs:
           node --check jt-apps/workspace-home.js
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
+          node --check jt-apps/app-power-tools.js
+          node --check jt-apps/app.js
           node --check jt-ai-agent/workspace.js
           node --check functions/api/jeff.js
       - name: Run JT Cloud regression tests
