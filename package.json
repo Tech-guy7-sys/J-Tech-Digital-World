@@ -11,7 +11,8 @@
     "test:jt-design": "node --test scripts/test-jt-design-image-import.mjs scripts/test-jt-design-templates.mjs",
     "test:jt-workspace-dashboard": "node --test scripts/test-jt-workspace-dashboard.mjs",
     "test:jt-code": "node --test scripts/test-jt-code-checks.mjs",
-    "test:jeff-ai-library": "node --test scripts/test-jeff-ai-library.mjs"
+    "test:jeff-ai-library": "node --test scripts/test-jeff-ai-library.mjs",
+    "test:jt-cloud-files": "node --test scripts/test-jt-cloud-file-controls.mjs"
   },
   "engines": {
     "node": ">=22"

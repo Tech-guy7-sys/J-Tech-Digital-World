@@ -19,6 +19,7 @@ on:
       - "scripts/test-jt-workspace-dashboard.mjs"
       - "scripts/test-jt-code-checks.mjs"
       - "scripts/test-jeff-ai-library.mjs"
+      - "scripts/test-jt-cloud-file-controls.mjs"
       - "scripts/test-jt-design-image-import.mjs"
       - "scripts/test-jt-design-templates.mjs"
       - "scripts/generate-jt-app-icons.mjs"
@@ -73,11 +74,12 @@ jobs:
           node --check jt-apps/jt-cloud-drive.js
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
-          node --test scripts/test-jt-code-checks.mjs scripts/test-jeff-ai-library.mjs
+          node --test scripts/test-jt-code-checks.mjs scripts/test-jeff-ai-library.mjs scripts/test-jt-cloud-file-controls.mjs
           node --check jt-apps/command-deck.js
           node --check jt-apps/product-shell.js
           node --check jt-apps/workspace-dashboard.js
           node --check jt-ai-agent/library.js
+          node --check jt-apps/jt-cloud-remote.js
           node --test scripts/test-jt-workspace-shell.mjs scripts/test-jt-workspace-dashboard.mjs
           node --check jt-apps/jt-design/studio.js
           node --test scripts/test-jt-design-image-import.mjs scripts/test-jt-design-templates.mjs
