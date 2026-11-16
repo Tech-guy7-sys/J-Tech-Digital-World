@@ -31,7 +31,7 @@ const glyphs = {
   J: ["11111","00100","00100","00100","00100","10100","11100"],
   T: ["11111","11111","00100","00100","00100","00100","00100"]
 };
-function png(size) {
+function png(size, accent = [38, 174, 255]) {
   const stride = size * 4;
   const raw = Buffer.alloc((stride + 1) * size);
   const scale = size / 512;
@@ -50,7 +50,7 @@ function png(size) {
       if (!inside) continue;
       const edge = Math.min(x, y, size - 1 - x, size - 1 - y);
       let r = 8, g = 15, b = 37;
-      if (edge < Math.max(2, size * .025)) { r = 38; g = 174; b = 255; }
+      if (edge < Math.max(2, size * .025)) { r = accent[0]; g = accent[1]; b = accent[2]; }
       const t = x / Math.max(1, size - 1);
       const glyphX = x - startX, glyphY = y - startY;
       let letter = false, isJ = false;
@@ -61,7 +61,7 @@ function png(size) {
         if (gx >= 0 && col >= 0 && col < 5 && rowIndex >= 0 && rowIndex < 7 && glyphs[li === 0 ? "J" : "T"][rowIndex][col] === "1") { letter = true; isJ = li === 0; break; }
       }
       if (letter) {
-        if (isJ) { r = 86; g = Math.round(190 + 55*t); b = 255; }
+        if (isJ) { r = Math.min(255, accent[0] + 40); g = Math.min(255, accent[1] + 45); b = Math.min(255, accent[2] + 30); }
         else { r = 238; g = 246; b = 255; }
       }
       const p = row + 1 + x * 4;
@@ -74,23 +74,28 @@ function png(size) {
   return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]), chunk("IHDR", ihdr), chunk("IDAT", deflateSync(raw, { level: 9 })), chunk("IEND", Buffer.alloc(0))]);
 }
 const sizes = [16, 24, 32, 48, 64, 128, 256, 512];
-const images = sizes.map(png);
-const icoHeader = Buffer.alloc(6 + images.length * 16);
-icoHeader.writeUInt16LE(0,0); icoHeader.writeUInt16LE(1,2); icoHeader.writeUInt16LE(images.length,4);
-let offset = icoHeader.length;
-images.forEach((img, i) => {
-  const pos = 6 + i * 16;
-  icoHeader[pos] = sizes[i] === 256 ? 0 : sizes[i];
-  icoHeader[pos+1] = sizes[i] === 256 ? 0 : sizes[i];
-  icoHeader.writeUInt16LE(1,pos+4); icoHeader.writeUInt16LE(32,pos+6);
-  icoHeader.writeUInt32LE(img.length,pos+8); icoHeader.writeUInt32LE(offset,pos+12);
-  offset += img.length;
-});
-await writeFile(path.join(out, "jt-app.png"), images[7]);
-await writeFile(path.join(out, "jt-app.ico"), Buffer.concat([icoHeader, ...images]));
-const icnsPayload = images[7];
-const icns = Buffer.alloc(8 + 8 + icnsPayload.length);
-icns.write("icns",0); icns.writeUInt32BE(icns.length,4);
-icns.write("ic09",8); icns.writeUInt32BE(8 + icnsPayload.length,12); icnsPayload.copy(icns,16);
-await writeFile(path.join(out, "jt-app.icns"), icns);
-console.log("Generated JT PNG, multi-size Windows ICO, and macOS ICNS icons.");
+const apps = ["jt-ai-agent","jt-ai-core","jt-app-manager","jt-cloud","jt-code","jt-design","jt-motion","jt-studio","jt-stream"];
+const palettes = {"jt-ai-agent":[38,174,255],"jt-ai-core":[104,115,255],"jt-app-manager":[39,205,170],"jt-cloud":[40,164,245],"jt-code":[245,166,35],"jt-design":[207,95,255],"jt-motion":[255,103,128],"jt-studio":[45,210,180],"jt-stream":[255,80,110]};
+for (const appId of apps) {
+  const [accentR, accentG, accentB] = palettes[appId];
+  const images = sizes.map(size => png(size, [accentR, accentG, accentB]));
+  const icoHeader = Buffer.alloc(6 + images.length * 16);
+  icoHeader.writeUInt16LE(0,0); icoHeader.writeUInt16LE(1,2); icoHeader.writeUInt16LE(images.length,4);
+  let offset = icoHeader.length;
+  images.forEach((img, i) => {
+    const pos = 6 + i * 16;
+    icoHeader[pos] = sizes[i] === 256 ? 0 : sizes[i];
+    icoHeader[pos+1] = sizes[i] === 256 ? 0 : sizes[i];
+    icoHeader.writeUInt16LE(1,pos+4); icoHeader.writeUInt16LE(32,pos+6);
+    icoHeader.writeUInt32LE(img.length,pos+8); icoHeader.writeUInt32LE(offset,pos+12);
+    offset += img.length;
+  });
+  await writeFile(path.join(out, appId + ".png"), images[7]);
+  await writeFile(path.join(out, appId + ".ico"), Buffer.concat([icoHeader, ...images]));
+  const payload = images[7];
+  const icns = Buffer.alloc(16 + payload.length);
+  icns.write("icns",0); icns.writeUInt32BE(icns.length,4);
+  icns.write("ic09",8); icns.writeUInt32BE(8 + payload.length,12); payload.copy(icns,16);
+  await writeFile(path.join(out, appId + ".icns"), icns);
+}
+console.log("Generated distinct JT-branded PNG, ICO and ICNS icons for all nine workspaces.");
