@@ -18,6 +18,8 @@
     workspace.dataset.jtWorkspaceHomeLoader="1";
     document.head.appendChild(workspace);
   }
+  const loadSharedWorkspace = () => { if (document.querySelector("[data-jt-shared-workspace-loader]")) return; const shared=document.createElement("script"); shared.type="module"; shared.src="/jt-apps/shared-workspace.js"; shared.dataset.jtSharedWorkspaceLoader="1"; document.body.appendChild(shared); };
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",loadSharedWorkspace,{once:true}); else loadSharedWorkspace();
   const loadPowerTools = () => { if (document.querySelector("[data-jt-power-tools-loader]")) return; const power=document.createElement("script"); power.src="/jt-apps/app-power-tools.js"; power.defer=true; power.dataset.jtPowerToolsLoader="1"; document.body.appendChild(power); };
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",loadPowerTools,{once:true}); else loadPowerTools();
   const nav=document.querySelector(".app-nav");
