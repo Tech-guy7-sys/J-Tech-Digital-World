@@ -1,3 +1,16 @@
+## Unreleased — Conversation organisation
+
+### Added
+- Added pinned conversations with pinned-first ordering in the recent-chat list.
+- Added local conversation folders, folder filtering, and per-conversation folder assignment.
+- Added folder creation, rename and deletion. Deleting a folder moves its conversations to Unfiled and never deletes the conversations.
+- Preserved compatibility with existing browser-saved chats by defaulting older records to unpinned and Unfiled.
+- Kept folder and pin state in browser-local storage and included it in the existing conversation JSON export.
+
+### Boundaries
+- Conversation folders and pins are local to the current browser and device; they are not synced to an account or another device.
+- Deleting a conversation still requires confirmation and removes only its browser-saved copy.
+
 # JT AI Agent — Release Notes
 
 ## 0.2.1 — OpenRouter and Gemini model selection (draft, 15 November 2026)
