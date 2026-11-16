@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {APPS,addProjectNote,makeHandoff,transitionHandoff,validateState,createState} from "../jt-apps/shared-workspace-core.js";
+import {APPS,addProjectNote,makeHandoff,mergeProjects,transitionHandoff,validateState,createState} from "../jt-apps/shared-workspace-core.js";
 test("handoff is created pending with bounded text",()=>{const h=makeHandoff({id:"h1",sourceApp:"JT Code",targetApp:"JT Design",task:"Review the visual direction"});assert.equal(h.status,"pending");assert.equal(h.task,"Review the visual direction");});
 test("handoff rejects unsupported, same-app, and missing IDs",()=>{assert.throws(()=>makeHandoff({id:"h",sourceApp:"JT Code",targetApp:"JT Code",task:"Review"}));assert.throws(()=>makeHandoff({id:"h",sourceApp:"Unknown",targetApp:"JT Code",task:"Review"}));assert.throws(()=>makeHandoff({sourceApp:"JT Code",targetApp:"JT Design",task:"Review"}));});
 test("only target app can approve, decline, and complete",()=>{const state=createState();state.handoffs.push(makeHandoff({id:"h2",sourceApp:"JT Code",targetApp:"JT Design",task:"Review"}));assert.throws(()=>transitionHandoff(state,"h2","approved","JT Code"),/Only the selected target app/);transitionHandoff(state,"h2","approved","JT Design");assert.equal(state.handoffs[0].status,"approved");transitionHandoff(state,"h2","completed","JT Design");assert.equal(state.handoffs[0].status,"completed");assert.equal(state.audit.length,2);});
@@ -8,3 +8,17 @@ test("a declined or already reviewed handoff cannot be approved again",()=>{cons
 test("legacy projects validate with empty notes and malformed notes are discarded",()=>{const state=validateState({version:1,projects:[{id:"p",name:"Safe",summary:"ok"},{name:"bad"}],handoffs:[],audit:[]});assert.equal(state.projects.length,1);assert.deepEqual(state.projects[0].notes,[]);const withBad=validateState({version:1,projects:[{id:"p",name:"Safe",notes:[{id:"bad",authorApp:"intruder",text:"x"},{id:"n",authorApp:"JT Code",text:"valid"}]}],handoffs:[],audit:[]});assert.equal(withBad.projects[0].notes.length,1);assert.equal(withBad.projects[0].notes[0].text,"valid");assert.equal(APPS.includes("Agent Jeff"),true);});
 test("project notes are bounded, attributed, and auditable",()=>{const state=createState({projects:[{id:"p1",name:"Project",summary:"",createdAt:"",updatedAt:""}]});const note=addProjectNote(state,{id:"n1",projectId:"p1",authorApp:"JT Code",text:"  Check responsive layout  ",at:"2026-11-16T00:00:00.000Z"});assert.equal(note.text,"Check responsive layout");assert.equal(note.authorApp,"JT Code");assert.equal(state.projects[0].notes.length,1);assert.equal(state.audit[0].action,"note-added");assert.throws(()=>addProjectNote(state,{id:"n2",projectId:"missing",authorApp:"JT Code",text:"Note"}),/Project not found/);assert.throws(()=>addProjectNote(state,{id:"n3",projectId:"p1",authorApp:"Unknown",text:"Note"}),/supported JT app/);assert.throws(()=>addProjectNote(state,{id:"n4",projectId:"p1",authorApp:"JT Code",text:"   "}),/Write a note/);});
 test("project notes have a strict per-project cap",()=>{const notes=Array.from({length:30},(_,i)=>({id:"n"+i,authorApp:"JT Code",text:"Note "+i,createdAt:""}));const state=createState({projects:[{id:"p1",name:"Project",notes}]});assert.throws(()=>addProjectNote(state,{id:"overflow",projectId:"p1",authorApp:"JT Code",text:"Extra"}),/30-note limit/);});
+
+test("project backup merge validates records and skips duplicate IDs and names",()=>{
+ const state=createState({projects:[{id:"existing",name:"Existing",summary:"",createdAt:"",updatedAt:""}]});
+ const added=mergeProjects(state,[{id:"new",name:"New project",summary:"brief",notes:[{id:"n",authorApp:"JT Studio",text:"session note"}]},{id:"existing-2",name:"Existing"},{id:"new",name:"Duplicate ID"},{id:"bad",name:"Invalid",notes:[{id:"bad-note",authorApp:"unknown",text:"not retained"}]}]);
+ assert.equal(added,2);assert.equal(state.projects.length,3);
+ assert.equal(state.projects[1].notes[0].text,"session note");
+ assert.deepEqual(state.projects[2].notes,[]);
+});
+test("project backup merge respects the 100-project cap",()=>{
+ const projects=Array.from({length:100},(_,i)=>({id:"p"+i,name:"Project "+i}));
+ const state=createState({projects});
+ assert.equal(mergeProjects(state,[{id:"overflow",name:"Overflow"}]),0);
+ assert.equal(state.projects.length,100);
+});
