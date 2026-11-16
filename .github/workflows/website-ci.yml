@@ -15,6 +15,7 @@ on:
       - "scripts/test-jeff-api.mjs"
       - "scripts/test-jeff-project-context.mjs"
       - "scripts/test-jt-app-icons.mjs"
+      - "scripts/test-jt-workspace-shell.mjs"
       - "scripts/generate-jt-app-icons.mjs"
       - "desktop/jt-workspace-shell/**"
       - "scripts/build-jt-desktop-apps.mjs"
@@ -69,6 +70,7 @@ jobs:
           node --check jt-apps/pro-workspaces.js
           node --check jt-apps/command-deck.js
           node --check jt-apps/product-shell.js
+          node --test scripts/test-jt-workspace-shell.mjs
           node --check jt-apps/jt-design/studio.js
           node --check jt-apps/shared-workspace-core.js
           node --check jt-apps/shared-workspace.js
