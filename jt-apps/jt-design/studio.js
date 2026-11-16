@@ -69,7 +69,7 @@ $("importImageFile").addEventListener("change",async e=>{
   selected=id;render();save();toast("Image added as an editable layer.");
  };image.onerror=()=>toast("That image could not be opened.");image.src=src;
 });
-\n$("undoBtn").onclick=undo;$("redoBtn").onclick=redo;$("designName").addEventListener("change",()=>save());
+$("undoBtn").onclick=undo;$("redoBtn").onclick=redo;$("designName").addEventListener("change",()=>save());
 $("saveDesign").onclick=()=>save(false);
 $("newDesign").onclick=()=>{if(!confirm("Start a new blank design? Export your current design first if you want a separate backup."))return;snapshot();doc={name:"Untitled design",width:900,height:560,bg:"#ffffff",items:[]};selected="";$("designName").value=doc.name;render();save();toast("New canvas created.")};
 $("canvasPreset").addEventListener("change",e=>{snapshot();[doc.width,doc.height]=presets[e.target.value];doc.items.forEach(o=>{o.x=Math.min(o.x,doc.width-o.w);o.y=Math.min(o.y,doc.height-o.h)});render();save()});
