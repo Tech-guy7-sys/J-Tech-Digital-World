@@ -14,6 +14,9 @@ on:
       - "functions/**"
       - "scripts/test-jeff-api.mjs"
       - "scripts/test-jeff-project-context.mjs"
+      - "scripts/generate-jt-app-icons.mjs"
+      - "desktop/jt-workspace-shell/**"
+      - "scripts/build-jt-desktop-apps.mjs"
       - "scripts/test-jeff-project-context.mjs"
       - "package.json"
       - "wrangler.toml"
@@ -47,6 +50,7 @@ jobs:
           node-version: 22
       - name: Check JavaScript syntax
         run: |
+          node --check scripts/generate-jt-app-icons.mjs
           node --check scripts/build-site.mjs
           node --check jt-ai-agent/workspace.js
           node --check jt-ai-agent/project-context.js
@@ -68,7 +72,8 @@ jobs:
           grep -q "document.addEventListener(\"keydown\"" jt-apps/jt-stream/studio.js
           node --check release-downloads.js
       - name: Test JT AI gateway request validation
-        run: node scripts/test-jeff-api.mjs
+        run: |
+          node scripts/test-jeff-api.mjs
           node scripts/test-image-api.mjs
       - name: Test opt-in Jeff AI shared project context
         run: node scripts/test-jeff-project-context.mjs
@@ -90,6 +95,7 @@ jobs:
           test -f dist/jt-ai-agent/workspace.js
           test -f dist/jt-ai-agent/project-context.js
           grep -q type=module dist/jt-ai-agent/index.html
+          test -f desktop/jt-workspace-shell/build/icons/jt-ai-agent.png
           test -f dist/jt-apps/jt-design/image-studio.js
           grep -q "jtImageStudio" dist/jt-apps/jt-design/index.html
           grep -q "image-studio.js" dist/jt-apps/jt-design/index.html
