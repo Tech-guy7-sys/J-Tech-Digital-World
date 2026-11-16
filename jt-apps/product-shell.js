@@ -10,10 +10,10 @@ const start=()=>{
   ["JT AI Core","/jt-apps/jt-ai-core/","◈","AI & AUTOMATION"],
   ["Agent Jeff","/jt-apps/agent-jeff/","⌘","AI & AUTOMATION"],
   ["JT Code","/jt-apps/jt-code/","〈〉","BUILD"],
-  ["JT Design","/jt-apps/jt-design/","◇","CREATE"],
+  ["JT Design Studio","/jt-apps/jt-design/studio.html","◇","CREATE"],
   ["JT Motion","/jt-apps/jt-motion/","▶","CREATE"],
   ["JT Studio","/jt-apps/jt-studio/","♫","CREATE"],
-  ["JT Stream","/jt-apps/jt-stream/","◉","CREATE"],
+  ["JT Stream Studio","/jt-apps/jt-stream/studio.html","◉","CREATE"],
   ["JT Cloud","/jt-apps/jt-cloud/","☁","WORK"],
   ["JT App Manager","/jt-apps/jt-app-manager/","▦","WORK"]
  ];
@@ -25,12 +25,14 @@ const start=()=>{
  const workspace=document.createElement("a");workspace.className="jt-workspace-switcher";workspace.href="/jt-apps/";workspace.innerHTML='<span class="jt-workspace-glyph">▦</span><span><b>My workspace</b><small>Personal workspace</small></span><span class="jt-switch-chevron">⌄</span>';sidebar.append(workspace);
  const nav=document.createElement("nav");nav.className="jt-product-nav";
  const home=document.createElement("a");home.className="jt-product-navlink";home.href="/jt-apps/";home.innerHTML='<span class="jt-nav-icon">⌂</span><span>App library</span>';nav.append(home);
+ if(app==="JT Design"){const overview=document.createElement("a");overview.className="jt-product-navlink";overview.href="/jt-apps/jt-design/";overview.innerHTML='<span class="jt-nav-icon">▤</span><span>Design overview</span>';nav.append(overview);}
+ if(app==="JT Stream"){const overview=document.createElement("a");overview.className="jt-product-navlink";overview.href="/jt-apps/jt-stream/";overview.innerHTML='<span class="jt-nav-icon">▤</span><span>Stream overview</span>';nav.append(overview);}
  const grouped={};
  apps.forEach(item=>(grouped[item[3]]??=[]).push(item));
  Object.entries(grouped).forEach(([group,items])=>{
   const label=document.createElement("div");label.className="jt-product-navlabel";label.textContent=group;nav.append(label);
   items.forEach(([name,url,icon])=>{
-   const a=document.createElement("a");a.className="jt-product-navlink"+(name===app||(name==="Agent Jeff"&&app==="JT Desktop Agent")?" active":"");a.href=url;a.innerHTML='<span class="jt-nav-icon">'+icon+'</span><span>'+name+'</span>';if(name===app||(name==="Agent Jeff"&&app==="JT Desktop Agent"))a.setAttribute("aria-current","page");nav.append(a);
+   const a=document.createElement("a");a.className="jt-product-navlink"+(name===app||(name==="Agent Jeff"&&app==="JT Desktop Agent")||(name==="JT Design Studio"&&app==="JT Design")||(name==="JT Stream Studio"&&app==="JT Stream")?" active":"");a.href=url;a.innerHTML='<span class="jt-nav-icon">'+icon+'</span><span>'+name+'</span>';if(name===app||(name==="Agent Jeff"&&app==="JT Desktop Agent")||(name==="JT Design Studio"&&app==="JT Design")||(name==="JT Stream Studio"&&app==="JT Stream"))a.setAttribute("aria-current","page");nav.append(a);
   });
  });
  sidebar.append(nav);
