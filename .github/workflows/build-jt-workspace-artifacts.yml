@@ -71,9 +71,7 @@ jobs:
           node --check scripts/generate-jt-app-icons.mjs
           node --check scripts/build-site.mjs
       - name: Generate and validate app icons
-        run: |
-          node scripts/generate-jt-app-icons.mjs
-          node --input-type=module -e "import fs from 'node:fs'; for (const id of [${ids.map(x=>`'${x}'`).join(",")}]) { for (const ext of ['png','ico','icns']) { const p='desktop/jt-workspace-shell/build/icons/'+id+'.'+ext; if (!fs.existsSync(p) || fs.statSync(p).size < 100) throw new Error('Invalid app icon: '+p); } }"
+        run: node scripts/test-jt-app-icons.mjs
       - name: Build website assets
         run: npm run build:website
       - name: Install desktop packaging dependencies
