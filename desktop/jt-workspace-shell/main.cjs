@@ -18,6 +18,7 @@ const APP_LABELS = {
   "jt-stream": "JT Stream"
 };
 const APP_LABEL = APP_LABELS[APP_ID];
+const APP_ICON = path.join(__dirname, "build", "icons", APP_ID + ".png");
 if (!APP_LABEL) throw new Error("Unknown JT app ID. Refusing to launch an unregistered workspace.");
 
 const APP_PATHS = {
@@ -88,6 +89,7 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1440, height: 920, minWidth: 900, minHeight: 620,
     title: APP_LABEL + " · JT Digital World",
+    icon: APP_ICON,
     backgroundColor: "#f5f7ff",
     autoHideMenuBar: false,
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true }
@@ -103,6 +105,7 @@ function createWindow() {
 }
 
 app.whenReady().then(async () => {
+  if (process.platform === "win32") app.setAppUserModelId("world.jtech." + APP_ID);
   if (!fs.existsSync(siteRoot)) {
     await dialog.showMessageBox({ type: "error", title: "JT workspace files missing", message: "The bundled JT website files were not found.", detail: "Reinstall this app using the official setup package, or build the website first for development." });
     app.quit(); return;

@@ -136,3 +136,10 @@ html[data-jt-theme="light"] .stop-button{color:#a43c46;background:#fff3f3;border
 /* Jeff AI project context library */
 .project-profile-toolbar{display:grid;grid-template-columns:1fr;gap:7px;margin:0 0 12px;padding:11px;border:1px solid #e2e5f0;border-radius:12px;background:#f7f8fd}.project-profile-label{font-size:9px;font-weight:800;letter-spacing:1.2px;color:#777f98}.project-profile-toolbar select{width:100%;min-width:0;padding:9px 10px;border:1px solid #dfe3ef;border-radius:9px;background:#fff;color:#252943;font:12px inherit}.project-profile-actions{display:flex;gap:7px;flex-wrap:wrap}.project-profile-actions button{padding:7px 9px}.project-profile-actions button:disabled{opacity:.45;cursor:not-allowed}html[data-jt-theme="dark"] .project-profile-toolbar{background:#1b1c2c;border-color:#35374d}html[data-jt-theme="dark"] .project-profile-label{color:#a2a5bb}html[data-jt-theme="dark"] .project-profile-toolbar select{background:#111220;border-color:#35374d;color:#f0f0fb}
 @media(max-width:560px){.project-panel{right:12px;left:12px;width:auto}.project-profile-actions button{flex:1}}
+
+/* Explicit shared-project context preview */
+.project-context-linker{display:grid;gap:8px;margin-top:14px;padding-top:13px;border-top:1px solid #e5e7f1}
+.project-context-linker .bridge-label{margin:0}
+.project-context-preview{box-sizing:border-box;max-height:180px;overflow:auto;margin:0;padding:10px;border:1px solid #e2e5ef;border-radius:10px;background:#f7f8fc;color:#555d78;font:10px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+html[data-jt-theme="dark"] .project-context-linker{border-color:#383a51}
+html[data-jt-theme="dark"] .project-context-preview{background:#10111d;border-color:#383a51;color:#c2c5dc}

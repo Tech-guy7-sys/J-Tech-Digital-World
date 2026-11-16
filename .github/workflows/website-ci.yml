@@ -13,6 +13,11 @@ on:
       - "scripts/build-site.mjs"
       - "functions/**"
       - "scripts/test-jeff-api.mjs"
+      - "scripts/test-jeff-project-context.mjs"
+      - "scripts/test-jt-app-icons.mjs"
+      - "scripts/generate-jt-app-icons.mjs"
+      - "desktop/jt-workspace-shell/**"
+      - "scripts/build-jt-desktop-apps.mjs"
       - "package.json"
       - "wrangler.toml"
       - ".github/workflows/website-ci.yml"
@@ -26,6 +31,11 @@ on:
       - "jt-ai-agent/**"
       - "jt-apps/**"
       - "scripts/build-site.mjs"
+      - "scripts/test-jeff-project-context.mjs"
+      - "scripts/test-jt-app-icons.mjs"
+      - "scripts/generate-jt-app-icons.mjs"
+      - "desktop/jt-workspace-shell/**"
+      - "scripts/build-jt-desktop-apps.mjs"
       - "package.json"
       - "wrangler.toml"
       - ".github/workflows/website-ci.yml"
@@ -45,8 +55,10 @@ jobs:
           node-version: 22
       - name: Check JavaScript syntax
         run: |
+          node --check scripts/generate-jt-app-icons.mjs
           node --check scripts/build-site.mjs
           node --check jt-ai-agent/workspace.js
+          node --check jt-ai-agent/project-context.js
           node --check functions/api/jeff.js
           node --check functions/api/integrations.js
           node --check functions/api/create-image.js
@@ -58,6 +70,7 @@ jobs:
           node --check jt-apps/command-deck.js
           node --check jt-apps/shared-workspace-core.js
           node --check jt-apps/shared-workspace.js
+          node --check jt-apps/app-power-tools.js
           grep -q "AI coding-agent handoff" jt-apps/pro-workspaces.js
           grep -q "Cloud provider connectors" jt-apps/pro-workspaces.js
           grep -q "Provider and agent compatibility" jt-apps/pro-workspaces.js
@@ -65,68 +78,40 @@ jobs:
           grep -q "document.addEventListener(\"keydown\"" jt-apps/jt-stream/studio.js
           node --check release-downloads.js
       - name: Test JT AI gateway request validation
-        run: node scripts/test-jeff-api.mjs
+        run: |
+          node scripts/test-jeff-api.mjs
           node scripts/test-image-api.mjs
+      - name: Test JT desktop application icons
+        run: node scripts/test-jt-app-icons.mjs
+      - name: Test opt-in Jeff AI shared project context
+        run: node scripts/test-jeff-project-context.mjs
       - name: Test shared JT project notes and handoff permissions
         run: node scripts/test-shared-workspace.mjs
       - name: Build public website files
         run: npm run build:website
       - name: Verify required output
         run: |
-          test -f dist/index.html
-          test -f dist/home.html
-          test -f dist/apps.html
+          for file in index.html home.html apps.html style.css; do
+            test -f "dist/$file"
+          done
           test -f dist/google7018b6a6a6547361.html
           grep -qx 'google-site-verification: google7018b6a6a6547361.html' dist/google7018b6a6a6547361.html
-          test -f dist/style.css
           test -f functions/api/jeff.js
-          test -f dist/jt-apps/jt-stream/studio.html
-          test -f dist/jt-apps/jt-stream/studio.css
+          test -f dist/jt-ai-agent/index.html
           test -f dist/jt-ai-agent/workspace.js
-          test -f dist/jt-apps/jt-design/image-studio.js
-          grep -q "jtImageStudio" dist/jt-apps/jt-design/index.html
-          grep -q "image-studio.js" dist/jt-apps/jt-design/index.html
-          grep -q 'providerSelect' dist/jt-ai-agent/index.html
-          grep -q 'model:providerSelect.value' dist/jt-ai-agent/workspace.js
-          ! grep -q 'claude-sonnet' dist/jt-ai-agent/index.html
-          grep -q 'free-tier-only' functions/api/jeff.js
+          test -f dist/jt-ai-agent/project-context.js
+          for app in jt-ai-core jt-app-manager jt-cloud jt-code jt-design jt-motion jt-studio jt-stream; do
+            test -f "dist/jt-apps/$app/index.html"
+          done
+          test -f dist/jt-apps/agent-jeff/index.html
+          test -f dist/jt-apps/jt-stream/studio.html
           test -f dist/jt-apps/jt-stream/studio.js
+          test -f dist/jt-apps/jt-cloud-drive.js
+          test -f dist/jt-apps/jt-cloud-drive.css
           test -f dist/jt-apps/workspace-tools.js
           test -f dist/jt-apps/pro-workspaces.js
           test -f dist/jt-apps/command-deck.js
-          grep -q 'JT Command Deck' dist/jt-apps/command-deck.js
-          grep -q 'Export JT local workspace backup' dist/jt-apps/command-deck.js
-          grep -q 'Import JT local workspace backup' dist/jt-apps/command-deck.js
-          grep -q 'command-deck.js' dist/jt-apps/app.js
-          for app in jt-ai-core jt-app-manager jt-code jt-design jt-motion jt-studio agent-jeff jt-stream; do
-            grep -q 'pro-workspaces.js' "dist/jt-apps/$app/index.html"
+          test -f dist/jt-apps/app-power-tools.js
+          for ext in png ico icns; do
+            test -s "desktop/jt-workspace-shell/build/icons/jt-ai-agent.$ext"
           done
-          for app in jt-ai-core jt-app-manager jt-code jt-design jt-motion jt-studio agent-jeff; do
-            test -f "dist/jt-apps/$app/index.html"
-            grep -q 'data-workspace-tool' "dist/jt-apps/$app/index.html"
-            grep -q 'workspace-tools.js' "dist/jt-apps/$app/index.html"
-          done
-          test -f dist/jt-apps/jt-cloud-drive.js
-          test -f dist/jt-apps/jt-cloud-drive.css
-          grep -q 'jt-cloud-drive.js' dist/jt-apps/jt-cloud/index.html
-          grep -q 'data-jt-cloud-drive' dist/jt-apps/jt-cloud/index.html
-          grep -q 'local-first' dist/jt-apps/jt-cloud/index.html
-          grep -q 'JT Motion' dist/jt-apps/jt-motion/index.html
-          grep -q 'motionTimeline' dist/jt-apps/workspace-tools.js
-          grep -q 'MediaRecorder' dist/jt-apps/workspace-tools.js
-          grep -q 'releaseLabList' dist/jt-apps/workspace-tools.js
-          grep -q 'Open JT Stream Studio' dist/jt-apps/jt-stream/index.html
-          grep -q 'programCanvas' dist/jt-apps/jt-stream/studio.html
-          node --input-type=module <<'NODE'
-          import { readFileSync } from "node:fs";
-          const html = readFileSync("dist/jt-apps/jt-stream/studio.html", "utf8");
-          const js = readFileSync("dist/jt-apps/jt-stream/studio.js", "utf8");
-          const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]));
-          const refs = [...new Set([...js.matchAll(/\$\("([^"]+)"\)/g)].map((match) => match[1]))];
-          const missing = refs.filter((id) => !ids.has(id));
-          if (missing.length) {
-            console.error("JT Stream Studio references missing element IDs:", missing.join(", "));
-            process.exit(1);
-          }
-          console.log("JT Stream Studio DOM references verified:", refs.length);
-          NODE

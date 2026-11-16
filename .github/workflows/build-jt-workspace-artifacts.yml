@@ -6,6 +6,8 @@ on:
     paths:
       - "desktop/jt-workspace-shell/**"
       - "scripts/build-jt-desktop-apps.mjs"
+      - "scripts/generate-jt-app-icons.mjs"
+      - "scripts/test-jt-app-icons.mjs"
       - "scripts/build-site.mjs"
       - "jt-apps/**"
       - "package.json"
@@ -68,7 +70,10 @@ jobs:
           node --check desktop/jt-workspace-shell/main.cjs
           node --check desktop/jt-workspace-shell/electron-builder.config.cjs
           node --check scripts/build-jt-desktop-apps.mjs
+          node --check scripts/generate-jt-app-icons.mjs
           node --check scripts/build-site.mjs
+      - name: Generate and validate app icons
+        run: node scripts/test-jt-app-icons.mjs
       - name: Build website assets
         run: npm run build:website
       - name: Install desktop packaging dependencies
