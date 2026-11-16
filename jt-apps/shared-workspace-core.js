@@ -32,3 +32,15 @@ export function makeHandoff({id,projectId="",projectName="",sourceApp,targetApp,
  const cleanTask=cleanText(task,2000);if(!cleanTask)throw new Error("Add a task before creating the handoff.");
  return {id,projectId,projectName:cleanText(projectName,80),sourceApp,targetApp,task:cleanTask,status:"pending",createdAt:at,updatedAt:at};
 }
+
+export function mergeProjects(state,incomingProjects) {
+ if(!Array.isArray(incomingProjects))throw new Error("The backup does not contain a project list.");
+ const incoming=validateState({version:VERSION,projects:incomingProjects,handoffs:[],audit:[]}).projects;
+ let added=0;
+ for(const project of incoming){
+  if(state.projects.length>=100)break;
+  if(state.projects.some(existing=>existing.id===project.id||existing.name.toLowerCase()===project.name.toLowerCase()))continue;
+  state.projects.push(project);added++;
+ }
+ return added;
+}
