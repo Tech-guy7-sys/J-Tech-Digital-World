@@ -9,7 +9,8 @@
     "test:jeff-context": "node --test scripts/test-jeff-project-context.mjs",
     "test:jt-workspace": "node --test scripts/test-jt-workspace-shell.mjs",
     "test:jt-design": "node --test scripts/test-jt-design-image-import.mjs scripts/test-jt-design-templates.mjs",
-    "test:jt-workspace-dashboard": "node --test scripts/test-jt-workspace-dashboard.mjs"
+    "test:jt-workspace-dashboard": "node --test scripts/test-jt-workspace-dashboard.mjs",
+    "test:jt-code": "node --test scripts/test-jt-code-checks.mjs"
   },
   "engines": {
     "node": ">=22"
