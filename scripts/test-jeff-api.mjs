@@ -89,7 +89,26 @@ try {
   assert.equal(response.status, 200);
   assert.equal(result.provider, "OpenRouter");
   assert.equal(result.profile, "JT AI Core v1 · Free");
+
   assert.equal(calls[0].body.model, "openrouter/free");
+  calls = [];
+  globalThis.fetch = async (url, init) => {
+    calls.push({ url: String(url), body: JSON.parse(init.body) });
+    return new Response(JSON.stringify({ choices: [{ message: { content: "Context received." } }] }), {
+      status: 200, headers: { "content-type": "application/json" }
+    });
+  };
+  response = await invoke({
+    message: "Summarize this project",
+    projectContext: "JT Cloud is moving to private R2 storage.",
+    attachments: [{ name: "brief.md", content: "Acceptance criteria: authenticated uploads and private downloads." }]
+  }, { env: { JEFF_API_ENABLED: "true", OPENROUTER_API_KEY: "test-key" } });
+  result = await response.json();
+  assert.equal(response.status, 200);
+  const sentMessages = calls[0].body.messages;
+  assert.ok(sentMessages.some(m => m.content.includes("JT Cloud is moving to private R2 storage.")));
+  assert.ok(sentMessages.some(m => m.content.includes("Acceptance criteria: authenticated uploads and private downloads.")));
+  assert.ok(sentMessages.some(m => m.content.includes("untrusted reference data")));
 
   // Explicit Groq selection uses only the Groq API and the configured free-tier model.
   calls = [];
