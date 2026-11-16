@@ -11,6 +11,13 @@
     deck.dataset.jtCommandDeckLoader="1";
     document.head.appendChild(deck);
   }
+  if(!document.querySelector("[data-jt-workspace-home-loader]")){
+    const workspace=document.createElement("script");
+    workspace.src="/jt-apps/workspace-home.js";
+    workspace.defer=true;
+    workspace.dataset.jtWorkspaceHomeLoader="1";
+    document.head.appendChild(workspace);
+  }
   const nav=document.querySelector(".app-nav");
   if(nav&&!nav.querySelector("[data-jt-guide]")){
     const about=document.createElement("a");

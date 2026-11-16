@@ -1,0 +1,31 @@
+name: JT Cloud workspace tests
+
+on:
+  push:
+    branches:
+      - feat/jt-ecosystem-visual-refresh
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "jt-apps/jt-cloud/**"
+      - "jt-apps/jt-cloud-drive.*"
+      - "scripts/test-jt-cloud-drive.mjs"
+      - "scripts/build-site.mjs"
+      - "package.json"
+      - ".github/workflows/jt-cloud-tests.yml"
+
+jobs:
+  jt-cloud:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run JT Cloud regression tests
+        run: npm run test:jt-cloud
+      - name: Build website for Cloudflare Pages
+        run: npm run build:website

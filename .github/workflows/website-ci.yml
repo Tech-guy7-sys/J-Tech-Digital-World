@@ -52,6 +52,7 @@ jobs:
           node --check functions/api/create-image.js
           node --check jt-apps/jt-design/image-studio.js
           node --check jt-apps/jt-stream/studio.js
+          node --check jt-apps/jt-cloud-drive.js
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
           node --check jt-apps/command-deck.js
@@ -93,14 +94,19 @@ jobs:
           grep -q 'Export JT local workspace backup' dist/jt-apps/command-deck.js
           grep -q 'Import JT local workspace backup' dist/jt-apps/command-deck.js
           grep -q 'command-deck.js' dist/jt-apps/app.js
-          for app in jt-ai-core jt-app-manager jt-cloud jt-code jt-design jt-motion jt-studio agent-jeff jt-stream; do
+          for app in jt-ai-core jt-app-manager jt-code jt-design jt-motion jt-studio agent-jeff jt-stream; do
             grep -q 'pro-workspaces.js' "dist/jt-apps/$app/index.html"
           done
-          for app in jt-ai-core jt-app-manager jt-cloud jt-code jt-design jt-motion jt-studio agent-jeff; do
+          for app in jt-ai-core jt-app-manager jt-code jt-design jt-motion jt-studio agent-jeff; do
             test -f "dist/jt-apps/$app/index.html"
             grep -q 'data-workspace-tool' "dist/jt-apps/$app/index.html"
             grep -q 'workspace-tools.js' "dist/jt-apps/$app/index.html"
           done
+          test -f dist/jt-apps/jt-cloud-drive.js
+          test -f dist/jt-apps/jt-cloud-drive.css
+          grep -q 'jt-cloud-drive.js' dist/jt-apps/jt-cloud/index.html
+          grep -q 'data-jt-cloud-drive' dist/jt-apps/jt-cloud/index.html
+          grep -q 'local-first' dist/jt-apps/jt-cloud/index.html
           grep -q 'JT Motion' dist/jt-apps/jt-motion/index.html
           grep -q 'motionTimeline' dist/jt-apps/workspace-tools.js
           grep -q 'MediaRecorder' dist/jt-apps/workspace-tools.js

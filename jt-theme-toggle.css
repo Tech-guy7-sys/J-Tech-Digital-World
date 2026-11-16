@@ -110,3 +110,22 @@ html[data-jt-theme="light"] body:has(.app-shell) .project-panel p,
 html[data-jt-theme="light"] body:has(.app-shell) .project-panel-actions span{color:#69718b!important}
 html[data-jt-theme="light"] body:has(.app-shell) .provider-picker select{color:#525a76!important;background:#f7f8fd!important}
 html[data-jt-theme="light"] body:has(.app-shell) .toast{background:#fff!important;color:#292d49!important;border-color:#dfe4f0!important;box-shadow:0 12px 35px rgba(40,48,90,.12)!important}
+
+/* Keep the JT app directory in its signature dark workspace treatment in either site theme. */
+html[data-jt-theme="light"] .jtw-platform-section .jtw-product,
+html[data-jt-theme="light"] .app-grid .app-tile{
+  background:linear-gradient(145deg,rgba(23,32,52,.98),rgba(12,18,31,.99))!important;
+  border-color:rgba(165,181,224,.2)!important;
+  color:#f4f6ff!important;
+  box-shadow:0 18px 48px rgba(0,0,0,.2)!important;
+}
+html[data-jt-theme="light"] .jtw-platform-section .jtw-product h3,
+html[data-jt-theme="light"] .app-grid .app-tile h3{color:#f5f7ff!important}
+html[data-jt-theme="light"] .jtw-platform-section .jtw-product p,
+html[data-jt-theme="light"] .app-grid .app-tile p{color:#aeb8cd!important}
+html[data-jt-theme="light"] .jtw-platform-section .jtw-product-link,
+html[data-jt-theme="light"] .app-grid .tile-open{color:#e8eaff!important;border-color:rgba(165,181,224,.16)!important}
+html[data-jt-theme="light"] .jtw-platform-section .jtw-product-label{color:var(--app-b,#77dfe1)!important}
+html[data-jt-theme="light"] .jtw-platform-section .jtw-product-arrow{color:#c3cce0!important}
+html[data-jt-theme="light"] .jtw-platform-section .jtw-product-icon,
+html[data-jt-theme="light"] .app-grid .tile-icon{color:#fff!important}

@@ -4,7 +4,8 @@
   "type": "module",
   "description": "JT Digital World static website build for Cloudflare Pages",
   "scripts": {
-    "build:website": "node scripts/build-site.mjs"
+    "build:website": "node scripts/build-site.mjs",
+    "test:jt-cloud": "node --test scripts/test-jt-cloud-drive.mjs"
   },
   "engines": {
     "node": ">=22"
