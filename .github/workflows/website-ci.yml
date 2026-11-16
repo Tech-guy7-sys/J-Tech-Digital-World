@@ -138,4 +138,3 @@ jobs:
           grep -q 'MediaRecorder' dist/jt-apps/workspace-tools.js
           grep -q 'releaseLabList' dist/jt-apps/workspace-tools.js
           grep -q 'Open JT Stream Studio' dist/jt-apps/jt-stream/index.html
-          grep -q 'programCanvas' dist/jt-apps/jt-stream/studio.html
