@@ -36,5 +36,5 @@ module.exports = {
     deleteAppDataOnUninstall: false, differentialPackage: false
   },
   mac: { icon: path.join("build", "icons", appId + ".icns"), category: "public.app-category.productivity", target: [{ target: "dmg", arch: [arch] }, { target: "zip", arch: [arch] }] },
-  linux: { icon: path.join("build", "icons", appId + ".png"), category: "Utility", desktop: { Name: productName, Comment: productName + " by JT Digital World", Categories: linuxCategories[appId], StartupWMClass: "world.jtech." + appId }, target: [{ target: "AppImage", arch: [arch] }, { target: "deb", arch: [arch] }, { target: "rpm", arch: [arch] }] },
+  linux: { icon: path.join("build", "icons", appId + ".png"), category: "Utility", target: [{ target: "AppImage", arch: [arch] }, { target: "deb", arch: [arch] }, { target: "rpm", arch: [arch] }] },
 };
