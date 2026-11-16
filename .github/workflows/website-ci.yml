@@ -65,6 +65,7 @@ jobs:
           node --check scripts/generate-jt-app-icons.mjs
           node --check scripts/build-site.mjs
           node --check jt-ai-agent/workspace.js
+          node --test scripts/test-jt-ai-workspace-polish.mjs
           node --check jt-ai-agent/project-context.js
           node --check functions/api/jeff.js
           node --check functions/api/integrations.js

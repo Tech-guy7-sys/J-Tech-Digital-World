@@ -45,3 +45,15 @@ html[data-jt-theme="light"] .jtw-workflow-grid>a{background:linear-gradient(145d
 html[data-jt-theme="light"] .jtw-workflow-grid h3{color:#20233a!important}
 html[data-jt-theme="light"] .jtw-workflow-grid p{color:#626b85!important}
 @media(prefers-reduced-motion:reduce){.jtw-button:after,.jtw-outline-button:after{display:none}.jtw-brand,.jtw-product,.jtw-workflow-grid>a{transition:none}}
+
+/* Searchable JT product directory */
+.jt-directory-tools{display:grid;grid-template-columns:minmax(190px,1fr) minmax(220px,1.2fr);gap:12px 20px;align-items:center;margin:0 0 22px;padding:16px 18px;border:1px solid rgba(161,181,255,.18);border-radius:15px;background:rgba(255,255,255,.035)}
+.jt-directory-tools>label{font-size:12px;font-weight:800;color:#eef2ff}
+.jt-directory-tools input{width:100%;min-width:0;padding:12px 14px;border-radius:9px;border:1px solid rgba(161,181,255,.22);background:#101326;color:#fff;font:inherit;font-size:12px;outline:none}
+.jt-directory-tools input:focus{border-color:#8f91ff;box-shadow:0 0 0 3px #8f91ff22}
+.jt-directory-filters{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+.jt-directory-filters button{border:1px solid rgba(161,181,255,.22);background:#14172a;color:#bfc7df;border-radius:999px;padding:7px 12px;font-size:10px;font-weight:750;cursor:pointer}
+.jt-directory-filters button[aria-pressed=true]{background:#e8e8ff;color:#27254b;border-color:#e8e8ff}
+.jt-directory-tools>p{grid-column:1/-1;margin:0;color:#929bb6;font-size:10px}
+.jt-app-directory-grid .jtw-product[hidden]{display:none!important}
+@media(max-width:620px){.jt-directory-tools{grid-template-columns:1fr}.jt-directory-filters,.jt-directory-tools>p{grid-column:1}}
