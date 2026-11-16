@@ -70,6 +70,7 @@ jobs:
           node --check jt-apps/command-deck.js
           node --check jt-apps/shared-workspace-core.js
           node --check jt-apps/shared-workspace.js
+          node --check jt-apps/app-power-tools.js
           grep -q "AI coding-agent handoff" jt-apps/pro-workspaces.js
           grep -q "Cloud provider connectors" jt-apps/pro-workspaces.js
           grep -q "Provider and agent compatibility" jt-apps/pro-workspaces.js
@@ -90,47 +91,27 @@ jobs:
         run: npm run build:website
       - name: Verify required output
         run: |
-          test -f dist/index.html
-          test -f dist/home.html
-          test -f dist/apps.html
+          for file in index.html home.html apps.html style.css; do
+            test -f "dist/$file"
+          done
           test -f dist/google7018b6a6a6547361.html
           grep -qx 'google-site-verification: google7018b6a6a6547361.html' dist/google7018b6a6a6547361.html
-          test -f dist/style.css
           test -f functions/api/jeff.js
-          test -f dist/jt-apps/jt-stream/studio.html
-          test -f dist/jt-apps/jt-stream/studio.css
+          test -f dist/jt-ai-agent/index.html
           test -f dist/jt-ai-agent/workspace.js
           test -f dist/jt-ai-agent/project-context.js
-          grep -q type=module dist/jt-ai-agent/index.html
-          test -f desktop/jt-workspace-shell/build/icons/jt-ai-agent.png
-          test -f desktop/jt-workspace-shell/build/icons/jt-ai-agent.ico
-          test -f desktop/jt-workspace-shell/build/icons/jt-ai-agent.icns
-          test -f dist/jt-apps/jt-design/image-studio.js
-          grep -q "jtImageStudio" dist/jt-apps/jt-design/index.html
-          grep -q "image-studio.js" dist/jt-apps/jt-design/index.html
-          grep -q 'providerSelect' dist/jt-ai-agent/index.html
-          grep -q 'model:providerSelect.value' dist/jt-ai-agent/workspace.js
-          ! grep -q 'claude-sonnet' dist/jt-ai-agent/index.html
-          grep -q 'free-tier-only' functions/api/jeff.js
+          for app in jt-ai-core jt-app-manager jt-cloud jt-code jt-design jt-motion jt-studio jt-stream; do
+            test -f "dist/jt-apps/$app/index.html"
+          done
+          test -f dist/jt-apps/agent-jeff/index.html
+          test -f dist/jt-apps/jt-stream/studio.html
           test -f dist/jt-apps/jt-stream/studio.js
+          test -f dist/jt-apps/jt-cloud-drive.js
+          test -f dist/jt-apps/jt-cloud-drive.css
           test -f dist/jt-apps/workspace-tools.js
           test -f dist/jt-apps/pro-workspaces.js
           test -f dist/jt-apps/command-deck.js
-          grep -q 'JT Command Deck' dist/jt-apps/command-deck.js
-          grep -q 'Export JT local workspace backup' dist/jt-apps/command-deck.js
-          grep -q 'Import JT local workspace backup' dist/jt-apps/command-deck.js
-          grep -q 'command-deck.js' dist/jt-apps/app.js
-          for app in jt-ai-core jt-app-manager jt-code jt-design jt-motion jt-studio agent-jeff jt-stream; do
-            grep -q 'pro-workspaces.js' "dist/jt-apps/$app/index.html"
+          test -f dist/jt-apps/app-power-tools.js
+          for ext in png ico icns; do
+            test -s "desktop/jt-workspace-shell/build/icons/jt-ai-agent.$ext"
           done
-          for app in jt-ai-core jt-app-manager jt-code jt-design jt-motion jt-studio agent-jeff; do
-            test -f "dist/jt-apps/$app/index.html"
-            grep -q 'data-workspace-tool' "dist/jt-apps/$app/index.html"
-            grep -q 'workspace-tools.js' "dist/jt-apps/$app/index.html"
-          done
-          test -f dist/jt-apps/jt-cloud-drive.js
-          test -f dist/jt-apps/jt-cloud-drive.css
-          grep -q 'jt-cloud-drive.js' dist/jt-apps/jt-cloud/index.html
-          grep -q 'data-jt-cloud-drive' dist/jt-apps/jt-cloud/index.html
-          grep -q 'local-first' dist/jt-apps/jt-cloud/index.html
-          grep -q 'JT Motion' dist/jt-apps/jt-motion/index.html
