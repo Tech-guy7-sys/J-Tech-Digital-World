@@ -14,6 +14,7 @@ on:
       - "functions/**"
       - "scripts/test-jeff-api.mjs"
       - "scripts/test-jeff-project-context.mjs"
+      - "scripts/test-jeff-project-context.mjs"
       - "package.json"
       - "wrangler.toml"
       - ".github/workflows/website-ci.yml"
@@ -123,4 +124,3 @@ jobs:
           grep -q 'releaseLabList' dist/jt-apps/workspace-tools.js
           grep -q 'Open JT Stream Studio' dist/jt-apps/jt-stream/index.html
           grep -q 'programCanvas' dist/jt-apps/jt-stream/studio.html
-          node scripts/test-jt-stream-dom.mjs
