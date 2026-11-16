@@ -18,7 +18,7 @@ const APP_LABELS = {
   "jt-stream": "JT Stream"
 };
 const APP_LABEL = APP_LABELS[APP_ID];
-const APP_ICON = path.join(__dirname, "build", "icons", "jt-app.png");
+const APP_ICON = path.join(__dirname, "build", "icons", APP_ID + ".png");
 if (!APP_LABEL) throw new Error("Unknown JT app ID. Refusing to launch an unregistered workspace.");
 
 const APP_PATHS = {
