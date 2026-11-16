@@ -64,7 +64,10 @@ $("objectFontSize").addEventListener("change",e=>mutate(o=>o.fontSize=Math.max(8
 $("objectAlign").addEventListener("change",e=>mutate(o=>o.align=e.target.value));
 $("duplicateObject").onclick=()=>{const o=item();if(!o)return;snapshot();const copy=clone(o);copy.id="layer-"+Math.random().toString(36).slice(2,10);copy.name=o.name+" copy";copy.x=Math.min(doc.width-copy.w,o.x+22);copy.y=Math.min(doc.height-copy.h,o.y+22);doc.items.push(copy);selected=copy.id;render();save()};
 $("deleteObject").onclick=()=>{if(!item())return;snapshot();doc.items=doc.items.filter(x=>x.id!==selected);selected="";render();save()};
-$("moveUp").onclick=()=>reorder(1);$("moveDown").onclick=()=>reorder(-1);\n$("alignCenterX").onclick=()=>mutate(o=>o.x=Math.round((doc.width-o.w)/2));\n$("alignCenterY").onclick=()=>mutate(o=>o.y=Math.round((doc.height-o.h)/2));\n$("designTemplate").addEventListener("change",e=>{if(e.target.value){applyTemplate(e.target.value);e.target.value=""}});
+$("moveUp").onclick=()=>reorder(1);$("moveDown").onclick=()=>reorder(-1);
+$("alignCenterX").onclick=()=>mutate(o=>o.x=Math.round((doc.width-o.w)/2));
+$("alignCenterY").onclick=()=>mutate(o=>o.y=Math.round((doc.height-o.h)/2));
+$("designTemplate").addEventListener("change",e=>{if(e.target.value){applyTemplate(e.target.value);e.target.value=""}});
 function reorder(dir){const i=doc.items.findIndex(x=>x.id===selected),j=i+dir;if(i<0||j<0||j>=doc.items.length)return;snapshot();[doc.items[i],doc.items[j]]=[doc.items[j],doc.items[i]];render();save()}
 
 $("importImageBtn").addEventListener("click",()=>$("importImageFile").click());
