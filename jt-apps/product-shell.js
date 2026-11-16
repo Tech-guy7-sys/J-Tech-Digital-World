@@ -55,6 +55,7 @@ const start=()=>{
  if(pageTitle){pageTitle.dataset.jtOriginalHeading="true";}
  const hero=main.querySelector(".app-hero");
  if(hero){hero.classList.add("jt-product-hero");const art=hero.querySelector(".app-art");if(art)art.setAttribute("aria-hidden","true");}
+ main.querySelectorAll("section").forEach(section=>{if(section.querySelector(".feature-grid,.workspace-grid")&&!section.matches(".jt-workspace-home"))section.hidden=true;});
  const create=main.querySelector('[data-jt-action="create"]');
  const primary=main.querySelector('[data-action="primary"]');
  if(primary&&!primary.dataset.jtShellAction){primary.dataset.jtShellAction="true";primary.addEventListener("click",()=>{const boardCreate=main.querySelector('[data-jt-action="create"]');if(boardCreate)boardCreate.click();else{const target=main.querySelector("[data-workspace-tool],#jt-pro-tools,#jtImageStudio");target?.scrollIntoView({behavior:"smooth",block:"start"});}});}
