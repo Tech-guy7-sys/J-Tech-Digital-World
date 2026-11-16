@@ -1,3 +1,22 @@
+## Unreleased — JT app power tools expansion
+
+### Added
+- Added app-specific Power Tools across JT AI Agent, JT AI Core, Agent Jeff, JT App Manager, JT Cloud, JT Code, JT Design, JT Motion, JT Studio and JT Stream.
+- JT AI Agent: structured prompt builder that inserts a reviewed brief into the chat composer without sending it automatically.
+- JT AI Core: reusable prompt recipes for model evaluation, provider comparison and least-privilege tool policy design.
+- Agent Jeff: desktop-task preflight checklist and exportable handoff report; no browser-based desktop actions are executed.
+- JT App Manager: persistent release-readiness checklist and release-notes generator.
+- JT Cloud: file-size preflight and JSON manifest export; selection reads metadata only and does not upload files.
+- JT Code: local snippet vault with copy, delete and JSON export.
+- JT Design: five-colour brand palette generator with CSS-variable copy and download.
+- JT Motion: shot sequence planner with reorder controls, runtime total and CSV export.
+- JT Studio: adjustable low-volume metronome and bar-duration calculator.
+- JT Stream: show rundown builder, segment timer, pause/next/reset controls and JSON export.
+- Added responsive JT visual styling and local-only state storage for these tools.
+
+### Boundaries
+- These additions are browser-local utilities. They do not claim remote sync, provider authentication, desktop execution, video rendering, audio multitrack mixing or live broadcasting.
+
 ## Unreleased — January 28 annual promotion
 
 ### Changed
