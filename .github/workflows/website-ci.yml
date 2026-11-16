@@ -18,6 +18,7 @@ on:
       - "scripts/test-jt-workspace-shell.mjs"
       - "scripts/test-jt-workspace-dashboard.mjs"
       - "scripts/test-jt-code-checks.mjs"
+      - "scripts/test-jeff-ai-library.mjs"
       - "scripts/test-jt-design-image-import.mjs"
       - "scripts/test-jt-design-templates.mjs"
       - "scripts/generate-jt-app-icons.mjs"
@@ -72,10 +73,11 @@ jobs:
           node --check jt-apps/jt-cloud-drive.js
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
-          node --test scripts/test-jt-code-checks.mjs
+          node --test scripts/test-jt-code-checks.mjs scripts/test-jeff-ai-library.mjs
           node --check jt-apps/command-deck.js
           node --check jt-apps/product-shell.js
           node --check jt-apps/workspace-dashboard.js
+          node --check jt-ai-agent/library.js
           node --test scripts/test-jt-workspace-shell.mjs scripts/test-jt-workspace-dashboard.mjs
           node --check jt-apps/jt-design/studio.js
           node --test scripts/test-jt-design-image-import.mjs scripts/test-jt-design-templates.mjs
@@ -123,6 +125,8 @@ jobs:
           test -f dist/jt-apps/workspace.html
           test -f dist/jt-apps/workspace-dashboard.js
           test -f dist/jt-apps/workspace-dashboard.css
+          test -f dist/jt-ai-agent/library.html
+          test -f dist/jt-ai-agent/library.js
           test -f dist/jt-apps/jt-cloud-drive.js
           test -f dist/jt-apps/jt-cloud-drive.css
           test -f dist/jt-apps/workspace-tools.js
