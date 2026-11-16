@@ -30,7 +30,7 @@ The [Build JT Workspace Artifacts workflow](.github/workflows/build-jt-workspace
 - macOS: Intel x64 and Apple Silicon ARM64; DMG and ZIP targets.
 - Linux: x64 and ARM64; AppImage, DEB, RPM and ZIP targets.
 
-The workflow uploads temporary GitHub Actions artifacts and explicitly disables automatic release publishing. A platform/architecture combination is available only after its own CI job succeeds and its output is verified. The workflow creates checksums for produced artifacts. These packages are unsigned unless separately signed.
+Each workspace receives its own JT monogram icon in PNG, multi-size Windows ICO, and macOS ICNS formats. The icon is embedded in the installer/app bundle and used by the app window; Windows installers create named Desktop and Start menu shortcuts, and the Windows AppUserModelID is set per app. Linux desktop entries receive the matching app name, category and icon.\n\nThe workflow uploads temporary GitHub Actions artifacts and explicitly disables automatic release publishing. A platform/architecture combination is available only after its own CI job succeeds and its output is verified. The workflow creates checksums for produced artifacts. These packages are unsigned unless separately signed.
 
 The standalone [JT Desktop Agent workflow](https://github.com/Tech-guy7-sys/agent-jeff/actions) currently builds Windows x64 and x86 targets. Its existing WPF and Windows-specific desktop APIs are not cross-platform. Do not advertise macOS or Linux installers for JT Desktop Agent until native implementations and tests exist for those systems.
 
