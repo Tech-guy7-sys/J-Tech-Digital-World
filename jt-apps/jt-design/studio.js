@@ -21,13 +21,14 @@ function render(){
  doc.items.forEach(o=>{const common='class="ds-object" data-layer-id="'+esc(o.id)+'" opacity="'+(o.opacity/100)+'"';
   if(o.type==="rect")markup+='<rect '+common+' x="'+o.x+'" y="'+o.y+'" width="'+o.w+'" height="'+o.h+'" rx="2" fill="'+esc(o.fill)+'"/>';
   else if(o.type==="ellipse")markup+='<ellipse '+common+' cx="'+(o.x+o.w/2)+'" cy="'+(o.y+o.h/2)+'" rx="'+(o.w/2)+'" ry="'+(o.h/2)+'" fill="'+esc(o.fill)+'"/>';
+  else if(o.type==="image")markup+='<image '+common+' x="'+o.x+'" y="'+o.y+'" width="'+o.w+'" height="'+o.h+'" preserveAspectRatio="xMidYMid meet" href="'+esc(o.src)+'"/>';
   else{const anchor=o.align||"start",x=anchor==="middle"?o.x+o.w/2:anchor==="end"?o.x+o.w:o.x;markup+='<text '+common+' x="'+x+'" y="'+(o.y+o.fontSize)+'" fill="'+esc(o.fill)+'" font-family="Arial, sans-serif" font-size="'+o.fontSize+'" text-anchor="'+anchor+'">'+esc(o.text||"Text")+'</text>'}
  });
  svg.innerHTML=markup;
  if(selected){const o=item();if(o)svg.insertAdjacentHTML("beforeend",'<rect class="ds-selection" x="'+(o.x-3)+'" y="'+(o.y-3)+'" width="'+(o.w+6)+'" height="'+(o.h+6)+'" rx="2"/><rect class="ds-handle" x="'+(o.x+o.w-4)+'" y="'+(o.y+o.h-4)+'" width="8" height="8"/>')}
  $("canvasBg").value=doc.bg;$("canvasDimensions").textContent=doc.width+" × "+doc.height+" px";renderLayers();renderInspector();$("selectionStatus").textContent=item()?item().name:"No layer selected";updateHistoryButtons()
 }
-function renderLayers(){const list=$("layerList");list.replaceChildren();[...doc.items].reverse().forEach(o=>{const row=document.createElement("button");row.type="button";row.className="ds-layer-row"+(o.id===selected?" active":"");const icon=document.createElement("span");icon.className="ds-layer-icon";icon.textContent=o.type==="text"?"T":o.type==="ellipse"?"◯":"▱";const name=document.createElement("span");name.textContent=o.name;row.append(icon,name);row.addEventListener("click",()=>{selected=o.id;render()});list.append(row)})}
+function renderLayers(){const list=$("layerList");list.replaceChildren();[...doc.items].reverse().forEach(o=>{const row=document.createElement("button");row.type="button";row.className="ds-layer-row"+(o.id===selected?" active":"");const icon=document.createElement("span");icon.className="ds-layer-icon";icon.textContent=o.type==="text"?"T":o.type==="ellipse"?"◯":o.type==="image"?"▧":"▱";const name=document.createElement("span");name.textContent=o.name;row.append(icon,name);row.addEventListener("click",()=>{selected=o.id;render()});list.append(row)})}
 function renderInspector(){const o=item();$("canvasInspector").hidden=!!o;$("objectInspector").hidden=!o;$("selectedType").textContent=o?o.type[0].toUpperCase()+o.type.slice(1):"Canvas";if(!o)return;$("objectHeading").textContent=o.type==="text"?"Text properties":"Shape properties";$("objectName").value=o.name;$("objectFill").value=o.fill;$("objectX").value=Math.round(o.x);$("objectY").value=Math.round(o.y);$("objectW").value=Math.round(o.w);$("objectH").value=Math.round(o.h);$("objectOpacity").value=o.opacity;$("opacityValue").textContent=o.opacity+"%";$("textOptions").hidden=o.type!=="text";if(o.type==="text"){$("objectText").value=o.text;$("objectFontSize").value=o.fontSize;$("objectAlign").value=o.align||"start"}}
 function add(type){snapshot();const id="layer-"+Math.random().toString(36).slice(2,10);const o={id,name:type==="text"?"New text":type==="rect"?"Rectangle":"Ellipse",type,x:Math.round(doc.width*.36),y:Math.round(doc.height*.35),w:type==="text"?400:180,h:type==="text"?60:120,fill:type==="text"?"#242832":"#635bdb",opacity:100};if(type==="text"){o.text="Add your text";o.fontSize=40;o.align="start"}doc.items.push(o);selected=id;render();save()}
 function mutate(fn){const o=item();if(!o)return;snapshot();fn(o);o.x=Math.max(0,Math.min(doc.width-1,Number(o.x)||0));o.y=Math.max(0,Math.min(doc.height-1,Number(o.y)||0));o.w=Math.max(1,Math.min(doc.width-o.x,Number(o.w)||1));o.h=Math.max(1,Math.min(doc.height-o.y,Number(o.h)||1));render();save()}
@@ -52,6 +53,22 @@ $("duplicateObject").onclick=()=>{const o=item();if(!o)return;snapshot();const c
 $("deleteObject").onclick=()=>{if(!item())return;snapshot();doc.items=doc.items.filter(x=>x.id!==selected);selected="";render();save()};
 $("moveUp").onclick=()=>reorder(1);$("moveDown").onclick=()=>reorder(-1);
 function reorder(dir){const i=doc.items.findIndex(x=>x.id===selected),j=i+dir;if(i<0||j<0||j>=doc.items.length)return;snapshot();[doc.items[i],doc.items[j]]=[doc.items[j],doc.items[i]];render();save()}
+
+$("importImageBtn").addEventListener("click",()=>$("importImageFile").click());
+$("importImageFile").addEventListener("change",async e=>{
+ const file=e.target.files&&e.target.files[0];e.target.value="";if(!file)return;
+ if(!["image/png","image/jpeg","image/webp"].includes(file.type)){toast("Choose a PNG, JPEG or WebP image.");return}
+ if(file.size>1500000){toast("Images must be 1.5 MB or smaller for reliable local saving.");return}
+ const src=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file)}).catch(()=>null);
+ if(typeof src!=="string"||!src.startsWith("data:image/")){toast("Could not read that image.");return}
+ const image=new Image();image.onload=()=>{
+  snapshot();const scale=Math.min(1,doc.width*.55/image.width,doc.height*.55/image.height);
+  const w=Math.max(1,Math.round(image.width*scale)),h=Math.max(1,Math.round(image.height*scale));
+  const id="layer-"+Math.random().toString(36).slice(2,10);
+  doc.items.push({id,name:file.name.replace(/\.[^.]+$/,"").slice(0,60)||"Imported image",type:"image",src,x:Math.round((doc.width-w)/2),y:Math.round((doc.height-h)/2),w,h,fill:"#ffffff",opacity:100});
+  selected=id;render();save();toast("Image added as an editable layer.");
+ };image.onerror=()=>toast("That image could not be opened.");image.src=src;
+});
 $("undoBtn").onclick=undo;$("redoBtn").onclick=redo;$("designName").addEventListener("change",()=>save());
 $("saveDesign").onclick=()=>save(false);
 $("newDesign").onclick=()=>{if(!confirm("Start a new blank design? Export your current design first if you want a separate backup."))return;snapshot();doc={name:"Untitled design",width:900,height:560,bg:"#ffffff",items:[]};selected="";$("designName").value=doc.name;render();save();toast("New canvas created.")};
