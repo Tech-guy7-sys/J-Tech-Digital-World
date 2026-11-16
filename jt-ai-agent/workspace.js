@@ -1,3 +1,4 @@
+import { buildProjectContext } from './project-context.js';
 (()=>{const $=id=>document.getElementById(id),form=$('chatForm'),input=$('messageInput'),messages=$('messages'),welcome=$('welcome'),recent=$('recentList'),title=$('currentTitle'),send=$('sendButton'),status=$('providerStatus'),toast=$('toast');const KEY='jt-ai-agent.chats.v1',PROVIDER_KEY='jt-ai-agent.provider.v1',PROJECT_KEY='jt-ai-agent.project-context.v1';let chats=[],active=null,busy=false,activeController=null,selectedFiles=[],recentQuery='',folderFilter='all',folders=[];const providerSelect=$('providerSelect'),fileInput=$('fileInput'),attachmentList=$('attachmentList'),projectPanel=$('projectPanel'),projectInput=$('projectContextInput');try{const saved=localStorage.getItem(PROVIDER_KEY)||'openrouter/free';providerSelect.value=['openrouter/free','jt-core','gemini-2.5-flash','gemini-2.5-flash-lite','groq'].includes(saved)?saved:'openrouter/free';if(saved!==providerSelect.value)localStorage.setItem(PROVIDER_KEY,providerSelect.value)}catch{}providerSelect.addEventListener('change',()=>{try{localStorage.setItem(PROVIDER_KEY,providerSelect.value)}catch{}status.textContent=providerSelect.value==='gemini-2.5-flash'?'Gemini 2.5 Flash · Free tier':providerSelect.value==='gemini-2.5-flash-lite'?'Gemini 2.5 Flash-Lite · Free tier':providerSelect.value==='groq'?'Groq · Free tier':'OpenRouter · Free models';notify('JT AI Core provider preference saved.')});try{chats=JSON.parse(localStorage.getItem(KEY)||'[]')}catch{}try{folders=JSON.parse(localStorage.getItem('jt-ai-agent.folders.v1')||'[]')}catch{}if(!Array.isArray(folders))folders=[];folders=folders.filter(f=>f&&typeof f.id==='string'&&typeof f.name==='string');if(!Array.isArray(chats))chats=[];chats=chats.filter(c=>c&&typeof c==='object').map(c=>({...c,pinned:Boolean(c.pinned),folderId:typeof c.folderId==='string'?c.folderId:''}));const saveFolders=()=>{try{localStorage.setItem('jt-ai-agent.folders.v1',JSON.stringify(folders))}catch{notify('Could not save folders in browser storage.')}};const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(chats))}catch{notify('Browser storage is unavailable; this chat may not persist.')}};const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);function notify(t){toast.textContent=t;toast.classList.add('show');clearTimeout(notify.t);notify.t=setTimeout(()=>toast.classList.remove('show'),2600)}
 function renderAttachments(){if(!attachmentList)return;attachmentList.innerHTML='';attachmentList.hidden=!selectedFiles.length;selectedFiles.forEach((file,index)=>{const chip=document.createElement('div');chip.className='attachment-chip';const name=document.createElement('span');name.textContent=file.name+' · '+file.content.length.toLocaleString()+' chars';const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','Remove '+file.name);remove.onclick=()=>{selectedFiles.splice(index,1);renderAttachments()};chip.append(name,remove);attachmentList.append(chip)})}
 $('chatSearch')?.addEventListener('input',e=>{recentQuery=e.target.value.trim().toLowerCase();renderRecent()});
@@ -48,15 +49,7 @@ function readSharedProjects(){
 function selectedSharedProject(){return readSharedProjects().find(p=>p.id===selectedSharedProjectId)||null}
 function approvedProjectContext(){
  if(!includeProjectContext)return '';
- const project=selectedSharedProject();
- const parts=[];
- const manual=projectInput?.value?.trim()||'';
- if(manual)parts.push('Saved JT AI Agent brief:\n'+manual);
- if(project){
-  const notes=Array.isArray(project.notes)?project.notes.slice(-30).filter(n=>n&&typeof n.text==='string').map(n=>'- ['+(typeof n.authorApp==='string'?n.authorApp:'JT app')+'] '+n.text):[];
-  parts.push('Shared JT project: '+project.name+'\nSummary: '+(typeof project.summary==='string'?project.summary:'')+'\nProject notes:\n'+(notes.join('\n')||'No notes yet.'));
- }
- return parts.join('\n\n').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').slice(0,4000);
+ return buildProjectContext({manualContext:projectInput?.value||'',project:selectedSharedProject()});
 }
 function renderProjectContextControls(){
  if(!sharedSelect)return;
