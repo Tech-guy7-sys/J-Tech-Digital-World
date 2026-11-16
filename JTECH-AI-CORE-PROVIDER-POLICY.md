@@ -41,3 +41,8 @@ Cloudflare Workers AI is enabled for JT Design image generation through @cf/blac
 - Cloudflare Pages Workers AI binding named AI, plus CLOUDFLARE_WORKERS_PLAN=free and CLOUDFLARE_AI_FREE_TIER_CONFIRMED=true. These are operator attestations, not independent billing verification.
 
 The gateway rejects legacy Claude/Anthropic routes and does not expose paid OpenAI/Anthropic connectors as JT AI Core providers.
+
+
+## Cloudflare Pages Preview configuration
+
+For a feature-branch Preview, configure the variables under the Pages project's **Preview** environment (Settings → Variables and Secrets), not only under Production. The gateway's readiness endpoint reads these server-side bindings at runtime. For the default OpenRouter route, set `JEFF_API_ENABLED=true` as a plain-text variable and add `OPENROUTER_API_KEY` as a secret. To enable the optional Gemini routes, also add `GEMINI_API_KEY` as a secret and `GEMINI_FREE_TIER_CONFIRMED=true` as a plain-text operator attestation only after confirming the Google AI Studio project remains on its free tier. Save and redeploy the Preview, then verify `/api/jeff` reports `ready: true`. Never place provider keys in browser code, localStorage, commits, or chat. Keep Production configuration separate until release approval.
