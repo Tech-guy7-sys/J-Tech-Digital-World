@@ -56,7 +56,7 @@ $("undoBtn").onclick=undo;$("redoBtn").onclick=redo;$("designName").addEventList
 $("saveDesign").onclick=()=>save(false);
 $("newDesign").onclick=()=>{if(!confirm("Start a new blank design? Export your current design first if you want a separate backup."))return;snapshot();doc={name:"Untitled design",width:900,height:560,bg:"#ffffff",items:[]};selected="";$("designName").value=doc.name;render();save();toast("New canvas created.")};
 $("canvasPreset").addEventListener("change",e=>{snapshot();[doc.width,doc.height]=presets[e.target.value];doc.items.forEach(o=>{o.x=Math.min(o.x,doc.width-o.w);o.y=Math.min(o.y,doc.height-o.h)});render();save()});
-function applyZoom(){wrap.style.width=Math.min(100,zoom)+"%";$("zoomValue").textContent=zoom+"%"}
+function applyZoom(){wrap.style.width=zoom+"%";$("zoomValue").textContent=zoom+"%"}
 $("zoomIn").onclick=()=>{zoom=Math.min(150,zoom+10);applyZoom()};$("zoomOut").onclick=()=>{zoom=Math.max(30,zoom-10);applyZoom()};$("fitCanvas").onclick=()=>{zoom=100;applyZoom()};
 function download(name,data,type){const url=URL.createObjectURL(new Blob([data],{type}));const a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function filename(ext){return (doc.name||"jt-design").replace(/[^a-z0-9-_]+/gi,"-")+"."+ext}
