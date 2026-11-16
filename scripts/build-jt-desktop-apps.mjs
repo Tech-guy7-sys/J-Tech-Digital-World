@@ -15,6 +15,9 @@ if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("JT_RE
 if (!["win", "mac", "linux"].includes(platform)) throw new Error("JT_PLATFORM must be win, mac, or linux.");
 if (!["x64", "arm64"].includes(arch) && !(platform === "win" && arch === "ia32")) throw new Error("Unsupported platform/architecture combination. Windows supports x64, ARM64, and legacy x86 with Electron 43; macOS/Linux targets are x64 or ARM64.");
 await mkdir(outputDir, { recursive: true });
+const iconResult = spawnSync(process.execPath, [path.join(root, "scripts", "generate-jt-app-icons.mjs")], { cwd: root, stdio: "inherit" });
+if (iconResult.error) throw iconResult.error;
+if (iconResult.status !== 0) throw new Error("JT app icon generation failed.");
 const electronBuilder = path.join(shellDir, "node_modules", "electron-builder", "cli.js");
 const targets = platform === "win" ? ["nsis", "zip"] : platform === "mac" ? ["dmg", "zip"] : ["AppImage", "deb", "rpm", "zip"];
 for (const appId of apps) {
