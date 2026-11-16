@@ -63,16 +63,16 @@
       s[active]=source.value;
       const findings=[];
       const addFinding=(level,file,line,message)=>findings.push({level,file,line,message});
-      const lines=(text,offset)=>{const n=text.slice(0,offset).split("\\n").length;return n;};
-      const missingAlt=/<img\\b(?![^>]*\\balt\\s*=)[^>]*>/gi;let match;
+      const lines=(text,offset)=>{const n=text.slice(0,offset).split("\n").length;return n;};
+      const missingAlt=/<img\b(?![^>]*\balt\s*=)[^>]*>/gi;let match;
       while((match=missingAlt.exec(s.html)))addFinding("warning","index.html",lines(s.html,match.index),"Image element is missing alternative text.");
-      const ids=[...s.html.matchAll(/\\bid\\s*=\\s*["']([^"']+)["']/gi)],seen=new Set();
+      const ids=[...s.html.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)],seen=new Set();
       ids.forEach(m=>{if(seen.has(m[1]))addFinding("error","index.html",lines(s.html,m.index),"Duplicate element id: "+m[1]);seen.add(m[1]);});
       const braceCount=text=>(text.match(/{/g)||[]).length-(text.match(/}/g)||[]).length;
       if(braceCount(s.css)!==0)addFinding("error","styles.css",1,"CSS opening and closing brace counts do not match.");
-      if(/\\beval\\s*\\(/.test(s.js))addFinding("warning","app.js",lines(s.js,s.js.search(/\\beval\\s*\\(/)),"Avoid eval(); it makes code harder to review and can execute unexpected strings.");
-      if(/\\bconsole\\.log\\s*\\(/.test(s.js))addFinding("info","app.js",lines(s.js,s.js.search(/\\bconsole\\.log\\s*\\(/)),"Console logging found; remove temporary debug output before release if unnecessary.");
-      ["html","css","js"].forEach(kind=>{const re=/\\b(TODO|FIXME)\\b/g;while((match=re.exec(s[kind])))addFinding("info",kind==="html"?"index.html":kind==="css"?"styles.css":"app.js",lines(s[kind],match.index),"Unfinished TODO/FIXME marker.");});
+      if(/\beval\s*\(/.test(s.js))addFinding("warning","app.js",lines(s.js,s.js.search(/\beval\s*\(/)),"Avoid eval(); it makes code harder to review and can execute unexpected strings.");
+      if(/\bconsole\.log\s*\(/.test(s.js))addFinding("info","app.js",lines(s.js,s.js.search(/\bconsole\.log\s*\(/)),"Console logging found; remove temporary debug output before release if unnecessary.");
+      ["html","css","js"].forEach(kind=>{const re=/\b(TODO|FIXME)\b/g;while((match=re.exec(s[kind])))addFinding("info",kind==="html"?"index.html":kind==="css"?"styles.css":"app.js",lines(s[kind],match.index),"Unfinished TODO/FIXME marker.");});
       const results=document.getElementById("codeCheckResults");results.replaceChildren();
       if(!findings.length){const li=document.createElement("li");li.textContent="No issues found by these quick checks.";results.append(li);}
       findings.forEach(f=>{const li=document.createElement("li");li.textContent="["+f.level.toUpperCase()+"] "+f.file+" · line "+f.line+" — "+f.message;results.append(li);});
