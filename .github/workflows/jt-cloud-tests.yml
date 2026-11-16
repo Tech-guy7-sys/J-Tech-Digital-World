@@ -51,11 +51,15 @@ jobs:
           node --check jt-apps/workspace-home.js
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
+          node --check jt-apps/shared-workspace-core.js
+          node --check jt-apps/shared-workspace.js
           node --check jt-apps/app-power-tools.js
           node --check jt-apps/app.js
           node --check jt-ai-agent/workspace.js
           node --check functions/api/jeff.js
       - name: Run JT Cloud regression tests
         run: npm run test:jt-cloud
+      - name: Run shared workspace permission tests
+        run: node --test scripts/test-shared-workspace.mjs
       - name: Build website for Cloudflare Pages
         run: npm run build:website
