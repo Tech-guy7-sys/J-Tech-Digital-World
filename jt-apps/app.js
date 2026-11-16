@@ -2,6 +2,7 @@
   "use strict";
   const main=document.querySelector("main[data-app]");
   if(!main)return;
+  if(!document.querySelector("[data-jt-product-shell-loader]")){const shell=document.createElement("script");shell.src="/jt-apps/product-shell.js";shell.defer=true;shell.dataset.jtProductShellLoader="1";document.head.appendChild(shell);}
   const app=main.dataset.app||"JT Workspace";
   const slug=app.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
   if(!document.querySelector("[data-jt-command-deck-loader]")){
