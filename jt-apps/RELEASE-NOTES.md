@@ -1,3 +1,11 @@
+## Unreleased — JT membership 25% discount revision
+
+### Changed
+- Reduced the proposed monthly Student, Pro and Enterprise prices by 25% to ₦1,875, ₦4,875 and ₦90,000 respectively.
+- Reduced the proposed annual prices by 25% to ₦18,750, ₦48,750 and ₦900,000 respectively.
+- Updated the public pricing page and shared JT workspace plan cards to show discounted prices, previous draft rates and annual savings consistently.
+- Clearly labels the discount and all prices as proposals; billing and checkout remain unavailable.
+
 ## Unreleased — JT membership plan presentation
 
 ### Added
