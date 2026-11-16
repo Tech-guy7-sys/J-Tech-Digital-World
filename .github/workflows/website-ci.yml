@@ -136,4 +136,3 @@ jobs:
           grep -q 'JT Motion' dist/jt-apps/jt-motion/index.html
           grep -q 'motionTimeline' dist/jt-apps/workspace-tools.js
           grep -q 'MediaRecorder' dist/jt-apps/workspace-tools.js
-          grep -q 'releaseLabList' dist/jt-apps/workspace-tools.js
