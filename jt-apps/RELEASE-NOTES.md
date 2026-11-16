@@ -1,14 +1,29 @@
-## Unreleased — JT Offers and shared workspace polish
+## Unreleased — JT membership plan presentation
 
 ### Added
-- Added a shared JT Offers & Highlights feature panel to the JT AI Core, JT App Manager, JT Cloud, JT Code, JT Design, JT Motion, JT Studio, JT Stream and Agent Jeff browser workspaces.
-- Added a coordinated premium-style promotional layout with responsive feature tiles and a direct, app-aware Jeff AI planning link.
-- Highlighted eligible free-tier AI routes, project workspace tools and user-approved JT app handoff without inventing prices, discounts or guaranteed provider availability.
+- Replaced the previous generic feature-highlights panel with three clearly named JT membership offers: Student, Pro and Enterprise.
+- Added the proposed Nigeria pricing from the internal pricing draft: Student ₦2,500/month (₦25,000/year), Pro ₦6,500/month (₦65,000/year), and Enterprise ₦120,000/month (₦1,200,000/year).
+- Updated the public pricing page with plan descriptions, a comparison table, proposed annual prices and clear support links.
+- Marked all amounts as proposals, not active checkout prices. The plan panel appears in the shared JT app workspaces.
 
-### Boundaries
-- The offers panel describes product capabilities and featured workflows; it does not advertise unverified discounts, time-limited deals or live provider availability.
-- Feature availability remains dependent on the app implementation and its actual connected services.
-- The shared workspace project board remains browser-local; no cloud synchronization or native file access is implied.
+### Commercial readiness boundaries
+- Billing, account entitlements, student verification, renewals, cancellation, refunds, tax handling, usage metering and enterprise team administration are not implemented.
+- Enterprise team capacity and service levels are not promised or sold.
+- The plans must not be treated as purchasable until the commercial and technical release gates are complete.
+
+## Unreleased — JT Code and JT Design workspace upgrades
+
+### JT Code
+- Added import of individual HTML, CSS and JavaScript files into the browser editor, with a 1 MB per-file limit.
+- Added download of the currently selected source file alongside the existing standalone HTML export.
+- Added Ctrl/Cmd+Enter to refresh the sandbox preview and Ctrl/Cmd+S to save the local draft.
+- Kept preview execution inside the existing sandboxed iframe; no host filesystem or terminal access is implied.
+
+### JT Design
+- Added triangle and star shape options alongside rounded rectangle and circle.
+- Added shape opacity, title colour, caption colour and title-size controls.
+- Preserved local save and SVG/PNG export workflows.
+- Design content remains local until explicitly exported.
 
 ## Unreleased — Private JT Cloud remote storage foundation
 
