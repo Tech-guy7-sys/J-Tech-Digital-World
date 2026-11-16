@@ -1,3 +1,15 @@
+## Unreleased — JT Offers and shared workspace polish
+
+### Added
+- Added a shared JT Offers & Highlights feature panel to the JT AI Core, JT App Manager, JT Cloud, JT Code, JT Design, JT Motion, JT Studio, JT Stream and Agent Jeff browser workspaces.
+- Added a coordinated premium-style promotional layout with responsive feature tiles and a direct, app-aware Jeff AI planning link.
+- Highlighted eligible free-tier AI routes, project workspace tools and user-approved JT app handoff without inventing prices, discounts or guaranteed provider availability.
+
+### Boundaries
+- The offers panel describes product capabilities and featured workflows; it does not advertise unverified discounts, time-limited deals or live provider availability.
+- Feature availability remains dependent on the app implementation and its actual connected services.
+- The shared workspace project board remains browser-local; no cloud synchronization or native file access is implied.
+
 ## Unreleased — Private JT Cloud remote storage foundation
 
 ### Added
