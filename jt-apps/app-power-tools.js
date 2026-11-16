@@ -23,7 +23,8 @@ function addCrossAppTaskBoard(){
  '<div id="jtTaskList" class="jt-power-list"></div></div></div>';
  const render=()=>{
   const filter=board.querySelector("#jtTaskFilter").value,q=board.querySelector("#jtTaskSearch").value.trim().toLowerCase();
-  const visible=tasks.filter(t=>(filter==="all"||t.status===filter||t.priority===filter)&&[t.title,t.app,t.project,t.notes].join(" ").toLowerCase().includes(q)).sort((a,b)=>({high:0,normal:1,low:2}[a.priority]-({high:0,normal:1,low:2}[b.priority])||String(a.due||"9999").localeCompare(String(b.due||"9999"))||b.updatedAt.localeCompare(a.updatedAt));
+  const priorityRank={high:0,normal:1,low:2};
+  const visible=tasks.filter(t=>(filter==="all"||t.status===filter||t.priority===filter)&&[t.title,t.app,t.project,t.notes].join(" ").toLowerCase().includes(q)).sort((a,b)=>(priorityRank[a.priority]??1)-(priorityRank[b.priority]??1)||String(a.due||"9999").localeCompare(String(b.due||"9999"))||String(b.updatedAt||"").localeCompare(String(a.updatedAt||"")));
   const stats=board.querySelector("#jtTaskStats");stats.textContent="";
   [["All",tasks.length],["Open",tasks.filter(t=>t.status==="open").length],["In progress",tasks.filter(t=>t.status==="doing").length],["Done",tasks.filter(t=>t.status==="done").length]].forEach(([label,n])=>{const s=document.createElement("span");s.className="jt-power-chip";s.textContent=label+": "+n;stats.append(s)});
   const list=board.querySelector("#jtTaskList");
