@@ -14,6 +14,8 @@
 - No bucket was created, no public access was enabled, and no production settings were changed.
 
 ## Unreleased — Jeff AI workspace improvements
+- Added conversation renaming from the chat header, with an 80-character title limit and local persistence.
+- Added a confirmation step and accessible label before deleting a saved conversation.
 - Added a Stop control while a provider request is running; cancelling aborts the in-flight browser request and keeps the prompt in the conversation.
 
 ### Added
