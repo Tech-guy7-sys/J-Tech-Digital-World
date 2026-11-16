@@ -1,3 +1,11 @@
+## Unreleased — January 28 annual promotion
+
+### Changed
+- Restored regular Student, Pro and Enterprise monthly and annual proposal prices outside the promotion date.
+- Added a recurring 25% discount on both monthly and annual prices on January 28 each year, evaluated using Africa/Lagos (WAT) calendar time.
+- Updated the public pricing page and shared JT workspace plan cards to show regular rates outside the promotion and discounted rates only on January 28.
+- Kept all prices clearly marked as proposals; checkout and subscription activation remain unavailable.
+
 ## Unreleased — JT membership 25% discount revision
 
 ### Changed
