@@ -134,5 +134,5 @@ jobs:
           grep -q 'data-jt-cloud-drive' dist/jt-apps/jt-cloud/index.html
           grep -q 'local-first' dist/jt-apps/jt-cloud/index.html
           grep -q 'JT Motion' dist/jt-apps/jt-motion/index.html
-          grep -q 'motionTimeline' dist/jt-apps/workspace-tools.js
-          grep -q 'MediaRecorder' dist/jt-apps/workspace-tools.js
+          grep -q 'motionTimeline' jt-apps/workspace-tools.js
+          grep -q 'MediaRecorder' jt-apps/workspace-tools.js
