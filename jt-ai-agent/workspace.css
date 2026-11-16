@@ -120,3 +120,15 @@ html[data-jt-theme="light"] .stop-button{color:#a43c46;background:#fff3f3;border
 /* Conversation title editing */
 .rename-chat-button{margin-left:8px;width:28px;height:28px;border:1px solid var(--line,rgba(255,255,255,.12));border-radius:8px;background:transparent;color:var(--muted,#9da3b5);cursor:pointer;font:inherit;line-height:1;transition:color .15s,border-color .15s,background .15s}
 .rename-chat-button:hover{color:var(--text,#f4f5fa);border-color:var(--accent,#8b83ff);background:rgba(139,131,255,.09)}
+
+/* Conversation organization: pinned chats and folders */
+.chat-folder-controls{display:flex;gap:6px;align-items:center;margin:8px 2px 7px}
+.chat-folder-controls select{min-width:0;flex:1;background:#151622;border:1px solid #2b2c3e;color:#c7c8d8;border-radius:7px;padding:7px 8px;font:10px 'DM Sans',sans-serif}
+.chat-folder-controls button{border:1px solid #303145;background:#171824;color:#bdb4e9;border-radius:7px;padding:7px 8px;font:600 10px 'DM Sans',sans-serif;cursor:pointer}
+.chat-folder-controls button:hover{border-color:#8c78d4;background:#201d32}
+.recent-item{gap:3px}
+.recent-pin{border:0;background:transparent;color:#b8a5ff;cursor:pointer;padding:5px 3px;font-size:13px;opacity:.72}
+.recent-item:hover .recent-pin,.recent-item.active .recent-pin{opacity:1}
+.recent-folder-select{max-width:72px;min-width:0;border:0;background:#171824;color:#85879b;border-radius:5px;padding:4px 2px;font:9px 'DM Sans',sans-serif}
+.recent-folder-select:focus,.chat-folder-controls select:focus,.chat-folder-controls button:focus-visible,.recent-pin:focus-visible{outline:2px solid #9a7cff;outline-offset:2px}
+@media(max-width:760px){.recent-folder-select{max-width:64px}.chat-folder-controls button{padding:7px 6px}}
