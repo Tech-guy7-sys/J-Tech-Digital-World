@@ -118,3 +118,35 @@ body:has(.jt-product-shell){margin:0!important;background:var(--jt-bg)!important
 .jt-product-page .jt-pro-meter span{background:#4b9b7b!important}
 .jt-product-page .jt-pro-check input{accent-color:var(--jt-accent)!important}
 @media(max-width:700px){.jt-product-page .jt-pro{padding:14px!important}.jt-product-page .jt-pro-grid{grid-template-columns:1fr!important}}
+
+/* JT Unified Workspace refresh — restrained, legible product UI */
+:root{--jt-bg:#f4f6f9;--jt-surface:#fff;--jt-border:#e4e8ef;--jt-ink:#202938;--jt-muted:#687487;--jt-accent:#5148b8;--jt-accent-soft:#f0efff;--jt-radius:10px}
+.jt-product-shell{grid-template-columns:252px minmax(0,1fr);background:#f4f6f9}
+.jt-product-sidebar{background:#171b24;border-right:1px solid #252b37;padding:20px 13px 14px}
+.jt-product-brand{padding:0 9px 24px}
+.jt-product-logo{border-radius:9px;background:#f4f2ff;color:#38316f}
+.jt-workspace-switcher{background:#202631;border-color:#333b49;border-radius:8px}
+.jt-product-nav{gap:2px}
+.jt-product-navlabel{padding:19px 10px 7px;font-size:9px;letter-spacing:1.1px;color:#8e98a8}
+.jt-product-navlink{min-height:37px;border-radius:7px;font-size:11px;color:#c2cad6}
+.jt-product-navlink.active{background:#2a3040;box-shadow:inset 2px 0 #a99eff;color:#fff}
+.jt-nav-icon{color:#b3aaff}
+.jt-product-topbar{height:60px;flex-basis:60px;padding:0 clamp(20px,3vw,42px);background:rgba(255,255,255,.94);border-color:#e4e8ef}
+.jt-product-content{max-width:1600px;padding:32px clamp(20px,3vw,44px) 56px}
+.jt-product-page .app-hero{margin-bottom:28px!important}
+.jt-product-page .app-hero h1{font-size:clamp(28px,3.2vw,39px)!important;line-height:1.16!important;letter-spacing:-1.35px!important}
+.jt-product-page .app-eyebrow{font-size:9px!important;letter-spacing:1.35px!important}
+.jt-product-page .app-hero p{font-size:12px!important;line-height:1.75!important}
+.jt-product-page .jt-workspace-home{margin:0 0 25px!important}
+.jt-product-page .jt-wh-head h2{font-size:23px!important;letter-spacing:-.65px!important}
+.jt-product-page .jt-wh-head p{max-width:680px!important;font-size:11px!important;line-height:1.7!important}
+.jt-product-page .jt-wh-actions{gap:8px!important}
+.jt-product-page .jt-wh-actions button,.jt-product-page .jt-wh-actions a{border-radius:7px!important;font-size:10px!important}
+.jt-product-page .jt-wh-overview{border-radius:9px!important}
+.jt-product-page .jt-wh-project,.jt-product-page .jt-wh-side{border-radius:9px!important;box-shadow:none!important}
+.jt-product-page .jt-pro{border-radius:10px!important;box-shadow:0 2px 10px rgba(25,35,50,.025)!important}
+.jt-product-page .section-head{margin-top:28px!important}
+.jt-product-page section[hidden]{display:none!important}
+.jt-command-trigger{border-radius:7px;background:#f8f9fb}
+.jt-command-palette{border:1px solid #e1e5ec;border-radius:12px;box-shadow:0 24px 80px #10182830}
+@media(max-width:700px){.jt-product-shell{display:block}.jt-product-sidebar{padding:10px 12px}.jt-product-content{padding:20px 14px 32px}.jt-product-page .app-hero h1{font-size:27px!important}}
