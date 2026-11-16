@@ -14,10 +14,10 @@ on:
       - "functions/**"
       - "scripts/test-jeff-api.mjs"
       - "scripts/test-jeff-project-context.mjs"
+      - "scripts/test-jt-app-icons.mjs"
       - "scripts/generate-jt-app-icons.mjs"
       - "desktop/jt-workspace-shell/**"
       - "scripts/build-jt-desktop-apps.mjs"
-      - "scripts/test-jeff-project-context.mjs"
       - "package.json"
       - "wrangler.toml"
       - ".github/workflows/website-ci.yml"
@@ -31,6 +31,11 @@ on:
       - "jt-ai-agent/**"
       - "jt-apps/**"
       - "scripts/build-site.mjs"
+      - "scripts/test-jeff-project-context.mjs"
+      - "scripts/test-jt-app-icons.mjs"
+      - "scripts/generate-jt-app-icons.mjs"
+      - "desktop/jt-workspace-shell/**"
+      - "scripts/build-jt-desktop-apps.mjs"
       - "package.json"
       - "wrangler.toml"
       - ".github/workflows/website-ci.yml"
@@ -75,6 +80,8 @@ jobs:
         run: |
           node scripts/test-jeff-api.mjs
           node scripts/test-image-api.mjs
+      - name: Test JT desktop application icons
+        run: node scripts/test-jt-app-icons.mjs
       - name: Test opt-in Jeff AI shared project context
         run: node scripts/test-jeff-project-context.mjs
       - name: Test shared JT project notes and handoff permissions
@@ -96,6 +103,8 @@ jobs:
           test -f dist/jt-ai-agent/project-context.js
           grep -q type=module dist/jt-ai-agent/index.html
           test -f desktop/jt-workspace-shell/build/icons/jt-ai-agent.png
+          test -f desktop/jt-workspace-shell/build/icons/jt-ai-agent.ico
+          test -f desktop/jt-workspace-shell/build/icons/jt-ai-agent.icns
           test -f dist/jt-apps/jt-design/image-studio.js
           grep -q "jtImageStudio" dist/jt-apps/jt-design/index.html
           grep -q "image-studio.js" dist/jt-apps/jt-design/index.html
