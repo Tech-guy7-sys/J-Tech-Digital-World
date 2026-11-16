@@ -16,6 +16,7 @@ on:
       - "scripts/test-jeff-project-context.mjs"
       - "scripts/test-jt-app-icons.mjs"
       - "scripts/test-jt-workspace-shell.mjs"
+      - "scripts/test-jt-workspace-dashboard.mjs"
       - "scripts/test-jt-design-image-import.mjs"
       - "scripts/generate-jt-app-icons.mjs"
       - "desktop/jt-workspace-shell/**"
@@ -71,7 +72,8 @@ jobs:
           node --check jt-apps/pro-workspaces.js
           node --check jt-apps/command-deck.js
           node --check jt-apps/product-shell.js
-          node --test scripts/test-jt-workspace-shell.mjs
+          node --check jt-apps/workspace-dashboard.js
+          node --test scripts/test-jt-workspace-shell.mjs scripts/test-jt-workspace-dashboard.mjs
           node --check jt-apps/jt-design/studio.js
           node --test scripts/test-jt-design-image-import.mjs
           node --check jt-apps/shared-workspace-core.js
@@ -115,6 +117,9 @@ jobs:
           test -f dist/jt-apps/jt-design/studio.html
           test -f dist/jt-apps/jt-design/studio.js
           test -f dist/jt-apps/jt-design/studio.css
+          test -f dist/jt-apps/workspace.html
+          test -f dist/jt-apps/workspace-dashboard.js
+          test -f dist/jt-apps/workspace-dashboard.css
           test -f dist/jt-apps/jt-cloud-drive.js
           test -f dist/jt-apps/jt-cloud-drive.css
           test -f dist/jt-apps/workspace-tools.js
