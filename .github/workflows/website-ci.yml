@@ -75,7 +75,7 @@ jobs:
           node --check jt-apps/jt-cloud-drive.js
           node --check jt-apps/workspace-tools.js
           node --check jt-apps/pro-workspaces.js
-          node --test scripts/test-jt-code-checks.mjs scripts/test-jeff-ai-library.mjs scripts/test-jt-cloud-file-controls.mjs
+          node --test scripts/test-jt-code-checks.mjs scripts/test-jeff-ai-library.mjs scripts/test-jt-cloud-file-controls.mjs scripts/test-jt-motion-timeline.mjs
           node --check jt-apps/command-deck.js
           node --check jt-apps/product-shell.js
           node --check jt-apps/workspace-dashboard.js
