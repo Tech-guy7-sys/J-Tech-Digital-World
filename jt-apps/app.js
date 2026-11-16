@@ -18,6 +18,8 @@
     workspace.dataset.jtWorkspaceHomeLoader="1";
     document.head.appendChild(workspace);
   }
+  const loadPowerTools = () => { if (document.querySelector("[data-jt-power-tools-loader]")) return; const power=document.createElement("script"); power.src="/jt-apps/app-power-tools.js"; power.defer=true; power.dataset.jtPowerToolsLoader="1"; document.body.appendChild(power); };
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",loadPowerTools,{once:true}); else loadPowerTools();
   const nav=document.querySelector(".app-nav");
   if(nav&&!nav.querySelector("[data-jt-guide]")){
     const about=document.createElement("a");
