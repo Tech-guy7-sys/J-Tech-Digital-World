@@ -15,16 +15,18 @@ const start=()=>{
   ["JT Studio","/jt-apps/jt-studio/","♫","CREATE"],
   ["JT Stream Studio","/jt-apps/jt-stream/studio.html","◉","CREATE"],
   ["JT Cloud","/jt-apps/jt-cloud/","☁","WORK"],
-  ["JT App Manager","/jt-apps/jt-app-manager/","▦","WORK"]
+  ["JT App Manager","/jt-apps/jt-app-manager/","▦","WORK"],
+  ["My Workspace","/jt-apps/workspace.html","▦","WORKSPACE"]
  ];
  const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
  const css=document.createElement("link");css.rel="stylesheet";css.href="/jt-apps/product-shell.css";document.head.append(css);
  const shell=document.createElement("div");shell.className="jt-product-shell";shell.dataset.jtProductShell="";
  const sidebar=document.createElement("aside");sidebar.className="jt-product-sidebar";sidebar.setAttribute("aria-label","JT app navigation");
  const brand=document.createElement("a");brand.className="jt-product-brand";brand.href="/jt-apps/";brand.innerHTML='<span class="jt-product-logo">JT</span><span><b>J Tech</b><small>Digital World</small></span>';sidebar.append(brand);
- const workspace=document.createElement("a");workspace.className="jt-workspace-switcher";workspace.href="/jt-apps/";workspace.innerHTML='<span class="jt-workspace-glyph">▦</span><span><b>My workspace</b><small>Personal workspace</small></span><span class="jt-switch-chevron">⌄</span>';sidebar.append(workspace);
+ const workspace=document.createElement("a");workspace.className="jt-workspace-switcher";workspace.href="/jt-apps/workspace.html";workspace.innerHTML='<span class="jt-workspace-glyph">▦</span><span><b>My workspace</b><small>Personal workspace</small></span><span class="jt-switch-chevron">⌄</span>';sidebar.append(workspace);
  const nav=document.createElement("nav");nav.className="jt-product-nav";
  const home=document.createElement("a");home.className="jt-product-navlink";home.href="/jt-apps/";home.innerHTML='<span class="jt-nav-icon">⌂</span><span>App library</span>';nav.append(home);
+ const myWorkspace=document.createElement("a");myWorkspace.className="jt-product-navlink";myWorkspace.href="/jt-apps/workspace.html";myWorkspace.innerHTML='<span class="jt-nav-icon">▦</span><span>My workspace</span>';nav.append(myWorkspace);
  if(app==="JT Design"){const overview=document.createElement("a");overview.className="jt-product-navlink";overview.href="/jt-apps/jt-design/";overview.innerHTML='<span class="jt-nav-icon">▤</span><span>Design overview</span>';nav.append(overview);}
  if(app==="JT Stream"){const overview=document.createElement("a");overview.className="jt-product-navlink";overview.href="/jt-apps/jt-stream/";overview.innerHTML='<span class="jt-nav-icon">▤</span><span>Stream overview</span>';nav.append(overview);}
  const grouped={};
