@@ -84,3 +84,37 @@ body:has(.jt-product-shell){margin:0!important;background:var(--jt-bg)!important
 @media(max-width:920px){.jt-product-shell{grid-template-columns:205px minmax(0,1fr)}.jt-product-sidebar{padding-inline:9px}.jt-product-content{padding:23px 18px 38px}.jt-command-trigger{min-width:175px}}
 @media(max-width:700px){.jt-product-shell{display:block}.jt-product-sidebar{position:relative;width:100%;height:auto;padding:10px 12px;border-right:0;border-bottom:1px solid #282d36}.jt-product-brand{padding:0 4px 10px}.jt-workspace-switcher{display:none}.jt-product-nav{flex-direction:row;overflow-x:auto;gap:4px;padding:2px 0 5px}.jt-product-navlabel{display:none}.jt-product-navlink{flex:0 0 auto;white-space:nowrap;padding:7px 9px}.jt-product-navlink:not(.active){background:transparent}.jt-product-sidebar-bottom{display:none}.jt-product-topbar{height:50px;position:relative;padding:0 13px}.jt-command-trigger{min-width:0;width:36px;justify-content:center;padding:0}.jt-command-trigger span:nth-child(2),.jt-command-trigger kbd{display:none}.jt-product-content{padding:20px 13px 30px}.jt-product-page .feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.jt-product-page .workspace-grid{grid-template-columns:1fr!important}}
 @media(max-width:430px){.jt-product-page .feature-grid{grid-template-columns:1fr!important}.jt-product-page .app-hero h1{font-size:27px!important}}
+
+
+/* V2 workbench surfaces: the tool itself should feel like the product. */
+.jt-product-page .jt-pro{margin:18px 0 30px!important;padding:20px!important;border:1px solid #e3e6eb!important;border-radius:12px!important;background:#fff!important;box-shadow:0 5px 20px rgba(25,35,50,.045)!important;color:#303641!important}
+.jt-product-page .jt-pro-head{margin-bottom:16px!important;align-items:center!important}
+.jt-product-page .jt-pro h2{font:650 20px/1.25 Manrope,sans-serif!important;letter-spacing:-.5px!important;color:#252b35!important}
+.jt-product-page .jt-pro h3{font:650 12px Manrope,sans-serif!important;color:#303641!important}
+.jt-product-page .jt-pro p,.jt-product-page .jt-pro small{color:#737c89!important;font-size:10px!important;line-height:1.65!important}
+.jt-product-page .jt-pro-kicker{color:var(--jt-accent)!important;font-size:9px!important;letter-spacing:1.2px!important}
+.jt-product-page .jt-pro-badge{background:#f0efff!important;color:#5d55bd!important;border:1px solid #e0ddff!important;border-radius:5px!important}
+.jt-product-page .jt-pro-grid{gap:12px!important}
+.jt-product-page .jt-pro-card{padding:15px!important;border:1px solid #e5e8ed!important;border-radius:9px!important;background:#fafbfc!important;color:#303641!important}
+.jt-product-page .jt-pro-field{margin:9px 0!important;color:#5e6875!important;font-size:10px!important}
+.jt-product-page .jt-pro-field input,.jt-product-page .jt-pro-field select,.jt-product-page .jt-pro-field textarea,.jt-product-page .jt-pro-code,.jt-product-page #codingAgentBrief{border:1px solid #dfe3e9!important;border-radius:7px!important;background:#fff!important;color:#303641!important;font:11px/1.6 'DM Sans',sans-serif!important;outline-color:#a7a1e5!important}
+.jt-product-page .jt-pro-field textarea,.jt-product-page .jt-pro-code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace!important}
+.jt-product-page .jt-pro-field input:focus,.jt-product-page .jt-pro-field select:focus,.jt-product-page .jt-pro-field textarea:focus{border-color:#a7a1e5!important;box-shadow:0 0 0 3px #625bc610!important}
+.jt-product-page .jt-pro-btn{min-height:32px!important;padding:8px 11px!important;border:1px solid #dfe3e9!important;border-radius:7px!important;background:#fff!important;color:#4c5562!important;font-size:10px!important;box-shadow:none!important}
+.jt-product-page .jt-pro-btn.primary{background:var(--jt-accent)!important;border-color:var(--jt-accent)!important;color:#fff!important}
+.jt-product-page .jt-pro-btn:disabled{opacity:.45!important}
+.jt-product-page .jt-pro-status{color:#54856d!important;font-size:10px!important}
+.jt-product-page .jt-pro-list{gap:7px!important}
+.jt-product-page .jt-pro-item{padding:10px!important;border:1px solid #e4e7ec!important;border-radius:7px!important;background:#fff!important;color:#303641!important}
+.jt-product-page .jt-pro-item strong{color:#343b46!important;font-size:10px!important}
+.jt-product-page .jt-pro-empty{padding:16px!important;border:1px dashed #d9dee6!important;border-radius:8px!important;color:#818a97!important;background:#fff!important;font-size:10px!important}
+.jt-product-page .jt-pro-check{color:#58616d!important;font-size:10px!important}
+.jt-product-page .jt-pro-check input{accent-color:var(--jt-accent)!important}
+.jt-product-page .jt-pro-preview{border:1px solid #dfe3e9!important;border-radius:8px!important;background:#fff!important}
+.jt-product-page .jt-pro-canvas{border-color:#dfe3e9!important;border-radius:8px!important}
+.jt-product-page .jt-pro-timeline{gap:5px!important}
+.jt-product-page .jt-pro-seg{border-radius:5px!important;background:#eae9fb!important;color:#4d478d!important}
+.jt-product-page .jt-pro-meter{background:#e9edf1!important}
+.jt-product-page .jt-pro-meter span{background:#4b9b7b!important}
+.jt-product-page .jt-pro-check input{accent-color:var(--jt-accent)!important}
+@media(max-width:700px){.jt-product-page .jt-pro{padding:14px!important}.jt-product-page .jt-pro-grid{grid-template-columns:1fr!important}}
