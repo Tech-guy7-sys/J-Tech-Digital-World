@@ -15,7 +15,8 @@
     "test:jt-cloud-files": "node --test scripts/test-jt-cloud-file-controls.mjs",
     "test:jeff-workspace": "node --test scripts/test-jt-ai-workspace-polish.mjs",
     "test:jt-motion": "node --test scripts/test-jt-motion-timeline.mjs",
-    "test:jt-studio": "node --test scripts/test-jt-studio-arrangement.mjs"
+    "test:jt-studio": "node --test scripts/test-jt-studio-arrangement.mjs",
+    "test:jt-account-cloud-connectors": "node --test scripts/test-jt-account-cloud-connectors.mjs"
   },
   "engines": {
     "node": ">=22"

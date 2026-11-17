@@ -28,7 +28,7 @@ export async function onRequestGet({request,env}){
    tokenData=await fetchJson("https://github.com/login/oauth/access_token",{method:"POST",headers:{"accept":"application/json","content-type":"application/json"},body:JSON.stringify({client_id:secret(env,"GITHUB_CLIENT_ID"),client_secret:secret(env,"GITHUB_CLIENT_SECRET"),code,redirect_uri:callback})});
    if(!tokenData.access_token)throw new Error("No access token.");
    profile=await fetchJson("https://api.github.com/user",{headers:{authorization:"Bearer "+tokenData.access_token,accept:"application/vnd.github+json","user-agent":"Jeff-AI-JT-Connectors"}});
-   scopes=tokenData.scope||"read:user user:email repo";
+   scopes=tokenData.scope||"read:user user:email";
   }else if(p==="google"){
    tokenData=await fetchJson("https://oauth2.googleapis.com/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"GOOGLE_CLIENT_ID"),client_secret:secret(env,"GOOGLE_CLIENT_SECRET"),code,grant_type:"authorization_code",redirect_uri:callback})});
    if(!tokenData.access_token)throw new Error("No access token.");
