@@ -1,3 +1,8 @@
 name = "jt-digital-world-new"
 compatibility_date = "2026-10-02"
 pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "JT_AUTH_DB"
+database_name = "jt-digital-world"
+database_id = "6bd30668-fbdc-47ac-938d-5d50d991bcf6"
