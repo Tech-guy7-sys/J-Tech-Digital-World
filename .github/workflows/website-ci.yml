@@ -12,7 +12,11 @@ on:
       - "jt-apps/**"
       - "scripts/build-site.mjs"
       - "functions/**"
+      - "scripts/test-jt-account-cloud-connectors.mjs"
+      - "docs/JT-ACCOUNT-CLOUD-CONNECTORS-ACTIVATION.md"
       - "scripts/test-jeff-api.mjs"
+      - "scripts/test-jt-account-cloud-connectors.mjs"
+      - "docs/JT-ACCOUNT-CLOUD-CONNECTORS-ACTIVATION.md"
       - "scripts/test-jeff-project-context.mjs"
       - "scripts/test-jt-app-icons.mjs"
       - "scripts/test-jt-workspace-shell.mjs"
@@ -93,6 +97,8 @@ jobs:
           grep -q "transitionSelect" jt-apps/jt-stream/studio.js
           grep -q "document.addEventListener(\"keydown\"" jt-apps/jt-stream/studio.js
           node --check release-downloads.js
+      - name: Test JT account and connector configuration contracts
+        run: node --test scripts/test-jt-account-cloud-connectors.mjs
       - name: Test JT AI gateway request validation
         run: |
           node scripts/test-jeff-api.mjs
