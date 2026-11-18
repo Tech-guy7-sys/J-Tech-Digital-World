@@ -1,7 +1,8 @@
 import { db, currentUser, reply } from "../_auth.js";
 
 export const MAX_FILE_BYTES = 25 * 1024 * 1024;
-export const DEFAULT_QUOTA_BYTES = 1024 * 1024 * 1024;
+export const DEFAULT_QUOTA_BYTES = 100 * 1024 * 1024;
+const DEFAULT_STORAGE_BUCKET = "jt-cloud-private";
 
 export function cloudReply(data, status = 200) {
   return reply(data, status, { "cache-control": "no-store", "x-content-type-options": "nosniff" });
@@ -42,6 +43,66 @@ export function decodeCursor(value) {
   } catch { return null; }
 }
 
+export function storageConfig(env) {
+  const rawUrl = String(env?.SUPABASE_URL || "").trim().replace(/\/+$/, "");
+  const serviceKey = String(env?.SUPABASE_SERVICE_ROLE_KEY || "").trim();
+  const bucket = String(env?.JT_CLOUD_STORAGE_BUCKET || DEFAULT_STORAGE_BUCKET).trim();
+  if (!rawUrl || !serviceKey || !/^[a-z0-9][a-z0-9._-]{1,62}$/i.test(bucket)) return null;
+  try {
+    const url = new URL(rawUrl);
+    if (url.protocol !== "https:" && url.hostname !== "localhost" && url.hostname !== "127.0.0.1") return null;
+    return { url: rawUrl, serviceKey, bucket };
+  } catch { return null; }
+}
+
+function objectUrl(config, key) {
+  const encodedKey = key.split("/").map(encodeURIComponent).join("/");
+  return config.url + "/storage/v1/object/" + encodeURIComponent(config.bucket) + "/" + encodedKey;
+}
+
+function storageHeaders(config, contentType = "application/octet-stream") {
+  return {
+    apikey: config.serviceKey,
+    authorization: "Bearer " + config.serviceKey,
+    "content-type": contentType
+  };
+}
+
+export async function putCloudObject(env, key, body, contentType) {
+  const config = storageConfig(env);
+  if (!config) throw new Error("Supabase Storage is not configured.");
+  const response = await fetch(objectUrl(config, key), {
+    method: "POST",
+    headers: { ...storageHeaders(config, contentType), "x-upsert": "false", "cache-control": "3600" },
+    body
+  });
+  if (!response.ok) throw new Error("Supabase Storage upload failed (" + response.status + ").");
+  return response.headers.get("etag") || null;
+}
+
+export async function getCloudObject(env, key) {
+  const config = storageConfig(env);
+  if (!config) throw new Error("Supabase Storage is not configured.");
+  const response = await fetch(objectUrl(config, key), {
+    method: "GET",
+    headers: storageHeaders(config)
+  });
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error("Supabase Storage download failed (" + response.status + ").");
+  return response;
+}
+
+export async function deleteCloudObject(env, key) {
+  const config = storageConfig(env);
+  if (!config) throw new Error("Supabase Storage is not configured.");
+  const response = await fetch(config.url + "/storage/v1/object/" + encodeURIComponent(config.bucket), {
+    method: "DELETE",
+    headers: { ...storageHeaders(config, "application/json"), prefer: "return=minimal" },
+    body: JSON.stringify({ prefixes: [key] })
+  });
+  if (!response.ok) throw new Error("Supabase Storage delete failed (" + response.status + ").");
+}
+
 export async function cloudUser(request, env, { mutate = false, requireBucket = false } = {}) {
   const d = db(env);
   if (!d) return { error: cloudReply({ error: "database_unavailable", message: "JT Cloud account storage is not configured." }, 503) };
@@ -50,10 +111,11 @@ export async function cloudUser(request, env, { mutate = false, requireBucket = 
   }
   const user = await currentUser(request, env);
   if (!user) return { error: cloudReply({ error: "authentication_required", message: "Sign in to your JT Account to use remote storage." }, 401) };
-  if (requireBucket && !env?.JT_CLOUD_BUCKET) {
-    return { error: cloudReply({ error: "storage_unavailable", message: "JT Cloud remote storage is not configured for this environment yet." }, 503) };
+  const storage = storageConfig(env);
+  if (requireBucket && !storage) {
+    return { error: cloudReply({ error: "storage_unavailable", message: "JT Cloud Supabase Storage is not configured for this environment yet." }, 503) };
   }
-  return { db: d, user, bucket: env?.JT_CLOUD_BUCKET || null };
+  return { db: d, user, storage };
 }
 
 export function limitUploadStream(body, expectedBytes) {
