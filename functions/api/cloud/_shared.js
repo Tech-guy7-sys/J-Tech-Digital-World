@@ -54,7 +54,7 @@ export function storageConfig(env) {
     const url = new URL(endpoint);
     if (url.protocol !== "https:" && url.hostname !== "localhost" && url.hostname !== "127.0.0.1") return null;
     if (!url.pathname.endsWith("/storage/v1/s3")) return null;
-    return { endpoint: url.toString().replace(/\\/$/, ""), accessKeyId, secretAccessKey, region, bucket };
+    return { endpoint: url.toString().replace(/\/$/, ""), accessKeyId, secretAccessKey, region, bucket };
   } catch { return null; }
 }
 
