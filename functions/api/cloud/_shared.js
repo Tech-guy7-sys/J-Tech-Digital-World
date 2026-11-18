@@ -44,7 +44,7 @@ export function decodeCursor(value) {
 }
 
 export function storageConfig(env) {
-  const endpoint = String(env?.SUPABASE_S3_ENDPOINT || "").trim().replace(/\\/+$/, "");
+  const endpoint = String(env?.SUPABASE_S3_ENDPOINT || "").trim().replace(/\/+$/, "");
   const accessKeyId = String(env?.SUPABASE_S3_ACCESS_KEY_ID || "").trim();
   const secretAccessKey = String(env?.SUPABASE_S3_SECRET_ACCESS_KEY || "").trim();
   const region = String(env?.SUPABASE_S3_REGION || "").trim();
