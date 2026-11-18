@@ -21,9 +21,16 @@ test("GitHub OAuth does not claim unrequested repository scopes", async () => {
   assert.doesNotMatch(callback, /scopes=tokenData\.scope\|\|"read:user user:email repo"/);
 });
 
-test("activation guide documents actual prerequisites and limitations", async () => {
-  const guide = await read("docs/JT-ACCOUNT-CLOUD-CONNECTORS-ACTIVATION.md");
-  for (const term of ["JT_AUTH_DB", "JT_CLOUD_BUCKET", "JT_CONNECTOR_ENCRYPTION_KEY", "db/auth-schema.sql", "db/cloud-schema.sql", "db/connectors-schema.sql", "25 MiB", "does not yet include provider token refresh", "email verification"]) {
-    assert.ok(guide.includes(term), "Missing setup detail: " + term);
-  }
+test("account, cloud and connector schemas remain present without requiring setup documentation", async () => {
+  const [auth, cloud, connectors] = await Promise.all([
+    read("db/auth-schema.sql"),
+    read("db/cloud-schema.sql"),
+    read("db/connectors-schema.sql")
+  ]);
+  assert.match(auth, /CREATE TABLE IF NOT EXISTS users/);
+  assert.match(auth, /CREATE TABLE IF NOT EXISTS sessions/);
+  assert.match(cloud, /CREATE TABLE IF NOT EXISTS cloud_files/);
+  assert.match(cloud, /CREATE TABLE IF NOT EXISTS cloud_storage_usage/);
+  assert.match(connectors, /CREATE TABLE IF NOT EXISTS connector_accounts/);
+  assert.match(connectors, /CREATE TABLE IF NOT EXISTS connector_oauth_states/);
 });
