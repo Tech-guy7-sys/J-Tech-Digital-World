@@ -44,63 +44,62 @@ export function decodeCursor(value) {
 }
 
 export function storageConfig(env) {
-  const rawUrl = String(env?.SUPABASE_URL || "").trim().replace(/\/+$/, "");
-  const serviceKey = String(env?.SUPABASE_SERVICE_ROLE_KEY || "").trim();
+  const endpoint = String(env?.SUPABASE_S3_ENDPOINT || "").trim().replace(/\\/+$/, "");
+  const accessKeyId = String(env?.SUPABASE_S3_ACCESS_KEY_ID || "").trim();
+  const secretAccessKey = String(env?.SUPABASE_S3_SECRET_ACCESS_KEY || "").trim();
+  const region = String(env?.SUPABASE_S3_REGION || "").trim();
   const bucket = String(env?.JT_CLOUD_STORAGE_BUCKET || DEFAULT_STORAGE_BUCKET).trim();
-  if (!rawUrl || !serviceKey || !/^[a-z0-9][a-z0-9._-]{1,62}$/i.test(bucket)) return null;
+  if (!endpoint || !accessKeyId || !secretAccessKey || !region || !/^[a-z0-9][a-z0-9._-]{1,62}$/i.test(bucket)) return null;
   try {
-    const url = new URL(rawUrl);
+    const url = new URL(endpoint);
     if (url.protocol !== "https:" && url.hostname !== "localhost" && url.hostname !== "127.0.0.1") return null;
-    return { url: rawUrl, serviceKey, bucket };
+    if (!url.pathname.endsWith("/storage/v1/s3")) return null;
+    return { endpoint: url.toString().replace(/\\/$/, ""), accessKeyId, secretAccessKey, region, bucket };
   } catch { return null; }
 }
 
-function objectUrl(config, key) {
+function s3ObjectUrl(config, key) {
   const encodedKey = key.split("/").map(encodeURIComponent).join("/");
-  return config.url + "/storage/v1/object/" + encodeURIComponent(config.bucket) + "/" + encodedKey;
+  return config.endpoint + "/" + encodeURIComponent(config.bucket) + "/" + encodedKey;
 }
 
-function storageHeaders(config, contentType = "application/octet-stream") {
-  return {
-    apikey: config.serviceKey,
-    authorization: "Bearer " + config.serviceKey,
-    "content-type": contentType
-  };
+async function signedStorageFetch(config, url, init) {
+  const { AwsClient } = await import("aws4fetch");
+  const client = new AwsClient({
+    accessKeyId: config.accessKeyId,
+    secretAccessKey: config.secretAccessKey,
+    service: "s3",
+    region: config.region
+  });
+  return client.fetch(url, init);
 }
 
 export async function putCloudObject(env, key, body, contentType) {
   const config = storageConfig(env);
-  if (!config) throw new Error("Supabase Storage is not configured.");
-  const response = await fetch(objectUrl(config, key), {
-    method: "POST",
-    headers: { ...storageHeaders(config, contentType), "x-upsert": "false", "cache-control": "3600" },
+  if (!config) throw new Error("Supabase S3 Storage is not configured.");
+  const response = await signedStorageFetch(config, s3ObjectUrl(config, key), {
+    method: "PUT",
+    headers: { "content-type": contentType, "cache-control": "3600" },
     body
   });
-  if (!response.ok) throw new Error("Supabase Storage upload failed (" + response.status + ").");
+  if (!response.ok) throw new Error("Supabase S3 upload failed (" + response.status + ").");
   return response.headers.get("etag") || null;
 }
 
 export async function getCloudObject(env, key) {
   const config = storageConfig(env);
-  if (!config) throw new Error("Supabase Storage is not configured.");
-  const response = await fetch(objectUrl(config, key), {
-    method: "GET",
-    headers: storageHeaders(config)
-  });
+  if (!config) throw new Error("Supabase S3 Storage is not configured.");
+  const response = await signedStorageFetch(config, s3ObjectUrl(config, key), { method: "GET" });
   if (response.status === 404) return null;
-  if (!response.ok) throw new Error("Supabase Storage download failed (" + response.status + ").");
+  if (!response.ok) throw new Error("Supabase S3 download failed (" + response.status + ").");
   return response;
 }
 
 export async function deleteCloudObject(env, key) {
   const config = storageConfig(env);
-  if (!config) throw new Error("Supabase Storage is not configured.");
-  const response = await fetch(config.url + "/storage/v1/object/" + encodeURIComponent(config.bucket), {
-    method: "DELETE",
-    headers: { ...storageHeaders(config, "application/json"), prefer: "return=minimal" },
-    body: JSON.stringify({ prefixes: [key] })
-  });
-  if (!response.ok) throw new Error("Supabase Storage delete failed (" + response.status + ").");
+  if (!config) throw new Error("Supabase S3 Storage is not configured.");
+  const response = await signedStorageFetch(config, s3ObjectUrl(config, key), { method: "DELETE" });
+  if (!response.ok) throw new Error("Supabase S3 delete failed (" + response.status + ").");
 }
 
 export async function cloudUser(request, env, { mutate = false, requireBucket = false } = {}) {
