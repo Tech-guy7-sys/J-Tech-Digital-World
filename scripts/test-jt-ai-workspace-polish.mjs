@@ -55,3 +55,10 @@ test("JT apps show their own animated logo while loading",()=>{
  assert.match(powerTools,/jt-loader-spin/);
  assert.match(powerTools,/prefers-reduced-motion:reduce/);
 });
+
+test("JT app product pages load the shared logo splash",()=>{
+ for(const path of ["jt-ai-core","jt-app-manager","jt-cloud","jt-code","jt-design","jt-motion","jt-stream","jt-studio","agent-jeff"]){
+  const html=readFileSync(new URL("../jt-apps/"+path+"/index.html",import.meta.url),"utf8");
+  assert.match(html,/app-power-tools\.js/,"Missing branded loader on "+path);
+ }
+});
