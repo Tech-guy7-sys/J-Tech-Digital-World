@@ -27,3 +27,19 @@ test("activation guide documents actual prerequisites and limitations", async ()
     assert.ok(guide.includes(term), "Missing setup detail: " + term);
   }
 });
+
+test("JT Account exposes a safe database/schema health check and signup failure stage", async () => {
+  const [health, signup, page] = await Promise.all([
+    read("functions/api/health.js"),
+    read("functions/api/auth/signup.js"),
+    read("signin.html")
+  ]);
+  assert.match(health, /sqlite_master/);
+  assert.match(health, /schemaReady:true/);
+  assert.match(health, /LIMIT 0/);
+  assert.match(health, /JT_AUTH_DB/);
+  assert.match(signup, /diagnosticStage:stage/);
+  assert.match(signup, /stage="password-derivation"/);
+  assert.match(page, /api\('\/api\/health'\)/);
+  assert.match(page, /j\.diagnosticStage/);
+});
