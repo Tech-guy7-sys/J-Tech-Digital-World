@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 const workspace=readFileSync(new URL('../jt-ai-agent/workspace.js',import.meta.url),'utf8');
 const styles=readFileSync(new URL('../jt-ai-agent/workspace-v2.css',import.meta.url),'utf8');
+const api=readFileSync(new URL('../functions/api/jeff.js',import.meta.url),'utf8');
 const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 test('Jeff AI renders structured Markdown safely with DOM text nodes',()=>{
  assert.match(workspace,/function renderRichResponse\(target,source\)/);
@@ -36,3 +37,5 @@ test('secondary JT productivity tools are discoverable but collapsed by default'
  assert.match(styles,/\.jt-ai-tools-drawer/);
  assert.match(styles,/@media\(prefers-reduced-motion:reduce\)/);
 });
+
+test("JT AI Agent opens a fresh chat, keeps Prompt Studio out of chat navigation and offers follow-up chips",()=>{\n assert.doesNotMatch(aiHome, /href="\\/jt-ai-agent\\/prompt-studio\\.html"/);\n assert.match(workspace, /else active=null;renderRecent\\(\\);if\\(active\\)renderChat\\(\\);else make\\(\\)/);\n assert.match(workspace, /message-followups/);\n assert.match(workspace, /Explain more/);\n});\ntest("Jeff AI uses a dedicated Copilot-inspired response instruction for JT AI Agent",()=>{\n assert.match(api,/JT_AI_AGENT_STYLE/);\n assert.match(api,/payload\\.source === "jt-ai-agent"/);\n assert.match(api,/content: system/);\n});\ntest("JT apps show their own animated logo while loading",()=>{\n assert.match(powerTools,/jt-app-loader/);\n assert.match(powerTools,/appMarks\\[app\\]/);\n assert.match(powerTools,/jt-loader-spin/);\n assert.match(powerTools,/prefers-reduced-motion:reduce/);\n});\n
