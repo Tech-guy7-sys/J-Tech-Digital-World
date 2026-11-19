@@ -12,19 +12,21 @@ test("JT release center checks official releases and separates Windows, macOS an
   for (const platform of ['label:"Windows"', 'label:"macOS"', 'label:"Linux"']) {
     assert.ok(script.includes(platform), "Missing platform target " + platform);
   }
-  assert.match(script, /releases\?per_page=20/);
+  assert.match(script, /releases\\?per_page=20/);
   assert.match(script, /No published installer/);
   assert.match(script, /Architecture not specified/);
   assert.match(script, /download_count/);
   assert.match(script, /SHA256SUMS/);
   assert.match(script, /Latest release notes/);
   assert.match(script, /jt-release-filters/);
-  assert.match(script, /publish-jt-workspace-apps\.yml/);
-  assert.match(page, /jt-release-center\.css/);
-  assert.match(page, /jt-desktop-downloads\.js/);
+  assert.match(script, /publish-jt-workspace-apps\\.yml/);
+  assert.match(page, /jt-release-center\\.css/);
+  assert.match(page, /jt-desktop-downloads\\.js/);
   assert.match(page, /Linux/);
-  assert.match(page, /Source archive \(not an installer\)/);
-  assert.doesNotMatch(page, /actions\/workflows\/build-jt-workspace-artifacts\.yml/);
+  assert.match(page, /LIVE RELEASE INVENTORY/);
+  assert.match(page, /published product release/);
+  assert.doesNotMatch(page, /Source archive \\(not an installer\\)/);
+  assert.doesNotMatch(page, /actions\\/workflows\\/build-jt-workspace-artifacts\\.yml/);
 });
 
 test("JT app launcher uses the product-preview layout and JT brand mark", async () => {
@@ -33,9 +35,9 @@ test("JT app launcher uses the product-preview layout and JT brand mark", async 
     read("jt-launcher-refresh.css"),
     read("assets/jt-logo.svg")
   ]);
-  assert.match(page, /jt-launcher-refresh\.css/);
+  assert.match(page, /jt-launcher-refresh\\.css/);
   assert.match(page, /jt-preview-window/);
-  assert.match(page, /src="\/assets\/jt-logo\.svg"/);
+  assert.match(page, /src="\\/assets\\/jt-logo\\.svg"/);
   assert.match(page, /Ctrl K/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(logo, /JT — J Tech Digital World/);
@@ -47,8 +49,8 @@ test("shared workspace shell applies the JT monogram and responsive navigation",
     read("jt-apps/product-shell.js"),
     read("jt-apps/product-shell.css")
   ]);
-  assert.match(shell, /jt-product-logo"><img src="\/assets\/jt-logo\.svg"/);
+  assert.match(shell, /jt-product-logo"><img src="\\/assets\\/jt-logo\\.svg"/);
   assert.match(css, /JT Workspace Shell v2/);
-  assert.match(css, /@media\(max-width:820px\)/);
-  assert.match(css, /html\[data-jt-theme="light"\]/);
+  assert.match(css, /@media\\(max-width:820px\\)/);
+  assert.match(css, /html\\[data-jt-theme="light"\\]/);
 });
