@@ -31,7 +31,7 @@ test("JT app launcher uses the product-preview layout and JT brand mark", async 
   assert.match(page, /jt-launcher-refresh\.css/);
   assert.match(page, /jt-preview-window/);
   assert.match(page, /src="\/assets\/jt-logo\.svg"/);
-  assert.match(css, /Ctrl K/);
+  assert.match(page, /Ctrl K/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(logo, /JT — J Tech Digital World/);
   assert.match(logo, /B8FFF0/);
