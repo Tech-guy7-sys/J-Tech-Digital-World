@@ -12,19 +12,14 @@ test("JT release center checks official releases and separates Windows, macOS an
   for (const platform of ['label:"Windows"', 'label:"macOS"', 'label:"Linux"']) {
     assert.ok(script.includes(platform), "Missing platform target " + platform);
   }
-  assert.match(script, /releases\?per_page=20/);
-  assert.match(script, /No published installer/);
-  assert.match(script, /Architecture not specified/);
-  assert.match(script, /download_count/);
-  assert.match(script, /SHA256SUMS/);
-  assert.match(script, /Latest release notes/);
-  assert.match(script, /jt-release-filters/);
-  assert.match(script, /publish-jt-workspace-apps\.yml/);
-  assert.match(page, /jt-release-center\.css/);
-  assert.match(page, /jt-desktop-downloads\.js/);
-  assert.match(page, /Linux/);
-  assert.match(page, /Source archive \(not an installer\)/);
-  assert.doesNotMatch(page, /actions\/workflows\/build-jt-workspace-artifacts\.yml/);
+  for (const feature of ["releases?per_page=20","No published installer","Architecture not specified","download_count","SHA256SUMS","Latest release notes","jt-release-filters","publish-jt-workspace-apps.yml"]) {
+    assert.ok(script.includes(feature), "Release script is missing " + feature);
+  }
+  for (const feature of ["jt-release-center.css","jt-desktop-downloads.js","Linux","LIVE RELEASE INVENTORY","published product release"]) {
+    assert.ok(page.includes(feature), "Download page is missing " + feature);
+  }
+  assert.ok(!page.includes("Source archive (not an installer)"), "Retired static source archive card returned");
+  assert.ok(!page.includes("build-jt-workspace-artifacts.yml"), "Retired workflow link returned");
 });
 
 test("JT app launcher uses the product-preview layout and JT brand mark", async () => {
@@ -33,13 +28,13 @@ test("JT app launcher uses the product-preview layout and JT brand mark", async 
     read("jt-launcher-refresh.css"),
     read("assets/jt-logo.svg")
   ]);
-  assert.match(page, /jt-launcher-refresh\.css/);
-  assert.match(page, /jt-preview-window/);
-  assert.match(page, /src="\/assets\/jt-logo\.svg"/);
-  assert.match(page, /Ctrl K/);
-  assert.match(css, /prefers-reduced-motion/);
-  assert.match(logo, /JT — J Tech Digital World/);
-  assert.match(logo, /B8FFF0/);
+  assert.ok(page.includes("jt-launcher-refresh.css"));
+  assert.ok(page.includes("jt-preview-window"));
+  assert.ok(page.includes('src="/assets/jt-logo.svg"'));
+  assert.ok(page.includes("Ctrl K"));
+  assert.ok(css.includes("prefers-reduced-motion"));
+  assert.ok(logo.includes("JT — J Tech Digital World"));
+  assert.ok(logo.includes("B8FFF0"));
 });
 
 test("shared workspace shell applies the JT monogram and responsive navigation", async () => {
@@ -47,8 +42,8 @@ test("shared workspace shell applies the JT monogram and responsive navigation",
     read("jt-apps/product-shell.js"),
     read("jt-apps/product-shell.css")
   ]);
-  assert.match(shell, /jt-product-logo"><img src="\/assets\/jt-logo\.svg"/);
-  assert.match(css, /JT Workspace Shell v2/);
-  assert.match(css, /@media\(max-width:820px\)/);
-  assert.match(css, /html\[data-jt-theme="light"\]/);
+  assert.ok(shell.includes('jt-product-logo"><img src="/assets/jt-logo.svg"'));
+  assert.ok(css.includes("JT Workspace Shell v2"));
+  assert.ok(css.includes("@media(max-width:820px)"));
+  assert.ok(css.includes('html[data-jt-theme="light"]'));
 });
