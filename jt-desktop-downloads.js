@@ -7,18 +7,17 @@
   if (!status || !container) return;
 
   const owner = "Tech-guy7-sys";
-  const central = owner + "/J-Tech-Digital-World";
   const catalog = [
     { name:"JT Desktop Agent", repo:"JT-Desktop-Agent", source:"https://github.com/Tech-guy7-sys/JT-Desktop-Agent", build:"https://github.com/Tech-guy7-sys/JT-Desktop-Agent/actions", note:"Windows native agent. The macOS/Linux Avalonia shell is a limited preview, not feature parity." },
     { name:"Jeff AI", repo:"Jeff-AI", source:"https://github.com/Tech-guy7-sys/Jeff-AI", build:"https://github.com/Tech-guy7-sys/Jeff-AI/actions", note:"AI workspace. Packages are listed only after a product release contains matching installer assets." },
-    { name:"JT AI Agent", repo:"J-Tech-Digital-World", assetPrefix:"JT AI Agent-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-ai-agent", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"General-purpose AI workspace. Its permanent installers are published in the central JT Workspace Apps release.", centralBuild:true },
-    { name:"JT AI Core", repo:"J-Tech-Digital-World", assetPrefix:"JT AI Core-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-ai-core", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Shared provider and permission layer. Its desktop package is part of the JT Workspace Apps release; it is not a standalone hosted AI service.", centralBuild:true },
-    { name:"JT Code", repo:"J-Tech-Digital-World", assetPrefix:"JT Code-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-code", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Coding workspace. Its permanent installers are published in the central JT Workspace Apps release.", centralBuild:true },
-    { name:"JT Design", repo:"J-Tech-Digital-World", assetPrefix:"JT Design-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-design", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Visual design workspace. Its permanent installers are published in the central JT Workspace Apps release.", centralBuild:true },
+    { name:"JT AI Agent", repo:"J-Tech-Digital-World", assetPrefix:"JT AI Agent-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-ai-agent", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"General-purpose AI workspace. Its permanent installers will be listed here when the central JT Workspace Apps release is published.", centralBuild:true },
+    { name:"JT AI Core", repo:"J-Tech-Digital-World", assetPrefix:"JT AI Core-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-ai-core", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Shared provider and permission layer. Its desktop package is intended for the JT Workspace Apps release; it is not a standalone hosted AI service.", centralBuild:true },
+    { name:"JT Code", repo:"J-Tech-Digital-World", assetPrefix:"JT Code-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-code", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Coding workspace. Its permanent installers will be listed here when the central JT Workspace Apps release is published.", centralBuild:true },
+    { name:"JT Design", repo:"J-Tech-Digital-World", assetPrefix:"JT Design-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-design", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Visual design workspace. Its permanent installers will be listed here when the central JT Workspace Apps release is published.", centralBuild:true },
     { name:"JT Studio", repo:"JT-Studio", source:"https://github.com/Tech-guy7-sys/JT-Studio", build:"https://github.com/Tech-guy7-sys/JT-Studio/actions", note:"Audio workbench. Its existing public release is source-only; installer links appear only after platform packages are published." },
     { name:"JT Motion", repo:"JT-Motion", source:"https://github.com/Tech-guy7-sys/JT-Motion", build:"https://github.com/Tech-guy7-sys/JT-Motion/actions", note:"Video planning and storyboard workspace, not yet a full nonlinear video editor." },
     { name:"JT Cloud", repo:"JT-Cloud", source:"https://github.com/Tech-guy7-sys/JT-Cloud", build:"https://github.com/Tech-guy7-sys/JT-Cloud/actions", note:"Local-first project and file index. It is not remote cloud storage or sync yet." },
-    { name:"JT Stream", repo:"J-Tech-Digital-World", assetPrefix:"JT Stream-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-stream", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Camera, scene and recording workspace. Its permanent installers are published in the central JT Workspace Apps release.", centralBuild:true },
+    { name:"JT Stream", repo:"J-Tech-Digital-World", assetPrefix:"JT Stream-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-stream", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Camera, scene and recording workspace. Its permanent installers will be listed here when the central JT Workspace Apps release is published.", centralBuild:true },
     { name:"JT App Manager", repo:"JT-App-Manager", source:"https://github.com/Tech-guy7-sys/JT-App-Manager", build:"https://github.com/Tech-guy7-sys/JT-App-Manager/actions", note:"Product catalogue and rollout workspace. It does not silently install or update software." }
   ];
 
@@ -27,6 +26,21 @@
     { id:"macos", label:"macOS", matches:name => /\.(dmg|pkg)$/i.test(name) || (/\.zip$/i.test(name) && /(mac|darwin|osx)/i.test(name)) },
     { id:"linux", label:"Linux", matches:name => /\.(appimage|deb|rpm|tar\.gz)$/i.test(name) || (/\.zip$/i.test(name) && /linux/i.test(name)) }
   ];
+
+  const releaseRequests = new Map();
+  function fetchReleases(repo) {
+    if (!releaseRequests.has(repo)) {
+      const request = fetch("https://api.github.com/repos/" + owner + "/" + repo + "/releases?per_page=10", {
+        headers: { Accept: "application/vnd.github+json" },
+        cache: "default"
+      }).then(async response => {
+        if (!response.ok) throw new Error("Release API unavailable");
+        return response.json();
+      });
+      releaseRequests.set(repo, request);
+    }
+    return releaseRequests.get(repo);
+  }
 
   const makeLink = (href, label, className) => {
     const link = document.createElement("a");
@@ -102,12 +116,7 @@
     let assets = [];
     if (product.repo) {
       try {
-        const response = await fetch("https://api.github.com/repos/" + owner + "/" + product.repo + "/releases?per_page=10", {
-          headers: { Accept: "application/vnd.github+json" },
-          cache: "no-store"
-        });
-        if (!response.ok) throw new Error("Release API unavailable");
-        const releases = await response.json();
+        const releases = await fetchReleases(product.repo);
         const visible = releases.filter(item => !item.draft).sort((a,b) => Date.parse(b.published_at || b.created_at) - Date.parse(a.published_at || a.created_at));
         stableRelease = visible.find(item => !item.prerelease) || null;
         previewRelease = visible.find(item => item.prerelease) || null;
