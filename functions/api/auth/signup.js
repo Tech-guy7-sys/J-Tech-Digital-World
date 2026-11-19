@@ -21,16 +21,19 @@ export async function onRequestPost({request,env}) {
     return reply({error:"Enter a name, valid email, and password of at least 10 characters."},400);
   }
 
+  let stage="database-lookup";
   try {
     // Check duplicates explicitly so a uniqueness conflict is not confused with
     // a database outage or a failed session write.
     const existing=await d.prepare("SELECT id FROM users WHERE email=? LIMIT 1").bind(email).first();
     if (existing) return reply({error:"An account with that email already exists. Try signing in instead."},409);
 
+    stage="password-derivation";
     const salt=randomToken();
     const passHash=await passwordHash(password,salt);
     const id=randomToken();
     const token=randomToken();
+    stage="session-token-hash";
     const tokenHash=await hash(token);
     const now=Math.floor(Date.now()/1000);
     const expires=now+30*86400;
@@ -38,6 +41,7 @@ export async function onRequestPost({request,env}) {
     // D1 batch is transactional: the account and its first session are either
     // both committed or neither is. This prevents orphaned accounts when
     // session creation fails after user creation.
+    stage="database-commit";
     await d.batch([
       d.prepare("INSERT INTO users (id,name,email,password_hash,password_salt,created_at) VALUES (?,?,?,?,?,?)")
         .bind(id,name,email,passHash,salt,now),
@@ -49,8 +53,8 @@ export async function onRequestPost({request,env}) {
   } catch (error) {
     // Keep internal database/crypto details out of the public response while
     // retaining a request-scoped diagnostic in Cloudflare's function logs.
-    const requestId=request.headers.get("cf-ray")||crypto.randomUUID();
-    console.error("JT Account signup failed", {requestId, name:error?.name||"Error", message:error?.message||"Unknown error"});
-    return reply({error:"JT Account could not complete signup because a service is temporarily unavailable. Please try again shortly.",requestId},503);
+    const requestId=request.headers.get("cf-ray")||(typeof crypto.randomUUID==="function"?crypto.randomUUID():"jt-"+Date.now());
+    console.error("JT Account signup failed", {requestId, stage, name:error?.name||"Error", message:error?.message||"Unknown error"});
+    return reply({error:"JT Account could not complete signup because a service is temporarily unavailable. Please try again shortly.",requestId,diagnosticStage:stage},503);
   }
 }
