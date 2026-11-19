@@ -33,3 +33,20 @@
 @media(max-width:560px){.jt-release-platforms{grid-template-columns:1fr}.jt-release-description{min-height:0}.jt-release-app-header{align-items:flex-start}}
 
 .jt-release-state.is-preview{color:#f0c98a}
+
+/* JT Release Center v2 — searchable, architecture-aware release inventory */
+.jt-release-filters{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:16px 0 8px}
+.jt-release-search,.jt-release-filter{display:flex;flex-direction:column;gap:6px;color:#b9c7da;font-size:10px;font-weight:750;letter-spacing:.04em}
+.jt-release-search{flex:1 1 230px}
+.jt-release-filter{flex:0 1 190px}
+.jt-release-filters input,.jt-release-filters select{width:100%;min-height:42px;padding:0 12px;border:1px solid #34465f;border-radius:10px;background:#101d30;color:#f3f6ff;font:500 12px Inter,system-ui,sans-serif;outline:none}
+.jt-release-filters input:focus,.jt-release-filters select:focus{border-color:#8de9dc;box-shadow:0 0 0 3px rgba(141,233,220,.12)}
+.jt-release-asset-detail,.jt-release-asset-version{display:block;color:#9baac0;font-size:8px;line-height:1.45;overflow-wrap:anywhere}
+.jt-release-asset-version{color:#8de9dc}
+.jt-release-api-warning{margin:10px 0 0;color:#f0c98a;font-size:10px;line-height:1.55}
+.jt-release-empty{grid-column:1/-1;padding:22px;border:1px dashed #41516a;border-radius:14px;color:#b9c7da;text-align:center}
+.jt-release-app{transition:border-color .18s ease,transform .18s ease}
+.jt-release-app:hover{border-color:#536a8b;transform:translateY(-2px)}
+.jt-release-platform{min-width:0}
+.jt-release-asset{line-height:1.4}
+@media(prefers-reduced-motion:reduce){.jt-release-app{transition:none}.jt-release-app:hover{transform:none}}
