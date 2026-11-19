@@ -19,3 +19,20 @@ test('homepage app directory has live search and useful category filters',()=>{
  assert.match(home,/id="jtDirectoryCount"/);
  assert.match(home,/card\.hidden=!visible/);
 });
+
+const aiHome=readFileSync(new URL('../jt-ai-agent/index.html',import.meta.url),'utf8');
+const powerTools=readFileSync(new URL('../jt-apps/app-power-tools.js',import.meta.url),'utf8');
+test('JT AI Agent keeps the conversation central and offers six practical quick tasks',()=>{
+ assert.match(aiHome,/What would you like<br>to <em>work on\?/);
+ for(const label of ['Research a topic','Write something','Build with code','Plan a project','Learn something','Brainstorm ideas']) assert.ok(aiHome.includes(label), 'Missing quick task: '+label);
+ assert.equal((aiHome.match(/data-prompt=/g)||[]).length,6);
+});
+test('secondary JT productivity tools are discoverable but collapsed by default',()=>{
+ assert.match(powerTools,/jt-ai-tools-drawer/);
+ assert.match(powerTools,/<summary>|summary\.innerHTML/);
+ assert.match(powerTools,/Prompt Studio · Focus Desk · Shared task board/);
+ assert.match(powerTools,/addCrossAppTaskBoard\(\)/);
+ assert.match(powerTools,/return focus;/);
+ assert.match(styles,/\.jt-ai-tools-drawer/);
+ assert.match(styles,/@media\(prefers-reduced-motion:reduce\)/);
+});
