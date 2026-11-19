@@ -20,21 +20,23 @@ Use these exact display names across the JT ecosystem:
 
 ## Source locations
 
-The central repository contains the website and browser-workspace source for JT AI Agent, JT AI Core, JT Code, JT Design, JT Motion, JT Cloud, JT Stream, JT Studio, and JT App Manager under `jt-apps/`. The standalone native JT Desktop Agent source is in [agent-jeff](https://github.com/Tech-guy7-sys/agent-jeff). The dedicated [Jeff AI repository](https://github.com/Tech-guy7-sys/jeff-ai) and [JT Studio repository](https://github.com/Tech-guy7-sys/jt-studio) include desktop-shell and packaging work.
+- **JT Desktop Agent:** [JT-Desktop-Agent repository](https://github.com/Tech-guy7-sys/JT-Desktop-Agent). The WPF app is the full Windows implementation; the separate Avalonia macOS/Linux shell is a limited preview and does not yet have Windows feature parity.
+- **Jeff AI:** [Jeff-AI repository](https://github.com/Tech-guy7-sys/Jeff-AI).
+- **JT Studio:** [JT-Studio repository](https://github.com/Tech-guy7-sys/JT-Studio).
+- **JT Motion:** [JT-Motion repository](https://github.com/Tech-guy7-sys/JT-Motion).
+- **JT Cloud:** [JT-Cloud repository](https://github.com/Tech-guy7-sys/JT-Cloud).
+- **JT App Manager:** [JT-App-Manager repository](https://github.com/Tech-guy7-sys/JT-App-Manager).
+- **JT AI Agent, JT AI Core, JT Code, JT Design and JT Stream:** maintained in this central repository under `jt-ai-agent/` and `jt-apps/`.
 
-## Desktop builds: artifact-only
+## Desktop builds and releases
 
-The [Build JT Workspace Artifacts workflow](.github/workflows/build-jt-workspace-artifacts.yml) packages the nine browser workspaces in this repository across the configured platform matrix:
+The [Build JT Workspace Artifacts workflow](.github/workflows/build-jt-workspace-artifacts.yml) packages nine central browser workspaces for Windows x64/ARM64 and an x86 build attempt, macOS Intel/Apple Silicon, and Linux x64/ARM64. Each platform/architecture is an independent CI target. A successful package job is required before describing that target as built.
 
-- Windows: x64, ARM64, and an x86/ia32 build attempt. x86 is only supported if the Electron/toolchain build passes; do not advertise it before verification.
-- macOS: Intel x64 and Apple Silicon ARM64; DMG and ZIP targets.
-- Linux: x64 and ARM64; AppImage, DEB, RPM and ZIP targets.
+These central workspace packages are temporary GitHub Actions artifacts, not permanent product releases. The company repository does not publish GitHub Releases. Permanent product releases belong in each dedicated product repository. The website's download center reads those public release records and displays a platform installer only when the matching asset is actually attached to a published release.
 
-Each workspace receives its own JT monogram icon in PNG, multi-size Windows ICO, and macOS ICNS formats. The icon is embedded in the installer/app bundle and used by the app window; Windows installers create named Desktop and Start menu shortcuts, and the Windows AppUserModelID is set per app. Linux desktop entries receive the matching app name, category and icon.\n\nThe workflow uploads temporary GitHub Actions artifacts and explicitly disables automatic release publishing. A platform/architecture combination is available only after its own CI job succeeds and its output is verified. The workflow creates checksums for produced artifacts. These packages are unsigned unless separately signed.
+The dedicated Jeff AI, JT Studio, JT Motion, JT Cloud and JT App Manager repositories have Windows/macOS/Linux packaging workflows. A configured matrix is not proof that a release has been published or that every target has passed. JT Desktop Agent's Windows WPF implementation remains the full-featured native product; the separate Avalonia shell for macOS/Linux is limited preview functionality. Do not describe it as feature parity or production-ready until platform adapters, tests and native smoke tests pass.
 
-The standalone [JT Desktop Agent workflow](https://github.com/Tech-guy7-sys/agent-jeff/actions) currently builds Windows x64 and x86 targets. Its existing WPF and Windows-specific desktop APIs are not cross-platform. Do not advertise macOS or Linux installers for JT Desktop Agent until native implementations and tests exist for those systems.
-
-The [Jeff AI workflow](https://github.com/Tech-guy7-sys/jeff-ai/actions) and [JT Studio workflow](https://github.com/Tech-guy7-sys/jt-studio/actions) build product-specific desktop artifacts. CI artifacts are not permanent releases; use a product repository for any future published product downloads. This company repository is not intended to publish GitHub Releases.
+All packages are unsigned unless a release explicitly documents verified signing/notarization. Source archives, CI artifacts and installers must be labelled separately.
 
 ## Product boundaries
 
