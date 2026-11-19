@@ -50,3 +50,11 @@
 .jt-release-platform{min-width:0}
 .jt-release-asset{line-height:1.4}
 @media(prefers-reduced-motion:reduce){.jt-release-app{transition:none}.jt-release-app:hover{transform:none}}
+
+/* Remove the retired static download cards; the live GitHub release inventory is the single source of download links. */
+.jt-release-guidance{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0 42px}
+.jt-release-guidance article{padding:18px;border:1px solid #29384c;border-radius:15px;background:linear-gradient(145deg,#142034,#101a2a)}
+.jt-release-guidance article>span{color:#8de9dc;font:700 10px ui-monospace,monospace;letter-spacing:1px}
+.jt-release-guidance h3{margin:9px 0 7px;color:#f2f5ff;font:700 14px/1.3 Manrope,Inter,sans-serif}
+.jt-release-guidance p{margin:0;color:#a6b4c9;font-size:11px;line-height:1.65}
+@media(max-width:680px){.jt-release-guidance{grid-template-columns:1fr}}
