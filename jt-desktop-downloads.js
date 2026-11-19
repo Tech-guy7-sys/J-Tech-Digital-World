@@ -60,8 +60,9 @@
         if (href) panel.append(makeLink(href, asset.name, "jt-release-asset"));
       });
       const state = document.createElement("span");
-      state.className = "jt-release-state is-available";
-      state.textContent = "Published package";
+      const stableAsset = matches.some(asset => !asset.jtPrerelease);
+      state.className = "jt-release-state is-available" + (stableAsset ? "" : " is-preview");
+      state.textContent = stableAsset ? "Published package" : "Preview package";
       panel.append(state);
     } else {
       const state = document.createElement("span");
@@ -96,7 +97,8 @@
     const footer = document.createElement("div");
     footer.className = "jt-release-card-footer";
 
-    let release = null;
+    let stableRelease = null;
+    let previewRelease = null;
     let assets = [];
     if (product.repo) {
       try {
@@ -107,8 +109,13 @@
         if (!response.ok) throw new Error("Release API unavailable");
         const releases = await response.json();
         const visible = releases.filter(item => !item.draft).sort((a,b) => Date.parse(b.published_at || b.created_at) - Date.parse(a.published_at || a.created_at));
-        release = visible.find(item => !item.prerelease) || visible[0] || null;
-        assets = Array.isArray(release?.assets) ? release.assets : [];
+        stableRelease = visible.find(item => !item.prerelease) || null;
+        previewRelease = visible.find(item => item.prerelease) || null;
+        assets = [stableRelease, previewRelease].filter(Boolean).flatMap(item =>
+          (Array.isArray(item.assets) ? item.assets : []).map(asset => ({
+            ...asset, jtPrerelease: Boolean(item.prerelease), jtReleaseTag: item.tag_name
+          }))
+        );
       } catch {
         const warning = document.createElement("span");
         warning.className = "jt-release-state";
@@ -117,12 +124,13 @@
       }
     }
 
-    if (release) {
+    if (stableRelease || previewRelease) {
       const releaseMeta = document.createElement("p");
       releaseMeta.className = "jt-release-version";
-      const date = release.published_at || release.created_at;
-      const dateLabel = date ? new Date(date).toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" }) : "";
-      releaseMeta.textContent = "Latest " + release.tag_name + (release.prerelease ? " · Preview" : " · Stable") + (dateLabel ? " · " + dateLabel : "");
+      const labels = [];
+      if (stableRelease) labels.push("Stable " + stableRelease.tag_name);
+      if (previewRelease) labels.push("Preview " + previewRelease.tag_name);
+      releaseMeta.textContent = labels.join(" · ");
       card.append(releaseMeta);
     } else {
       const releaseMeta = document.createElement("p");
