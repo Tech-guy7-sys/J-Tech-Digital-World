@@ -122,6 +122,8 @@ jobs:
         run: node scripts/test-shared-workspace.mjs
       - name: Build public website files
         run: npm run build:website
+      - name: Audit website and app local links
+        run: python3 scripts/jt_command_agent_audit.py
       - name: Verify required output
         run: |
           for file in index.html home.html apps.html style.css; do
