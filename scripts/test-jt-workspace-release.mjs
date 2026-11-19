@@ -45,6 +45,6 @@ test("central release documentation distinguishes app releases from website rele
   assert.match(readme, /Windows, macOS and Linux/);
   assert.match(contract, /only the versioned \*\*JT Workspace Apps\*\* release bundle/);
   assert.match(contract, /company website itself does not receive a product release/i);
-  assert.match(workspace, /href="\\/jt-ai-agent\\/"/);
-  assert.doesNotMatch(workspace, /href="\\/jt-apps\\/jt-ai-agent\\/"/);
+  assert.ok(workspace.includes('href="/jt-ai-agent/"'));
+  assert.ok(!workspace.includes('href="/jt-apps/jt-ai-agent/"'));
 });
