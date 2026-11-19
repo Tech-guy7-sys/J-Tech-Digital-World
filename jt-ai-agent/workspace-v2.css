@@ -143,3 +143,10 @@ body{background:#fff!important;color:#20242c!important;font-family:'DM Sans',Int
 .jt-ai-tools-content .jt-power-status{color:#66707d}
 @media(max-width:620px){.suggestions{grid-template-columns:1fr!important}.jt-ai-tools-hint{display:none}.jt-ai-tools-drawer>summary{padding:13px}}
 @media(prefers-reduced-motion:reduce){.suggestions button{transition:none!important}.suggestions button:hover{transform:none!important}}
+
+/* ChatGPT-inspired follow-up prompt chips, with original JT styling */
+.message-followups{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+.message-followup{appearance:none;border:1px solid #e3e5eb;background:#fff;color:#5e6470;border-radius:999px;padding:7px 11px;font:500 10px inherit;cursor:pointer;transition:background .16s,border-color .16s,color .16s}
+.message-followup:hover{background:#f7f6ff;border-color:#c9c5ed;color:#5049a7}
+.message-followup:focus-visible{outline:2px solid #625bc6;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.message-followup{transition:none}}
