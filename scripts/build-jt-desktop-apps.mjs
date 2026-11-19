@@ -7,7 +7,12 @@ import { createHash } from "node:crypto";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const shellDir = path.join(root, "desktop", "jt-workspace-shell");
 const outputDir = path.join(root, "release-assets");
-const apps = ["jt-ai-agent", "jt-ai-core", "jt-app-manager", "jt-cloud", "jt-code", "jt-design", "jt-motion", "jt-studio", "jt-stream"];
+const allApps = ["jt-ai-agent", "jt-ai-core", "jt-app-manager", "jt-cloud", "jt-code", "jt-design", "jt-motion", "jt-studio", "jt-stream"];
+const requestedApps = (process.env.JT_APP_IDS || "").split(",").map(value => value.trim()).filter(Boolean);
+const apps = requestedApps.length ? requestedApps : allApps;
+const invalidApps = apps.filter(appId => !allApps.includes(appId));
+if (invalidApps.length) throw new Error("Unsupported JT_APP_IDS: " + invalidApps.join(", "));
+if (new Set(apps).size !== apps.length) throw new Error("JT_APP_IDS must not contain duplicate app IDs.");
 const platform = process.env.JT_PLATFORM || (process.platform === "win32" ? "win" : process.platform === "darwin" ? "mac" : "linux");
 const arch = process.env.JT_ARCH || "x64";
 const version = (process.env.JT_RELEASE_VERSION || "1.0.0").replace(/^v/, "");
@@ -51,6 +56,7 @@ await writeFile(path.join(outputDir, "BUILD-METADATA.txt"), [
   "Platform: " + platform,
   "Architecture: " + arch,
   "Workspaces: " + apps.join(", "),
+  "Build type: " + (requestedApps.length ? "selected product release" : "CI artifact matrix"),
   "Built at: " + new Date().toISOString(),
   "Artifact-only CI output. No GitHub Release is created. Unsigned builds; verify checksums before use."
 ].join("\n") + "\n");
