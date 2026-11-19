@@ -10,10 +10,10 @@ const start=()=>{
   ["JT AI Core","/jt-apps/jt-ai-core/","◈","AI & AUTOMATION"],
   ["Agent Jeff","/jt-apps/agent-jeff/","⌘","AI & AUTOMATION"],
   ["JT Code","/jt-apps/jt-code/","〈〉","BUILD"],
-  ["JT Design Studio","/jt-apps/jt-design/studio.html","◇","CREATE"],
+  ["JT Design","/jt-apps/jt-design/studio.html","◇","CREATE"],
   ["JT Motion","/jt-apps/jt-motion/","▶","CREATE"],
   ["JT Studio","/jt-apps/jt-studio/","♫","CREATE"],
-  ["JT Stream Studio","/jt-apps/jt-stream/studio.html","◉","CREATE"],
+  ["JT Stream","/jt-apps/jt-stream/studio.html","◉","CREATE"],
   ["JT Cloud","/jt-apps/jt-cloud/","☁","WORK"],
   ["JT App Manager","/jt-apps/jt-app-manager/","▦","WORK"],
   ["My Workspace","/jt-apps/workspace.html","▦","WORKSPACE"]
@@ -22,7 +22,7 @@ const start=()=>{
  const css=document.createElement("link");css.rel="stylesheet";css.href="/jt-apps/product-shell.css";document.head.append(css);
  const shell=document.createElement("div");shell.className="jt-product-shell";shell.dataset.jtProductShell="";
  const sidebar=document.createElement("aside");sidebar.className="jt-product-sidebar";sidebar.setAttribute("aria-label","JT app navigation");
- const brand=document.createElement("a");brand.className="jt-product-brand";brand.href="/jt-apps/";brand.innerHTML='<span class="jt-product-logo">JT</span><span><b>J Tech</b><small>Digital World</small></span>';sidebar.append(brand);
+ const brand=document.createElement("a");brand.className="jt-product-brand";brand.href="/jt-apps/";brand.innerHTML='<span class="jt-product-logo"><img src="/assets/jt-logo.svg" alt=""></span><span><b>J Tech</b><small>Digital World</small></span>';sidebar.append(brand);
  const workspace=document.createElement("a");workspace.className="jt-workspace-switcher";workspace.href="/jt-apps/workspace.html";workspace.innerHTML='<span class="jt-workspace-glyph">▦</span><span><b>My workspace</b><small>Personal workspace</small></span><span class="jt-switch-chevron">⌄</span>';sidebar.append(workspace);
  const nav=document.createElement("nav");nav.className="jt-product-nav";
  const home=document.createElement("a");home.className="jt-product-navlink";home.href="/jt-apps/";home.innerHTML='<span class="jt-nav-icon">⌂</span><span>App library</span>';nav.append(home);
@@ -34,7 +34,7 @@ const start=()=>{
  Object.entries(grouped).forEach(([group,items])=>{
   const label=document.createElement("div");label.className="jt-product-navlabel";label.textContent=group;nav.append(label);
   items.forEach(([name,url,icon])=>{
-   const a=document.createElement("a");a.className="jt-product-navlink"+(name===app||(name==="Agent Jeff"&&app==="JT Desktop Agent")||(name==="JT Design Studio"&&app==="JT Design")||(name==="JT Stream Studio"&&app==="JT Stream")?" active":"");a.href=url;a.innerHTML='<span class="jt-nav-icon">'+icon+'</span><span>'+name+'</span>';if(name===app||(name==="Agent Jeff"&&app==="JT Desktop Agent")||(name==="JT Design Studio"&&app==="JT Design")||(name==="JT Stream Studio"&&app==="JT Stream"))a.setAttribute("aria-current","page");nav.append(a);
+   const a=document.createElement("a");a.className="jt-product-navlink"+(name===app||(name==="Agent Jeff"&&app==="JT Desktop Agent")||(name==="JT Design"&&app==="JT Design")||(name==="JT Stream"&&app==="JT Stream")?" active":"");a.href=url;a.innerHTML='<span class="jt-nav-icon">'+icon+'</span><span>'+name+'</span>';if(name===app||(name==="Agent Jeff"&&app==="JT Desktop Agent")||(name==="JT Design Studio"&&app==="JT Design")||(name==="JT Stream Studio"&&app==="JT Stream"))a.setAttribute("aria-current","page");nav.append(a);
   });
  });
  sidebar.append(nav);
