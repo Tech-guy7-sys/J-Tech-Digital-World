@@ -150,3 +150,15 @@ body{background:#fff!important;color:#20242c!important;font-family:'DM Sans',Int
 .message-followup:hover{background:#f7f6ff;border-color:#c9c5ed;color:#5049a7}
 .message-followup:focus-visible{outline:2px solid #625bc6;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.message-followup{transition:none}}
+
+/* Compact composer command menu */
+.jt-chat-actions{position:relative}
+.jt-chat-actions>summary{list-style:none;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.jt-chat-actions>summary::-webkit-details-marker{display:none}
+.jt-chat-actions-menu{position:absolute;left:0;bottom:calc(100% + 10px);z-index:30;width:190px;padding:6px;border:1px solid #e2e5eb;border-radius:10px;background:#fff;box-shadow:0 14px 38px #1720331c;display:grid;gap:2px}
+.jt-chat-actions-menu button{border:0;border-radius:7px;background:transparent;padding:9px 10px;text-align:left;color:#424957;font:500 11px 'DM Sans',sans-serif;cursor:pointer}
+.jt-chat-actions-menu button:hover{background:#f1f0ff;color:#5149b7}
+.jt-chat-actions-menu button:focus-visible,.jt-chat-actions>summary:focus-visible{outline:2px solid #625bc6;outline-offset:2px}
+.jt-ai-tools-drawer{max-height:56vh;overflow:auto;flex:0 0 auto;position:relative;z-index:2}
+.jt-ai-tools-drawer>summary{user-select:none}
+@media(max-width:620px){.jt-chat-actions-menu{width:175px}}
