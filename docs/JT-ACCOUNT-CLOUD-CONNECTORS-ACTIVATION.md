@@ -27,7 +27,7 @@ The current connector implementation supports the providers and scopes actually 
 
 ## 4. Account security and launch limitations
 
-- Email verification is not implemented as a complete production flow.
+- The current account flow does not yet provide complete email verification.
 - Password reset and account recovery must be tested before public launch.
 - Add and verify rate limiting, abuse monitoring, session revocation, and account deletion workflows.
 - Use HTTPS and secure HttpOnly cookies; never expose password hashes, salts, session tokens, or connector tokens to the browser.
