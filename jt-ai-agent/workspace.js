@@ -99,7 +99,7 @@ chatActions?.addEventListener('click',e=>{
  const button=e.target.closest('[data-jt-command]');if(!button)return;
  const command=commandPrompts[button.dataset.jtCommand];if(!command)return;
  const draft=input.value.trim();
- input.value=command+(draft?'\\n\\n'+draft:'\\n\\n[Paste or type your content here]');
+ input.value=command+(draft?'\n\n'+draft:'\n\n[Paste or type your content here]');
  input.dispatchEvent(new Event('input',{bubbles:true}));
  chatActions.open=false;input.focus();input.setSelectionRange(input.value.length,input.value.length);
 });
