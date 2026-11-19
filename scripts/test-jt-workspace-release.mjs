@@ -36,12 +36,15 @@ test("JT Workspace Apps release packages only the five central-only products", a
 });
 
 test("central release documentation distinguishes app releases from website releases", async () => {
-  const [readme, contract] = await Promise.all([
+  const [readme, contract, workspace] = await Promise.all([
     read("README.md"),
-    read("JT-PRODUCT-REPOSITORY-AND-DISTRIBUTION-CONTRACT.md")
+    read("JT-PRODUCT-REPOSITORY-AND-DISTRIBUTION-CONTRACT.md"),
+    read("jt-apps/workspace.html")
   ]);
   assert.match(readme, /Publish JT Workspace Apps workflow/);
   assert.match(readme, /Windows, macOS and Linux/);
   assert.match(contract, /only the versioned \*\*JT Workspace Apps\*\* release bundle/);
   assert.match(contract, /company website itself does not receive a product release/i);
+  assert.match(workspace, /href="\\/jt-ai-agent\\/"/);
+  assert.doesNotMatch(workspace, /href="\\/jt-apps\\/jt-ai-agent\\/"/);
 });
