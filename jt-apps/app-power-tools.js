@@ -67,7 +67,8 @@ if(welcome){
  const content=document.createElement("div");
  content.className="jt-ai-tools-content";
  drawer.append(summary,content);
- welcome.appendChild(drawer);
+ const conversation=document.getElementById("conversation");
+ if(conversation)conversation.insertAdjacentElement("afterend",drawer);else main.append(drawer);
  content.append(panel);
  content.append(addFocusDesk());
  addCrossAppTaskBoard();
