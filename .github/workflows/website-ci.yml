@@ -14,6 +14,9 @@ on:
       - "functions/**"
       - "scripts/test-jt-account-cloud-connectors.mjs"
       - "scripts/test-jt-release-center.mjs"
+      - "scripts/test-jt-workspace-release.mjs"
+      - ".github/workflows/publish-jt-workspace-apps.yml"
+      - ".github/workflows/enforce-no-central-releases.yml"
       - "docs/JT-ACCOUNT-CLOUD-CONNECTORS-ACTIVATION.md"
       - "scripts/test-jeff-api.mjs"
       - "scripts/test-jt-account-cloud-connectors.mjs"
@@ -100,7 +103,7 @@ jobs:
           node --check release-downloads.js
           node --check jt-desktop-downloads.js
       - name: Test JT release center and launcher refresh
-        run: node --test scripts/test-jt-release-center.mjs
+        run: node --test scripts/test-jt-release-center.mjs scripts/test-jt-workspace-release.mjs
       - name: Test JT account and connector configuration contracts
         run: node --test scripts/test-jt-account-cloud-connectors.mjs
       - name: Test JT AI gateway request validation
