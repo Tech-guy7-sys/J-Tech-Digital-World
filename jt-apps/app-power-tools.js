@@ -64,11 +64,13 @@ if(welcome){
  drawer.className="jt-ai-tools-drawer";
  const summary=document.createElement("summary");
  summary.innerHTML='<span>More JT tools</span><span class="jt-ai-tools-hint">Prompt Studio · Focus Desk · Shared task board</span>';
+ summary.setAttribute("aria-expanded","false");
+ drawer.addEventListener("toggle",()=>summary.setAttribute("aria-expanded",String(drawer.open)));
  const content=document.createElement("div");
  content.className="jt-ai-tools-content";
  drawer.append(summary,content);
- const conversation=document.getElementById("conversation");
- if(conversation)conversation.insertAdjacentElement("afterend",drawer);else main.append(drawer);
+ const topbar=main.querySelector(".topbar");
+ if(topbar)topbar.insertAdjacentElement("afterend",drawer);else main.prepend(drawer);
  content.append(panel);
  content.append(addFocusDesk());
  addCrossAppTaskBoard();
