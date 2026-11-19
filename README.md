@@ -30,13 +30,15 @@ Use these exact display names across the JT ecosystem:
 
 ## Desktop builds and releases
 
-The [Build JT Workspace Artifacts workflow](.github/workflows/build-jt-workspace-artifacts.yml) packages nine central browser workspaces for Windows x64/ARM64 and an x86 build attempt, macOS Intel/Apple Silicon, and Linux x64/ARM64. Each platform/architecture is an independent CI target. A successful package job is required before describing that target as built.
+The [Build JT Workspace Artifacts workflow](.github/workflows/build-jt-workspace-artifacts.yml) continues to build nine central browser workspaces across Windows x64/ARM64 and an x86 build attempt, macOS Intel/Apple Silicon, and Linux x64/ARM64. These are temporary CI artifacts for engineering verification.
 
-These central workspace packages are temporary GitHub Actions artifacts, not permanent product releases. The company repository does not publish GitHub Releases. Permanent product releases belong in each dedicated product repository. The website's download center reads those public release records and displays a platform installer only when the matching asset is actually attached to a published release.
+The dedicated [Publish JT Workspace Apps workflow](.github/workflows/publish-jt-workspace-apps.yml) publishes permanent, versioned releases for the five central-only desktop workspaces: **JT AI Agent, JT AI Core, JT Code, JT Design and JT Stream**. Each app receives separate packages for Windows, macOS and Linux. The release tag begins with `jt-workspaces-v`; preview versions are marked prerelease. Each platform/architecture job must pass before the release is published, and the release includes a combined SHA-256 manifest.
 
-The dedicated Jeff AI, JT Studio, JT Motion, JT Cloud and JT App Manager repositories have Windows/macOS/Linux packaging workflows. A configured matrix is not proof that a release has been published or that every target has passed. JT Desktop Agent's Windows WPF implementation remains the full-featured native product; the separate Avalonia shell for macOS/Linux is limited preview functionality. Do not describe it as feature parity or production-ready until platform adapters, tests and native smoke tests pass.
+Other products publish from their own repositories: [JT Desktop Agent](https://github.com/Tech-guy7-sys/JT-Desktop-Agent), [Jeff AI](https://github.com/Tech-guy7-sys/Jeff-AI), [JT Studio](https://github.com/Tech-guy7-sys/JT-Studio), [JT Motion](https://github.com/Tech-guy7-sys/JT-Motion), [JT Cloud](https://github.com/Tech-guy7-sys/JT-Cloud) and [JT App Manager](https://github.com/Tech-guy7-sys/JT-App-Manager). Their release assets remain separate and must be verified in each repository.
 
-All packages are unsigned unless a release explicitly documents verified signing/notarization. Source archives, CI artifacts and installers must be labelled separately.
+The central release-enforcement workflow permits only `jt-workspaces-v*` product bundles. It removes unrelated releases so the company website itself does not become a release repository. The download center reads public release assets and shows a platform installer only when a matching product/OS package exists. A configured matrix is not proof that a release has been published.
+
+JT Desktop Agent's Windows WPF implementation remains the full-featured native product; its separate Avalonia macOS/Linux shell is limited preview functionality, not feature parity. All packages are unsigned unless a release explicitly documents verified signing/notarization. Source archives, temporary CI artifacts and installers are labelled separately.
 
 ## Product boundaries
 
