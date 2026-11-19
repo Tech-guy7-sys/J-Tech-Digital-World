@@ -6,20 +6,25 @@ const read = path => readFile(new URL("../" + path, import.meta.url), "utf8");
 
 test("JT release center checks official releases and separates Windows, macOS and Linux packages", async () => {
   const [page, script] = await Promise.all([read("download.html"), read("jt-desktop-downloads.js")]);
-  for (const product of ["JT Desktop Agent", "Jeff AI", "JT AI Agent", "JT AI Core", "JT Code", "JT Design", "JT Studio", "JT Motion", "JT Cloud", "JT Stream", "JT App Manager"]) {
+  for (const product of ["JT Digital World Desktop","JT Desktop Agent","Jeff AI","JT AI Agent","JT AI Core","JT Code","JT Design","JT Studio","JT Motion","JT Cloud","JT Stream","JT App Manager"]) {
     assert.ok(script.includes(product), "Release catalog is missing " + product);
   }
   for (const platform of ['label:"Windows"', 'label:"macOS"', 'label:"Linux"']) {
     assert.ok(script.includes(platform), "Missing platform target " + platform);
   }
-  assert.match(script, /releases\?per_page=/);
+  assert.match(script, /releases\?per_page=20/);
   assert.match(script, /No published installer/);
-  assert.match(script, /Source code/);
+  assert.match(script, /Architecture not specified/);
+  assert.match(script, /download_count/);
+  assert.match(script, /SHA256SUMS/);
+  assert.match(script, /Latest release notes/);
+  assert.match(script, /jt-release-filters/);
+  assert.match(script, /publish-jt-workspace-apps\.yml/);
   assert.match(page, /jt-release-center\.css/);
   assert.match(page, /jt-desktop-downloads\.js/);
   assert.match(page, /Linux/);
-  assert.doesNotMatch(page, /release-downloads\.js/);
   assert.match(page, /Source archive \(not an installer\)/);
+  assert.doesNotMatch(page, /actions\/workflows\/build-jt-workspace-artifacts\.yml/);
 });
 
 test("JT app launcher uses the product-preview layout and JT brand mark", async () => {
