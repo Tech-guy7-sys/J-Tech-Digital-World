@@ -23,6 +23,8 @@ test('homepage app directory has live search and useful category filters',()=>{
 
 const aiHome=readFileSync(new URL('../jt-ai-agent/index.html',import.meta.url),'utf8');
 const powerTools=readFileSync(new URL('../jt-apps/app-power-tools.js',import.meta.url),'utf8');
+const themeToggle=readFileSync(new URL('../jt-theme-toggle.js',import.meta.url),'utf8');
+const themeStyles=readFileSync(new URL('../jt-theme-toggle.css',import.meta.url),'utf8');
 test('JT AI Agent keeps the conversation central and offers six practical quick tasks',()=>{
  assert.match(aiHome,/What would you like<br>to <em>work on\?/);
  for(const label of ['Research a topic','Write something','Build with code','Plan a project','Learn something','Brainstorm ideas']) assert.ok(aiHome.includes(label), 'Missing quick task: '+label);
@@ -61,4 +63,23 @@ test("JT app product pages load the shared logo splash",()=>{
   const html=readFileSync(new URL("../jt-apps/"+path+"/index.html",import.meta.url),"utf8");
   assert.match(html,/app-power-tools\.js/,"Missing branded loader on "+path);
  }
+});
+
+test("JT theme toggle binds existing controls and supports persistent light and dark modes",()=>{
+ assert.match(themeToggle,/let b=document\.querySelector\('\.jt-theme-toggle'\)/);
+ assert.match(themeToggle,/dataset\.jtThemeBound/);
+ assert.match(themeToggle,/window\.JTTheme=/);
+ assert.match(themeToggle,/addEventListener\('storage'/);
+ assert.match(themeStyles,/html\[data-jt-theme="dark"\] \.app-shell/);
+});
+test("JT AI Agent composer exposes six prompt commands",()=>{
+ for(const command of ["improve","summarize","explain","review","brainstorm","translate"]) assert.ok(aiHome.includes('data-jt-command="'+command+'"'));
+ assert.match(workspace,/commandPrompts/);
+ assert.match(workspace,/chatActions\.open=false/);
+ assert.match(workspace,/input\.focus\(\)/);
+});
+test("More JT tools drawer sits below the top bar and exposes expanded state",()=>{
+ assert.match(appTools,/topbar\.insertAdjacentElement\("afterend",drawer\)/);
+ assert.match(appTools,/aria-expanded/);
+ assert.match(styles,/\.jt-ai-tools-drawer\[open\]/);
 });
