@@ -15,7 +15,7 @@ test("JT Code explains that quick checks are heuristics rather than a security a
 });
 
 test("JT Code presents an IDE workspace with explorer, editor tabs, and isolated preview",()=>{
- assert.match(source,/JT Code · development workspace/);
+ assert.match(source,/JT Code · website studio/);
  assert.match(source,/jt-ide-explorer/);
  assert.match(source,/data-code-file="html"/);
  assert.match(source,/data-code-file="css"/);

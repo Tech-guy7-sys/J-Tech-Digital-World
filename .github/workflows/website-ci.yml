@@ -15,6 +15,7 @@ on:
       - "scripts/test-jt-account-cloud-connectors.mjs"
       - "scripts/test-jt-release-center.mjs"
       - "scripts/test-jt-workspace-release.mjs"
+      - "scripts/test-jt-code-website-starters.mjs"
       - ".github/workflows/publish-jt-workspace-apps.yml"
       - ".github/workflows/enforce-no-central-releases.yml"
       - "docs/JT-ACCOUNT-CLOUD-CONNECTORS-ACTIVATION.md"
@@ -90,6 +91,7 @@ jobs:
           node --test scripts/test-jt-code-checks.mjs scripts/test-jeff-ai-library.mjs scripts/test-jt-cloud-file-controls.mjs scripts/test-jt-motion-timeline.mjs scripts/test-jt-studio-arrangement.mjs
           node --check jt-apps/command-deck.js
           node --check jt-apps/product-shell.js
+          node --check jt-apps/pro-workspaces.js
           node --check jt-apps/workspace-dashboard.js
           node --check jt-ai-agent/library.js
           node --check jt-apps/jt-cloud-remote.js
@@ -107,7 +109,7 @@ jobs:
           node --check release-downloads.js
           node --check jt-desktop-downloads.js
       - name: Test JT release center and launcher refresh
-        run: node --test scripts/test-jt-release-center.mjs scripts/test-jt-workspace-release.mjs
+        run: node --test scripts/test-jt-release-center.mjs scripts/test-jt-workspace-release.mjs scripts/test-jt-code-website-starters.mjs
       - name: Test JT account and connector configuration contracts
         run: node --test scripts/test-jt-account-cloud-connectors.mjs
       - name: Test JT AI gateway request validation
