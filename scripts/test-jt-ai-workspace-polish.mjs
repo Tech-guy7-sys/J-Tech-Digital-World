@@ -80,6 +80,6 @@ test("JT AI Agent composer exposes six prompt commands",()=>{
 });
 test("More JT tools drawer sits below the top bar and exposes expanded state",()=>{
  assert.match(powerTools,/topbar\.insertAdjacentElement\("afterend",drawer\)/);
- assert.match(appTools,/aria-expanded/);
+ assert.match(powerTools,/aria-expanded/);
  assert.match(styles,/\.jt-ai-tools-drawer\[open\]/);
 });
