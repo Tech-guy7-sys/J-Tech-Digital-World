@@ -123,3 +123,30 @@ body{background:#fff!important;color:#20242c!important;font-family:'DM Sans',Int
 .message-body pre{overflow:auto;background:#171a24;color:#eef1fb;padding:15px;border-radius:9px;margin:12px 0}
 .message-body pre code{display:block;background:none;border:0;padding:0;color:inherit;white-space:pre;font-size:12px}
 .message-body blockquote{border-left:3px solid #8b83dc;margin:12px 0;padding:5px 13px;color:#697181;background:#f7f7fb}
+
+/* JT Copilot-inspired workspace: keep the conversation central and tuck utilities away */
+.suggestions{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:690px!important;margin-top:22px!important}
+.suggestions button{min-height:72px!important;padding:13px 14px!important}
+.jt-ai-tools-drawer{width:min(100%,780px);margin:22px auto 28px;border:1px solid #e5e7ec;border-radius:11px;background:#fff;color:#303641;text-align:left}
+.jt-ai-tools-drawer>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;cursor:pointer;font:700 11px Manrope,sans-serif;color:#303641}
+.jt-ai-tools-drawer>summary::-webkit-details-marker{display:none}
+.jt-ai-tools-drawer>summary:after{content:"＋";margin-left:auto;color:#625bc6;font-size:16px}
+.jt-ai-tools-drawer[open]>summary:after{content:"−"}
+.jt-ai-tools-hint{font:400 10px 'DM Sans',sans-serif;color:#858d99}
+.jt-ai-tools-content{padding:0 13px 13px;border-top:1px solid #eceef1}
+.jt-ai-tools-content .jt-power{margin:13px 0 0;background:#fafbfc;color:#303641;border:1px solid #e5e7ec;box-shadow:none;border-radius:10px}
+.jt-ai-tools-content .jt-power-head p{color:#737b87}
+.jt-ai-tools-content .jt-power-card{background:#fff;border-color:#e5e7ec}
+.jt-ai-tools-content .jt-power-card h3{color:#303641}
+.jt-ai-tools-content .jt-power-field{color:#59616d}
+.jt-ai-tools-content .jt-power-field input,.jt-ai-tools-content .jt-power-field textarea,.jt-ai-tools-content .jt-power-field select{background:#fff;color:#303641;border-color:#dfe2e8}
+.jt-ai-tools-content .jt-power-status{color:#66707d}
+@media(max-width:620px){.suggestions{grid-template-columns:1fr!important}.jt-ai-tools-hint{display:none}.jt-ai-tools-drawer>summary{padding:13px}}
+@media(prefers-reduced-motion:reduce){.suggestions button{transition:none!important}.suggestions button:hover{transform:none!important}}
+
+/* ChatGPT-inspired follow-up prompt chips, with original JT styling */
+.message-followups{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+.message-followup{appearance:none;border:1px solid #e3e5eb;background:#fff;color:#5e6470;border-radius:999px;padding:7px 11px;font:500 10px inherit;cursor:pointer;transition:background .16s,border-color .16s,color .16s}
+.message-followup:hover{background:#f7f6ff;border-color:#c9c5ed;color:#5049a7}
+.message-followup:focus-visible{outline:2px solid #625bc6;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.message-followup{transition:none}}
