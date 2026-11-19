@@ -11,14 +11,14 @@
   const catalog = [
     { name:"JT Desktop Agent", repo:"JT-Desktop-Agent", source:"https://github.com/Tech-guy7-sys/JT-Desktop-Agent", build:"https://github.com/Tech-guy7-sys/JT-Desktop-Agent/actions", note:"Windows native agent. The macOS/Linux Avalonia shell is a limited preview, not feature parity." },
     { name:"Jeff AI", repo:"Jeff-AI", source:"https://github.com/Tech-guy7-sys/Jeff-AI", build:"https://github.com/Tech-guy7-sys/Jeff-AI/actions", note:"AI workspace. Packages are listed only after a product release contains matching installer assets." },
-    { name:"JT AI Agent", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-ai-agent", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/build-jt-workspace-artifacts.yml", note:"General-purpose AI workspace. Currently built through the central workspace artifact pipeline; no permanent product release is published yet.", centralBuild:true },
-    { name:"JT AI Core", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-ai-core", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/build-jt-workspace-artifacts.yml", note:"Shared provider and permission layer. Its desktop package is part of the central workspace build; it is not a standalone hosted AI service.", centralBuild:true },
-    { name:"JT Code", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-code", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/build-jt-workspace-artifacts.yml", note:"Coding workspace. Cross-platform packages are temporary CI artifacts until a product release is published.", centralBuild:true },
-    { name:"JT Design", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-design", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/build-jt-workspace-artifacts.yml", note:"Visual design workspace. Cross-platform packages are temporary CI artifacts until a product release is published.", centralBuild:true },
+    { name:"JT AI Agent", repo:"J-Tech-Digital-World", assetPrefix:"JT AI Agent-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-ai-agent", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"General-purpose AI workspace. Its permanent installers are published in the central JT Workspace Apps release.", centralBuild:true },
+    { name:"JT AI Core", repo:"J-Tech-Digital-World", assetPrefix:"JT AI Core-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-ai-core", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Shared provider and permission layer. Its desktop package is part of the JT Workspace Apps release; it is not a standalone hosted AI service.", centralBuild:true },
+    { name:"JT Code", repo:"J-Tech-Digital-World", assetPrefix:"JT Code-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-code", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Coding workspace. Its permanent installers are published in the central JT Workspace Apps release.", centralBuild:true },
+    { name:"JT Design", repo:"J-Tech-Digital-World", assetPrefix:"JT Design-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-design", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Visual design workspace. Its permanent installers are published in the central JT Workspace Apps release.", centralBuild:true },
     { name:"JT Studio", repo:"JT-Studio", source:"https://github.com/Tech-guy7-sys/JT-Studio", build:"https://github.com/Tech-guy7-sys/JT-Studio/actions", note:"Audio workbench. Its existing public release is source-only; installer links appear only after platform packages are published." },
     { name:"JT Motion", repo:"JT-Motion", source:"https://github.com/Tech-guy7-sys/JT-Motion", build:"https://github.com/Tech-guy7-sys/JT-Motion/actions", note:"Video planning and storyboard workspace, not yet a full nonlinear video editor." },
     { name:"JT Cloud", repo:"JT-Cloud", source:"https://github.com/Tech-guy7-sys/JT-Cloud", build:"https://github.com/Tech-guy7-sys/JT-Cloud/actions", note:"Local-first project and file index. It is not remote cloud storage or sync yet." },
-    { name:"JT Stream", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-stream", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/build-jt-workspace-artifacts.yml", note:"Camera, scene and recording workspace. Cross-platform packages are temporary CI artifacts until a product release is published.", centralBuild:true },
+    { name:"JT Stream", repo:"J-Tech-Digital-World", assetPrefix:"JT Stream-", source:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/tree/main/jt-apps/jt-stream", build:"https://github.com/Tech-guy7-sys/J-Tech-Digital-World/actions/workflows/publish-jt-workspace-apps.yml", note:"Camera, scene and recording workspace. Its permanent installers are published in the central JT Workspace Apps release.", centralBuild:true },
     { name:"JT App Manager", repo:"JT-App-Manager", source:"https://github.com/Tech-guy7-sys/JT-App-Manager", build:"https://github.com/Tech-guy7-sys/JT-App-Manager/actions", note:"Product catalogue and rollout workspace. It does not silently install or update software." }
   ];
 
@@ -83,7 +83,7 @@
     title.textContent = product.name;
     const category = document.createElement("span");
     category.className = "jt-release-category";
-    category.textContent = product.centralBuild ? "WORKSPACE BUILD" : "PRODUCT REPOSITORY";
+    category.textContent = product.centralBuild ? "JT WORKSPACE RELEASE" : "PRODUCT REPOSITORY";
     header.append(title, category);
     card.append(header);
 
@@ -116,6 +116,7 @@
             ...asset, jtPrerelease: Boolean(item.prerelease), jtReleaseTag: item.tag_name
           }))
         );
+        if (product.assetPrefix) assets = assets.filter(asset => asset.name.startsWith(product.assetPrefix));
       } catch {
         const warning = document.createElement("span");
         warning.className = "jt-release-state";
@@ -135,7 +136,7 @@
     } else {
       const releaseMeta = document.createElement("p");
       releaseMeta.className = "jt-release-version";
-      releaseMeta.textContent = product.centralBuild ? "No permanent product release published yet · CI artifacts are temporary" : "No published product release yet";
+      releaseMeta.textContent = product.centralBuild ? "No JT Workspace Apps release published yet" : "No published product release yet";
       card.append(releaseMeta);
     }
 
