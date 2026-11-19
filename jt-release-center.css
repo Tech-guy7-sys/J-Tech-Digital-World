@@ -31,3 +31,5 @@
 .platform-legend>span{display:inline-flex;align-items:center;gap:7px;color:#aab7ca;font-size:10px;font-weight:700}
 .linux-mini{display:inline-grid;place-items:center;width:15px;height:15px;border:1px solid #71829a;border-radius:4px;color:#9de5d7;font-size:9px;font-style:normal}
 @media(max-width:560px){.jt-release-platforms{grid-template-columns:1fr}.jt-release-description{min-height:0}.jt-release-app-header{align-items:flex-start}}
+
+.jt-release-state.is-preview{color:#f0c98a}

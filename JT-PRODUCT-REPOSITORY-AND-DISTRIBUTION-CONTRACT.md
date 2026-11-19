@@ -1,37 +1,61 @@
 # JT Product Repositories and Distribution Contract
 
-## Naming is part of the product
+## Product naming
 
-Use these exact display names everywhere user-facing: **JT Desktop Agent**, **Jeff AI**, **JT Studio**, **JT Motion**, **JT Cloud**, and **JT App Manager**. Do not replace the JT monogram with a single-letter mark. The central **J Tech Digital World** repository is the company website and catalog, not a product release repository.
+Use the exact JT product names in the website, launchers, installers, release titles and documentation:
+
+- JT Desktop Agent
+- Jeff AI
+- JT AI Agent
+- JT AI Core
+- JT Code
+- JT Design
+- JT Studio
+- JT Motion
+- JT Cloud
+- JT Stream
+- JT App Manager
+
+Use the JT monogram. Do not replace the JT brand with a single-letter mark.
 
 ## Repository responsibilities
 
-- **J Tech Digital World** (jt-digital-world): company website, product catalog, documentation, and links to verified product artifacts. CI may build and retain temporary workflow artifacts. It must not create GitHub Releases.
-- **JT Desktop Agent** (currently hosted at agent-jeff): desktop control/automation application and its own source/build pipeline.
-- **Jeff AI** (jeff-ai): AI workspace, provider abstraction, chat UI, and its own cross-platform build pipeline.
-- **JT Studio** (jt-studio): audio production workspace and its own source/build pipeline.
-- **JT Motion**, **JT Cloud**, and **JT App Manager**: each should have a dedicated, non-empty product repository before its installers or source archives are advertised as available.
+- **J Tech Digital World**: company website, product catalogue, documentation, and the central source for JT AI Agent, JT AI Core, JT Code, JT Design and JT Stream. It may publish only the versioned **JT Workspace Apps** release bundle for those five applications, using tags prefixed `jt-workspaces-v`. It must not publish website-only or unrelated releases.
+- **JT Desktop Agent**: native Windows WPF application and the limited Avalonia macOS/Linux preview shell.
+- **Jeff AI**: AI workspace, provider abstraction, chat UI and its own desktop packaging pipeline.
+- **JT Studio**: audio production workspace and its own desktop packaging pipeline.
+- **JT Motion**: video planning/storyboard workspace and its own desktop packaging pipeline.
+- **JT Cloud**: local-first project/file workspace and its own desktop packaging pipeline.
+- **JT App Manager**: product catalogue/update workspace and its own desktop packaging pipeline.
 
-## Standard product deliverables
+## Standard platform targets
 
-| Platform | Architectures | Expected package types |
+| Platform | Architectures | Package formats |
 |---|---|---|
-| Windows | x64, x86/ia32 where supported; ARM64 where supported | installer and portable ZIP |
-| macOS | Intel x64 and Apple Silicon arm64 | DMG and/or ZIP |
-| Linux | x64 and arm64 where dependencies support them | AppImage and/or DEB |
-| Source | platform independent | source archive plus build instructions |
-| Integrity | all published artifacts | SHA-256 checksums and a manifest |
+| Windows | x64, ARM64, x86/ia32 only where supported | EXE installer and/or portable ZIP |
+| macOS | Intel x64 and Apple Silicon ARM64 | DMG and/or ZIP |
+| Linux | x64 and ARM64 where dependencies support them | AppImage, DEB and/or RPM |
+| Integrity | every release | SHA-256 manifest and per-asset digests where available |
 
-32-bit support must only be advertised where the framework and dependencies actually support it. macOS means Intel x64 and Apple Silicon arm64, not obsolete 32-bit macOS. A workflow artifact is a temporary CI download, not a published release. Signing/notarization and native-platform smoke tests are required before calling installers production-ready.
+A configured matrix is not proof of a successful build. A CI artifact is temporary and is not a published release. Never advertise an architecture until its own build succeeds and its asset is attached to a published release. macOS means Intel x64 and Apple Silicon ARM64, not obsolete 32-bit macOS.
 
 ## Release policy
 
-1. No GitHub Releases are to be created in jt-digital-world.
-2. Product releases, when ready, belong to their dedicated product repositories.
-3. The central website should link only to product repositories or verified product artifacts; it must not pretend a source ZIP is an installer.
-4. Never advertise an architecture as available until a successful build artifact exists for it.
-5. Disabling workflows stops new central releases but does not delete existing releases or their tags. Existing releases must be removed from GitHub's Releases page separately by a repository administrator.
+1. The central repository may publish only **JT Workspace Apps** product bundles tagged `jt-workspaces-vMAJOR.MINOR.PATCH` or a prerelease variant.
+2. Each central bundle contains separate packages for JT AI Agent, JT AI Core, JT Code, JT Design and JT Stream. The package filename identifies the product, version, OS and architecture.
+3. The company website itself does not receive a product release. The enforcement workflow removes every central release whose tag does not begin with `jt-workspaces-v`.
+4. Other products publish releases in their own product repositories.
+5. The public download center reads official release assets and only displays a platform download when the matching product/OS asset exists. Source archives and temporary CI artifacts are never labelled as installers.
+6. Unsigned builds must be labelled unsigned. Do not claim macOS signing/notarization or Windows signing unless verified.
+7. Preview packages must remain marked as prereleases and clearly state feature limitations.
 
-## Current reality check
+## Current product boundaries
 
-This document describes the required architecture, not a claim that every platform package already exists. At the time this plan was added, JT Desktop Agent had a Windows x64 release, Jeff AI had no meaningful source tree, and JT Studio was a browser workbench. Jeff AI's source scaffold is being built out separately; cross-platform output must still be verified by CI.
+- JT Desktop Agent's full-featured native WPF application is Windows-specific. The Avalonia macOS/Linux shell is a limited preview, not feature parity.
+- Jeff AI's provider setup and model availability depend on each user's own provider configuration.
+- JT Studio is an early audio workbench, not yet a full multitrack DAW.
+- JT Motion is a storyboard/planning tool, not yet a full nonlinear video editor.
+- JT Cloud is local-first and is not remote cloud storage/sync until that service is implemented and verified.
+- JT App Manager is a catalogue/review tool; it does not silently install or update software.
+
+This contract describes release architecture and acceptance rules. It does not claim that all packages or product capabilities are already published.
