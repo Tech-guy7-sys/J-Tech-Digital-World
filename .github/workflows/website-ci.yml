@@ -13,6 +13,10 @@ on:
       - "scripts/build-site.mjs"
       - "functions/**"
       - "scripts/test-jt-account-cloud-connectors.mjs"
+      - "scripts/test-jt-account-supabase-auth.mjs"
+      - "db/supabase-auth-schema.sql"
+      - "docs/JT-ACCOUNT-SUPABASE-AUTH-SETUP.md"
+      - "functions/api/auth/**"
       - "scripts/test-jt-release-center.mjs"
       - "scripts/test-jt-workspace-release.mjs"
       - "scripts/test-jt-code-website-starters.mjs"
@@ -21,6 +25,10 @@ on:
       - "docs/JT-ACCOUNT-CLOUD-CONNECTORS-ACTIVATION.md"
       - "scripts/test-jeff-api.mjs"
       - "scripts/test-jt-account-cloud-connectors.mjs"
+      - "scripts/test-jt-account-supabase-auth.mjs"
+      - "db/supabase-auth-schema.sql"
+      - "docs/JT-ACCOUNT-SUPABASE-AUTH-SETUP.md"
+      - "functions/api/auth/**"
       - "docs/JT-ACCOUNT-CLOUD-CONNECTORS-ACTIVATION.md"
       - "scripts/test-jeff-project-context.mjs"
       - "scripts/test-jt-app-icons.mjs"
@@ -111,7 +119,7 @@ jobs:
       - name: Test JT release center and launcher refresh
         run: node --test scripts/test-jt-release-center.mjs scripts/test-jt-workspace-release.mjs scripts/test-jt-code-website-starters.mjs
       - name: Test JT account and connector configuration contracts
-        run: node --test scripts/test-jt-account-cloud-connectors.mjs
+        run: node --test scripts/test-jt-account-cloud-connectors.mjs scripts/test-jt-account-supabase-auth.mjs
       - name: Test JT AI gateway request validation
         run: |
           node scripts/test-jeff-api.mjs
