@@ -6,12 +6,13 @@ const read = path => readFile(new URL("../" + path, import.meta.url), "utf8");
 
 test("signup UI enforces the same 10-character minimum as the account API", async () => {
   const [page, api] = await Promise.all([read("signin.html"), read("functions/api/auth/signup.js")]);
-  assert.match(page, /id="signupPassword"[^>]*minlength="10"/);
+  assert.match(page, /id="password"[^>]*minlength="10"/);
+  assert.match(page, /supabase\.auth\.signUp\(\{email,password/);
   assert.match(api, /validPassword\(password\)/);
   assert.match(await read("functions/api/_auth.js"), /v\.length>=10&&v\.length<=128/);
 });
 
-test("GitHub OAuth does not claim unrequested repository scopes", async () => {
+test("GitHub OAuth connector does not claim unrequested repository scopes", async () => {
   const [start, callback] = await Promise.all([
     read("functions/api/connectors/start.js"),
     read("functions/api/connectors/callback.js")
@@ -40,6 +41,6 @@ test("JT Account exposes a safe database/schema health check and signup failure 
   assert.match(health, /JT_AUTH_DB/);
   assert.match(signup, /diagnosticStage:stage/);
   assert.match(signup, /stage="password-derivation"/);
-  assert.match(page, /api\('\/api\/health'\)/);
-  assert.match(page, /j\.diagnosticStage/);
+  assert.match(page, /api\/auth\/config/);
+  assert.match(page, /api\/auth\/supabase-session/);
 });
