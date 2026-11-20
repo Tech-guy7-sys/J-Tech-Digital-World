@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Completing sign in — JT Account</title><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/modern-ui.css"><link rel="stylesheet" href="/jt-account-auth.css"></head>
+<body class="jt-auth-body"><main class="jt-auth-callback"><div class="jt-auth-mark">JT</div><div class="jt-auth-orbit"></div><p class="jt-auth-eyebrow">JT ACCOUNT SECURITY</p><h1>Completing your sign in</h1><p id="callbackMessage" role="status">Verifying your secure session…</p><a class="jt-auth-back" href="/signin.html">Return to sign in</a></main>
+<script type="module">
+import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const message=document.getElementById("callbackMessage");
+const safeReturn=()=>{const value=new URLSearchParams(location.search).get("returnTo")||"/account-settings.html";return value.startsWith("/")&&!value.startsWith("//")?value:"/account-settings.html"};
+try{
+ const config=await fetch("/api/auth/config",{cache:"no-store"}).then(r=>r.json());
+ if(!config.configured) throw new Error("JT Supabase Auth is not configured yet.");
+ const supabase=createClient(config.url,config.anonKey,{auth:{flowType:"pkce",persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+ const {data,error}=await supabase.auth.getSession();
+ if(error) throw error;
+ if(!data.session) throw new Error("No active sign-in was returned. Please try again.");
+ const response=await fetch("/api/auth/supabase-session",{method:"POST",credentials:"include",headers:{"content-type":"application/json","authorization":"Bearer "+data.session.access_token},body:"{}"});
+ const result=await response.json();
+ if(!response.ok) throw new Error(result.error||"JT Account could not finish linking your session.");
+ message.textContent="Your JT account is ready. Redirecting…";
+ const target=safeReturn();
+ if(location.hash.includes("type=recovery")) location.replace("/reset-password.html");
+ else location.replace(target);
+}catch(error){message.textContent=error.message||"Sign in could not be completed.";message.classList.add("is-error");}
+</script></body></html>
