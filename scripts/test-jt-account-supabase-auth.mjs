@@ -30,7 +30,7 @@ test("identity migration adds a mapping table without destructive changes to exi
  assert.doesNotMatch(sql,/DROP TABLE|DELETE FROM users|ALTER TABLE users/i);
 });
 
-test("setup guide documents all requested provider configuration and legacy-account migration",async()=>{
+test("static build publishes the auth callback and recovery routes",async()=>{\n const build=await read("scripts/build-site.mjs");\n for(const file of ["auth-callback.html","reset-password.html","jt-account-auth.css"]) assert.ok(build.includes(file),file);\n});\n\ntest("setup guide documents all requested provider configuration and legacy-account migration",async()=>{
  const guide=await read("docs/JT-ACCOUNT-SUPABASE-AUTH-SETUP.md");
  for(const term of ["Google","Discord","GitHub","Apple","enterprise SSO","SAML 2.0","SUPABASE_URL","SUPABASE_ANON_KEY","JT_AUTH_DB","PBKDF2","existing JT accounts"]) assert.ok(guide.includes(term),term);
 });
