@@ -17,7 +17,6 @@ try{
  if(!response.ok) throw new Error(result.error||"JT Account could not finish linking your session.");
  message.textContent="Your JT account is ready. Redirecting…";
  const target=safeReturn();
- if(location.hash.includes("type=recovery")) location.replace("/reset-password.html");
- else location.replace(target);
+ location.replace(target);
 }catch(error){message.textContent=error.message||"Sign in could not be completed.";message.classList.add("is-error");}
 </script></body></html>
