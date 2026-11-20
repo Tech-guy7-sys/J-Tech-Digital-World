@@ -1,4 +1,4 @@
-import { cloudUser, cloudReply, uploadMetadata, limitUploadStream, encodeCursor, decodeCursor, DEFAULT_QUOTA_BYTES } from "./_shared.js";
+import { cloudUser, cloudReply, uploadMetadata, limitUploadStream, putCloudObject, encodeCursor, decodeCursor, DEFAULT_QUOTA_BYTES } from "./_shared.js";
 
 export async function onRequestGet({ request, env }) {
   const auth = await cloudUser(request, env);
@@ -38,16 +38,14 @@ export async function onRequestPost({ request, env }) {
   const quota = Number(env.JT_CLOUD_DEFAULT_QUOTA_BYTES) > 0 ? Number(env.JT_CLOUD_DEFAULT_QUOTA_BYTES) : DEFAULT_QUOTA_BYTES;
   await auth.db.prepare("INSERT OR IGNORE INTO cloud_storage_usage (user_id,used_bytes,quota_bytes,updated_at) VALUES (?,0,?,?)").bind(auth.user.id, quota, now).run();
   const reserve = await auth.db.prepare("UPDATE cloud_storage_usage SET used_bytes=used_bytes+?,updated_at=? WHERE user_id=? AND used_bytes+?<=quota_bytes").bind(meta.size, now, auth.user.id, meta.size).run();
-  if (reserve.meta?.changes !== 1) return cloudReply({ error: "quota_exceeded", message: "This upload would exceed your JT Cloud storage allowance." }, 413);
-  let object;
+  if (reserve.meta?.changes !== 1) return cloudReply({ error: "quota_exceeded", message: "This upload would exceed your JT Cloud account allowance." }, 413);
   try {
-    object = await auth.bucket.put(key, limitUploadStream(request.body, meta.size), { httpMetadata: { contentType: meta.mime }, customMetadata: { owner: auth.user.id, fileId: id } });
+    await putCloudObject(env, key, limitUploadStream(request.body, meta.size), meta.mime);
     await auth.db.prepare("INSERT INTO cloud_files (id,user_id,folder_id,object_key,name,mime_type,size_bytes,etag,status,created_at,updated_at) VALUES (?,?,NULL,?,?,?,?,?,'ready',?,?)")
-      .bind(id, auth.user.id, key, meta.name, meta.mime, meta.size, object?.etag || null, now, now).run();
+      .bind(id, auth.user.id, key, meta.name, meta.mime, meta.size, null, now, now).run();
   } catch {
-    if (object) await auth.bucket.delete(key).catch(() => {});
     await auth.db.prepare("UPDATE cloud_storage_usage SET used_bytes=MAX(0,used_bytes-?),updated_at=? WHERE user_id=?").bind(meta.size, now, auth.user.id).run().catch(() => {});
-    return cloudReply({ error: "upload_failed", message: "The upload could not be completed. Your storage reservation was released." }, 502);
+    return cloudReply({ error: "upload_failed", message: "The upload could not be completed. Check the Supabase Storage configuration and free-plan limits." }, 502);
   }
   return cloudReply({ file: { id, name: meta.name, mime_type: meta.mime, size_bytes: meta.size, created_at: now }, storage: "remote" }, 201);
 }

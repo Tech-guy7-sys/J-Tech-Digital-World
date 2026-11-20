@@ -16,9 +16,13 @@
     "test:jeff-workspace": "node --test scripts/test-jt-ai-workspace-polish.mjs",
     "test:jt-motion": "node --test scripts/test-jt-motion-timeline.mjs",
     "test:jt-studio": "node --test scripts/test-jt-studio-arrangement.mjs",
-    "test:jt-account-cloud-connectors": "node --test scripts/test-jt-account-cloud-connectors.mjs"
+    "test:jt-account-cloud-connectors": "node --test scripts/test-jt-account-cloud-connectors.mjs",
+    "test:jt-cloud-supabase": "node --test scripts/test-jt-cloud-supabase-storage.mjs"
   },
   "engines": {
     "node": ">=22"
+  },
+  "dependencies": {
+    "aws4fetch": "^1.0.20"
   }
 }

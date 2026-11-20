@@ -112,6 +112,8 @@ jobs:
         run: node --test scripts/test-jt-release-center.mjs scripts/test-jt-workspace-release.mjs scripts/test-jt-code-website-starters.mjs
       - name: Test JT account and connector configuration contracts
         run: node --test scripts/test-jt-account-cloud-connectors.mjs
+      - name: Test JT Cloud Supabase Storage adapter
+        run: npm run test:jt-cloud-supabase
       - name: Test JT AI gateway request validation
         run: |
           node scripts/test-jeff-api.mjs

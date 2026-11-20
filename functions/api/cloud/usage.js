@@ -9,6 +9,7 @@ export async function onRequestGet({ request, env }) {
   const usage = await auth.db.prepare("SELECT used_bytes,quota_bytes FROM cloud_storage_usage WHERE user_id=? LIMIT 1").bind(auth.user.id).first();
   return cloudReply({
     storage: "remote",
+    provider: "supabase",
     usedBytes: Number(usage?.used_bytes || 0),
     quotaBytes: Number(usage?.quota_bytes || defaultQuota),
     remainingBytes: Math.max(0, Number(usage?.quota_bytes || defaultQuota) - Number(usage?.used_bytes || 0))

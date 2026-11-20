@@ -1,4 +1,4 @@
-import { cloudUser, cloudReply } from "../_shared.js";
+import { cloudUser, cloudReply, getCloudObject, deleteCloudObject } from "../_shared.js";
 
 function attachmentName(name) {
   const fallback = String(name || "download").replace(/[^a-zA-Z0-9._ -]/g, "_").slice(0, 120) || "download";
@@ -12,7 +12,9 @@ export async function onRequestGet({ request, env, params }) {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return cloudReply({ error: "file_not_found" }, 404);
   const file = await auth.db.prepare("SELECT id,object_key,name,mime_type,size_bytes FROM cloud_files WHERE id=? AND user_id=? AND status='ready' LIMIT 1").bind(id, auth.user.id).first();
   if (!file) return cloudReply({ error: "file_not_found" }, 404);
-  const object = await auth.bucket.get(file.object_key);
+  let object;
+  try { object = await getCloudObject(env, file.object_key); }
+  catch { return cloudReply({ error: "download_failed", message: "The stored file is temporarily unavailable." }, 502); }
   if (!object) return cloudReply({ error: "object_missing", message: "The stored file is temporarily unavailable." }, 404);
   return new Response(object.body, { status: 200, headers: {
     "content-type": file.mime_type || "application/octet-stream",
@@ -33,7 +35,7 @@ export async function onRequestDelete({ request, env, params }) {
   const now = Math.floor(Date.now() / 1000);
   const claim = await auth.db.prepare("UPDATE cloud_files SET status='deleting',updated_at=? WHERE id=? AND user_id=? AND (status='ready' OR (status='deleting' AND updated_at<?))").bind(now, id, auth.user.id, now - 30).run();
   if (claim.meta?.changes !== 1) return cloudReply({ error: "delete_in_progress", message: "This file is already being deleted. Refresh the file list." }, 409);
-  try { await auth.bucket.delete(file.object_key); }
+  try { await deleteCloudObject(env, file.object_key); }
   catch {
     await auth.db.prepare("UPDATE cloud_files SET status='ready',updated_at=? WHERE id=? AND user_id=? AND status='deleting'").bind(now, id, auth.user.id).run().catch(() => {});
     return cloudReply({ error: "delete_failed", message: "The file could not be deleted. You can retry." }, 502);

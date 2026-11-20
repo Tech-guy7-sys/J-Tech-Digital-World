@@ -51,6 +51,17 @@ assert.equal(response.status, 403);
 const sqlSeen = [];
 let storedBody = "";
 let storedKey = "";
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async (url, init = {}) => {
+  if (init.method === "PUT") {
+    storedKey = new URL(url).pathname;
+    storedBody = await new Response(init.body).text();
+    return new Response(null, { status: 200, headers: { etag: "mock-etag" } });
+  }
+  if (init.method === "GET") return new Response(storedBody, { status: 200 });
+  if (init.method === "DELETE") return new Response(null, { status: 204 });
+  return new Response(null, { status: 404 });
+};
 const mockD1 = {
   prepare(sql) {
     sqlSeen.push(sql);
@@ -65,11 +76,6 @@ const mockD1 = {
     };
   }
 };
-const mockBucket = {
-  async put(key, body) { storedKey = key; storedBody = await new Response(body).text(); return { etag: "mock-etag" }; },
-  async delete() {},
-  async get() { throw new Error("Ownership test should not reach R2."); }
-};
 const validUpload = new Request("https://jt.example/api/cloud/files", {
   method: "POST",
   headers: {
@@ -78,7 +84,7 @@ const validUpload = new Request("https://jt.example/api/cloud/files", {
   },
   body: "hello"
 });
-response = await onRequestPost({ request: validUpload, env: { JT_AUTH_DB: mockD1, JT_CLOUD_BUCKET: mockBucket } });
+response = await onRequestPost({ request: validUpload, env: { JT_AUTH_DB: mockD1, SUPABASE_S3_ENDPOINT: "https://project.storage.supabase.co/storage/v1/s3", SUPABASE_S3_REGION: "us-east-1", SUPABASE_S3_ACCESS_KEY_ID: "test-access", SUPABASE_S3_SECRET_ACCESS_KEY: "test-secret" } });
 assert.equal(response.status, 201);
 assert.equal(storedBody, "hello");
 assert.ok(storedKey.startsWith("users/user-1/"));
@@ -92,10 +98,10 @@ const mismatchedUpload = new Request("https://jt.example/api/cloud/files", {
   },
   body: "hello"
 });
-response = await onRequestPost({ request: mismatchedUpload, env: { JT_AUTH_DB: mockD1, JT_CLOUD_BUCKET: mockBucket } });
+response = await onRequestPost({ request: mismatchedUpload, env: { JT_AUTH_DB: mockD1, SUPABASE_S3_ENDPOINT: "https://project.storage.supabase.co/storage/v1/s3", SUPABASE_S3_REGION: "us-east-1", SUPABASE_S3_ACCESS_KEY_ID: "test-access", SUPABASE_S3_SECRET_ACCESS_KEY: "test-secret" } });
 assert.equal(response.status, 502);
 
-let r2Read = false;
+let storageRead = false;
 const ownershipDb = {
   prepare(sql) {
     return { bind() { return { first: async () => {
@@ -107,10 +113,11 @@ const ownershipDb = {
 };
 response = await downloadFile({
   request: new Request("https://jt.example/api/cloud/files/123e4567-e89b-12d3-a456-426614174000", { headers: { cookie: "jt_session=valid-session" } }),
-  env: { JT_AUTH_DB: ownershipDb, JT_CLOUD_BUCKET: { async get() { r2Read = true; return null; } } },
+  env: { JT_AUTH_DB: ownershipDb, SUPABASE_S3_ENDPOINT: "https://project.storage.supabase.co/storage/v1/s3", SUPABASE_S3_REGION: "us-east-1", SUPABASE_S3_ACCESS_KEY_ID: "test-access", SUPABASE_S3_SECRET_ACCESS_KEY: "test-secret" },
   params: { id: "123e4567-e89b-12d3-a456-426614174000" }
 });
 assert.equal(response.status, 404);
-assert.equal(r2Read, false);
+assert.equal(storageRead, false);
+globalThis.fetch = originalFetch;
 
 console.log("JT Cloud API tests passed: auth gates, validation, streaming size, upload mock and ownership isolation.");
