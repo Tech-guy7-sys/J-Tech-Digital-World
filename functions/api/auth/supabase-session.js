@@ -24,6 +24,7 @@ export async function onRequestPost({request,env}) {
   const email=typeof verified.email==="string"?verified.email.trim().toLowerCase():"";
   const confirmed=Boolean(verified.email_confirmed_at||verified.confirmed_at);
   if(!authId||!email||!confirmed) return reply({error:"Verify your email with your sign-in provider before continuing."},403);
+  const isSso=Array.isArray(verified.identities)&&verified.identities.some(identity=>String(identity.provider||"").startsWith("sso:"));
 
   try {
     const linked=await d.prepare(
@@ -31,17 +32,27 @@ export async function onRequestPost({request,env}) {
     ).bind(authId).first();
     let user=linked;
     if(!user) {
+      // Supabase SAML identities are deliberately not auto-linked by email.
+      // Their D1 identity must be provisioned by an authorised JT administrator.
+      if(isSso) return reply({error:"This enterprise SSO identity needs JT administrator provisioning before it can access JT account data."},403);
       // Link only to an exact email match after Supabase has confirmed the address.
       user=await d.prepare("SELECT id,name,email FROM users WHERE email=? LIMIT 1").bind(email).first();
       if(!user) {
         const id=randomToken(), now=Math.floor(Date.now()/1000);
-        // OAuth-only accounts cannot use the legacy D1 password endpoint.
-        await d.prepare("INSERT INTO users (id,name,email,password_hash,password_salt,created_at) VALUES (?,?,?,?,?,?)")
-          .bind(id,(verified.user_metadata?.full_name||verified.user_metadata?.name||email.split("@")[0]).slice(0,80),email,"SUPABASE_AUTH_ONLY","SUPABASE_AUTH_ONLY",now).run();
-        user={id,name:verified.user_metadata?.full_name||verified.user_metadata?.name||email.split("@")[0],email};
+        const metadata=verified.user_metadata||{};
+        const displayName=[metadata.full_name,metadata.name].find(value=>typeof value==="string"&&value.trim())||email.split("@")[0];
+        user={id,name:displayName.trim().slice(0,80),email};
+        // Create the profile and identity mapping together to avoid orphaned rows.
+        await d.batch([
+          d.prepare("INSERT INTO users (id,name,email,password_hash,password_salt,created_at) VALUES (?,?,?,?,?,?)")
+            .bind(id,user.name,email,"SUPABASE_AUTH_ONLY","SUPABASE_AUTH_ONLY",now),
+          d.prepare("INSERT INTO jt_auth_identities (auth_user_id,user_id,email,created_at) VALUES (?,?,?,?)")
+            .bind(authId,id,email,now)
+        ]);
+      } else {
+        await d.prepare("INSERT INTO jt_auth_identities (auth_user_id,user_id,email,created_at) VALUES (?,?,?,?)")
+          .bind(authId,user.id,email,Math.floor(Date.now()/1000)).run();
       }
-      await d.prepare("INSERT OR IGNORE INTO jt_auth_identities (auth_user_id,user_id,email,created_at) VALUES (?,?,?,?)")
-        .bind(authId,user.id,email,Math.floor(Date.now()/1000)).run();
       user=await d.prepare("SELECT id,name,email FROM users WHERE id=? LIMIT 1").bind(user.id).first();
     }
     const token=await createSession(user.id,env);
