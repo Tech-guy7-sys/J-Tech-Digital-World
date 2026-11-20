@@ -109,10 +109,22 @@ SSO is for an organisation whose administrator has configured a SAML 2.0 identit
 
 1. In Supabase, open **Authentication → Providers** and enable SAML 2.0 / Enterprise SSO if available for your project.
 2. Ask the organisation's IT administrator for its SAML 2.0 metadata URL or metadata XML, entity ID, SSO URL, signing certificate, and the email domain used by its members.
-3. Install/use the Supabase CLI and link it to the correct Supabase project.
-4. Add the organisation's SAML connection using the Supabase CLI SSO commands, supplying the metadata and verified email domain. Follow the current Supabase SAML SSO guide for the exact CLI flags for your CLI version.
-5. Confirm the connection appears in Supabase and test with an organisation-managed account.
-6. In the JT sign-in page, the user enters their organisation email domain (for example, `company.com`) and chooses **Continue with SSO**.
+3. SAML SSO requires a Supabase Pro plan or above and Supabase CLI v1.46.4 or newer. Install the CLI, authenticate, and link the correct project.
+4. Retrieve the Supabase service-provider metadata with `supabase sso info --project-ref YOUR_PROJECT_REF`. Give the organisation administrator the Entity ID / Metadata URL and ACS URL shown by that command so they can configure their IdP.
+5. Once the organisation administrator provides the SAML metadata URL and confirms the email domain, run:
+   ```sh
+   supabase sso add --type saml --project-ref YOUR_PROJECT_REF --metadata-url 'https://idp.company.com/saml/metadata' --domains company.com
+   ```
+   For a metadata XML file, replace `--metadata-url ...` with `--metadata-file ./metadata.xml`.
+6. **Important JT account protection:** Supabase SAML identities are not automatically linked to existing email/password or social identities. The JT bridge deliberately refuses first-time SSO account linking by email alone. A JT administrator must verify the organisation's membership and manually provision the Supabase Auth user UUID to the correct D1 JT user in `jt_auth_identities`. For an existing JT user, use the D1 console only after verifying the user and their Supabase Auth UUID:
+   ```sql
+   INSERT INTO jt_auth_identities (auth_user_id, user_id, email, created_at)
+   SELECT 'SUPABASE_AUTH_USER_UUID', id, email, unixepoch()
+   FROM users
+   WHERE lower(email) = lower('verified-user@company.com');
+   ```
+   Confirm exactly one row was inserted. Never use an email address alone as proof of organisation membership. Do not provision an SSO identity to a different person's JT profile.
+7. Confirm the connection appears in Supabase and test with an organisation-managed account. The user enters their organisation email domain (for example, `company.com`) and chooses **Continue with SSO**.
 
 Do not invent a SAML metadata URL or use an organisation's SSO without its administrator's approval.
 
