@@ -55,7 +55,7 @@ export async function onRequestPost({request,env}) {
       }
       user=await d.prepare("SELECT id,name,email FROM users WHERE id=? LIMIT 1").bind(user.id).first();
     }
-    const token=await createSession(user.id,env);
+    // Once a Supabase identity is linked, disable the old D1 password verifier.\n    // All future password changes and sign-ins are handled by Supabase Auth.\n    await d.prepare("UPDATE users SET password_hash=?,password_salt=? WHERE id=?").bind("SUPABASE_AUTH_ONLY","SUPABASE_AUTH_ONLY",user.id).run();\n    const token=await createSession(user.id,env);
     return reply({user,authProvider:"supabase"},200,{"set-cookie":cookieHeader(token)});
   } catch(error) {
     const requestId=request.headers.get("cf-ray")||(typeof crypto.randomUUID==="function"?crypto.randomUUID():"jt-"+Date.now());
