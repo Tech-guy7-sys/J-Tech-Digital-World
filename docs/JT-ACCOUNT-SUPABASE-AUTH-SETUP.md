@@ -156,7 +156,7 @@ Existing D1 users, profile names, and account preferences are retained. They are
 
 - If an existing user signs in with a provider that returns the same verified email address, JT links that Supabase identity to the existing D1 profile.
 - If an existing user still uses the old JT email/password, the sign-in page first verifies that password against the existing D1 authentication endpoint. It then creates the matching Supabase email identity with that same password. If email confirmation is enabled, the user must confirm the email before the new Supabase session can be linked.
-- The old PBKDF2 password hashes are not copied into Supabase. The migration is an authenticated re-enrolment into Supabase, not a hash-format conversion.
+- The old PBKDF2 password hashes are not copied into Supabase. The migration is an authenticated re-enrolment into Supabase, not a hash-format conversion. After a Supabase identity is linked, JT disables the old D1 password verifier so that future password changes are controlled only by Supabase. Existing users who sign in with a social provider and want an email/password login should use Forgot password to establish a Supabase password.
 - Do not remove the old D1 authentication routes or columns until existing users have had a migration window and the owner has verified account access, recovery, and all JT app dependencies.
 
 ## 13. Verification checklist
