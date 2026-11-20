@@ -17,10 +17,13 @@ test("Supabase config endpoint exposes only the public URL and publishable key",
  assert.doesNotMatch(source,/SERVICE_ROLE|SECRET_KEY/);
 });
 
-test("D1 Supabase identity bridge verifies the access token and confirmed email",async()=>{
+test("D1 Supabase identity bridge verifies access tokens and confirmed email",async()=>{
  const source=await read("functions/api/auth/supabase-session.js");
  for(const term of ["sameOrigin","/auth/v1/user","email_confirmed_at","jt_auth_identities","createSession","cookieHeader"]) assert.ok(source.includes(term),term);
  assert.match(source,/SELECT id,name,email FROM users WHERE email=\?/);
+ assert.match(source,/startsWith\("sso:"\)/);
+ assert.match(source,/administrator provisioning/);
+ assert.match(source,/SUPABASE_AUTH_ONLY/);
 });
 
 test("identity migration adds a mapping table without destructive changes to existing account tables",async()=>{
@@ -30,7 +33,18 @@ test("identity migration adds a mapping table without destructive changes to exi
  assert.doesNotMatch(sql,/DROP TABLE|DELETE FROM users|ALTER TABLE users/i);
 });
 
-test("static build publishes the auth callback and recovery routes",async()=>{\n const build=await read("scripts/build-site.mjs");\n for(const file of ["auth-callback.html","reset-password.html","jt-account-auth.css"]) assert.ok(build.includes(file),file);\n});\n\ntest("setup guide documents all requested provider configuration and legacy-account migration",async()=>{
+test("static build publishes the auth callback and recovery routes",async()=>{
+ const build=await read("scripts/build-site.mjs");
+ for(const file of ["auth-callback.html","reset-password.html","jt-account-auth.css"]) assert.ok(build.includes(file),file);
+});
+
+test("account sign-out clears both Supabase and JT sessions",async()=>{
+ const page=await read("account-settings.html");
+ assert.match(page,/supabase\.auth\.signOut\(\)/);
+ assert.match(page,/api\('\/api\/auth\/signout'/);
+});
+
+test("setup guide documents provider configuration and legacy-account migration",async()=>{
  const guide=await read("docs/JT-ACCOUNT-SUPABASE-AUTH-SETUP.md");
  for(const term of ["Google","Discord","GitHub","Apple","enterprise SSO","SAML 2.0","SUPABASE_URL","SUPABASE_ANON_KEY","JT_AUTH_DB","PBKDF2","existing JT accounts"]) assert.ok(guide.includes(term),term);
 });
