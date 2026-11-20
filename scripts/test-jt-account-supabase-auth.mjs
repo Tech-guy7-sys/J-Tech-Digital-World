@@ -46,5 +46,5 @@ test("account sign-out clears both Supabase and JT sessions",async()=>{
 
 test("setup guide documents provider configuration and legacy-account migration",async()=>{
  const guide=await read("docs/JT-ACCOUNT-SUPABASE-AUTH-SETUP.md");
- for(const term of ["Google","Discord","GitHub","Apple","enterprise SSO","SAML 2.0","SUPABASE_URL","SUPABASE_ANON_KEY","JT_AUTH_DB","PBKDF2","existing JT accounts"]) assert.ok(guide.includes(term),term);
+ for(const term of ["Google","Discord","GitHub","Apple","enterprise SSO","SAML 2.0","SUPABASE_URL","SUPABASE_ANON_KEY","JT_AUTH_DB","PBKDF2","Existing JT accounts"]) assert.ok(guide.includes(term),term);
 });
