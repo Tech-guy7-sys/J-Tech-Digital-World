@@ -49,17 +49,20 @@ test("Gmail and Google Drive have separate least-privilege OAuth grants", async 
   const start = await read("functions/api/connectors/start.js");
   assert.match(start, /"google-drive":\{[^}]*drive\.readonly/s);
   assert.match(start, /gmail:\{[^}]*gmail\.readonly/s);
+  assert.match(start, /"google-calendar":\{[^}]*calendar\.events\.readonly/s);
+  assert.match(callback, /provider==="google-calendar"/);
   assert.match(start, /github:\{[^}]*read:user user:email/s);
   assert.doesNotMatch(start, /https:\/\/www\.googleapis\.com\/auth\/mail\.google\.com/);
 });
 
 test("connector tool API exposes only the three approved read actions", async () => {
   const tools = await read("functions/api/connectors/tools.js");
-  for (const action of ["github.repositories", "drive.search", "gmail.search"]) assert.ok(tools.includes(action));
+  for (const action of ["github.repositories", "drive.search", "gmail.search", "calendar.events"]) assert.ok(tools.includes(action));
   assert.match(tools, /currentUser\(request,env\)/);
   assert.match(tools, /sameOrigin\(request\)/);
   assert.match(tools, /connector_audit_events/);
-  assert.doesNotMatch(tools, /messages\/send|files\.delete|repos\/[^ ]+\/contents/);
+  assert.match(tools, /calendar\/v3\/calendars\/primary\/events/);
+  assert.doesNotMatch(tools, /events\.insert|messages\/send|files\.delete|repos\/[^ ]+\/contents/);
 });
 
 test("Jeff AI Agent has a user-invoked connected-services panel and passes results as one-shot context", async () => {
