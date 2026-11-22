@@ -41,7 +41,7 @@ export async function onRequestGet({env}) {
     oauthSupported: id==="github" || ["google-drive","gmail","google-calendar"].includes(id),
     oauthConfigured: id==="github" ? Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) : ["google-drive","gmail","google-calendar"].includes(id) ? Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) : false,
     setup,
-    available:false
+    available:Boolean((id==="github" || ["google-drive","gmail","google-calendar"].includes(id)) && (id==="github" ? env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET : env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) && env?.JT_AUTH_DB && env?.JT_CONNECTOR_ENCRYPTION_KEY)
   }));
   return new Response(JSON.stringify({
     product:"Jeff AI Connectors Hub",
