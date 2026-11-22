@@ -34,13 +34,13 @@ export async function onRequestGet({request,env}){
    if(!tokenData.access_token)throw new Error("No access token.");
    profile=await fetchJson("https://openidconnect.googleapis.com/v1/userinfo",{headers:{authorization:"Bearer "+tokenData.access_token}});
    if(!profile.sub)throw new Error("Google did not return a stable account identifier.");
-   scopes=tokenData.scope||"";
+   scopes=tokenData.scope||(provider==="gmail"?"gmail.readonly gmail.compose":"drive.readonly");
   }else return go(origin+"/integrations.html?connection=unsupported");
   const encrypted=await encrypt(tokenData.access_token,secret(env,"JT_CONNECTOR_ENCRYPTION_KEY"));
   const encryptedRefresh=tokenData.refresh_token?await encrypt(tokenData.refresh_token,secret(env,"JT_CONNECTOR_ENCRYPTION_KEY")):null;
   const accountId=String(profile.id||profile.sub||"unknown"),display=String(profile.name||profile.login||profile.email||"Connected account").slice(0,160);
   const id=crypto.randomUUID();
-  await d.prepare("INSERT INTO connector_accounts (id,user_id,provider,provider_account_id,display_name,status,granted_scopes,encrypted_access_token,encrypted_refresh_token,token_expires_at,created_at,updated_at) VALUES (?,?,?,?,?,'connected',?,?,?,?,?,?) ON CONFLICT(user_id,provider,provider_account_id) DO UPDATE SET display_name=excluded.display_name,status='connected',granted_scopes=excluded.granted_scopes,encrypted_access_token=excluded.encrypted_access_token,encrypted_refresh_token=excluded.encrypted_refresh_token,token_expires_at=excluded.token_expires_at,updated_at=excluded.updated_at")
+  await d.prepare("INSERT INTO connector_accounts (id,user_id,provider,provider_account_id,display_name,status,granted_scopes,encrypted_access_token,encrypted_refresh_token,token_expires_at,created_at,updated_at) VALUES (?,?,?,?,?,'connected',?,?,?,?,?,?) ON CONFLICT(user_id,provider,provider_account_id) DO UPDATE SET display_name=excluded.display_name,status='connected',granted_scopes=excluded.granted_scopes,encrypted_access_token=excluded.encrypted_access_token,encrypted_refresh_token=COALESCE(excluded.encrypted_refresh_token,connector_accounts.encrypted_refresh_token),token_expires_at=excluded.token_expires_at,updated_at=excluded.updated_at")
    .bind(id,saved.user_id,provider,accountId,display,scopes,encrypted,encryptedRefresh,tokenData.expires_in?now+Number(tokenData.expires_in):null,now,now).run();
   await d.prepare("INSERT INTO connector_audit_events (user_id,action,outcome,details_json,created_at) VALUES (?,?,?,?,?)").bind(saved.user_id,"connector.oauth.connect","success",JSON.stringify({provider,account:display}),now).run();
   return go(origin+"/integrations.html?connection=success&provider="+encodeURIComponent(provider));
