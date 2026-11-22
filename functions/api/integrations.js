@@ -9,6 +9,10 @@ const CONNECTORS = [
   ["google-drive","Google Drive","Google","Search and read files the user authorises","read","Google Cloud OAuth client + consent screen"],
   ["gmail","Gmail","Google","Search messages and prepare drafts; sending requires separate approval","read","Google Cloud OAuth client + Gmail scopes"],
   ["google-calendar","Google Calendar","Google","Search upcoming events on calendars the user authorises","read","Google Cloud OAuth client + Calendar API + calendar.events.readonly scope"],
+  ["notion","Notion","Knowledge","Search pages and databases shared with the JT integration","read","Notion public OAuth integration"],
+  ["slack","Slack","Messaging","Search messages in workspaces you authorise","read","Slack app with user-scope search:read and users:read"],
+  ["dropbox","Dropbox","Cloud storage","Search files in your authorised Dropbox account","read","Dropbox OAuth app with files.metadata.read"],
+  ["onedrive","OneDrive","Microsoft","Search files in your authorised OneDrive account","read","Microsoft Entra app with delegated User.Read and Files.Read permissions"],
   ["discord","Discord","Messaging","Read approved server/channel context and send approved messages","read-write","Discord OAuth application + bot permissions"],
   ["slack","Slack","Messaging","Search workspace content and send approved messages","read-write","Slack app + OAuth scopes"],
   ["notion","Notion","Knowledge","Search and update pages explicitly shared with the integration","read-write","Notion public integration"],
@@ -38,8 +42,8 @@ export async function onRequestGet({env}) {
   const connectors = CONNECTORS.map(([id,name,category,description,access,setup]) => ({
     id,name,category,description,access,
     status: id==="github" && Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) ? "oauth_configured" : ["google-drive","gmail","google-calendar"].includes(id) && Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) ? "oauth_configured" : id==="cloudflare" && Boolean(env?.CLOUDFLARE_API_TOKEN && env?.CLOUDFLARE_ACCOUNT_ID) ? "credentials_configured" : "setup_required",
-    oauthSupported: id==="github" || ["google-drive","gmail","google-calendar"].includes(id),
-    oauthConfigured: id==="github" ? Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) : ["google-drive","gmail","google-calendar"].includes(id) ? Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) : false,
+    oauthSupported: id==="github" || ["google-drive","gmail","google-calendar","notion","slack","dropbox","onedrive"].includes(id),
+    oauthConfigured: id==="github" ? Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) : ["google-drive","gmail","google-calendar"].includes(id) ? Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) : id==="notion" ? Boolean(env?.NOTION_CLIENT_ID && env?.NOTION_CLIENT_SECRET) : id==="slack" ? Boolean(env?.SLACK_CLIENT_ID && env?.SLACK_CLIENT_SECRET) : id==="dropbox" ? Boolean(env?.DROPBOX_CLIENT_ID && env?.DROPBOX_CLIENT_SECRET) : id==="onedrive" ? Boolean(env?.MICROSOFT_CLIENT_ID && env?.MICROSOFT_CLIENT_SECRET) : false,
     setup,
     available:false
   }));
@@ -59,6 +63,10 @@ export async function onRequestGet({env}) {
       githubClientId:Boolean(typeof env?.GITHUB_CLIENT_ID==="string"&&env.GITHUB_CLIENT_ID.trim()),
       githubClientSecret:Boolean(typeof env?.GITHUB_CLIENT_SECRET==="string"&&env.GITHUB_CLIENT_SECRET.trim()),
       connectorEncryptionKey:Boolean(typeof env?.JT_CONNECTOR_ENCRYPTION_KEY==="string"&&env.JT_CONNECTOR_ENCRYPTION_KEY.trim()),
+    notionClientId:Boolean(typeof env?.NOTION_CLIENT_ID==="string"&&env.NOTION_CLIENT_ID.trim()),notionClientSecret:Boolean(typeof env?.NOTION_CLIENT_SECRET==="string"&&env.NOTION_CLIENT_SECRET.trim()),
+    slackClientId:Boolean(typeof env?.SLACK_CLIENT_ID==="string"&&env.SLACK_CLIENT_ID.trim()),slackClientSecret:Boolean(typeof env?.SLACK_CLIENT_SECRET==="string"&&env.SLACK_CLIENT_SECRET.trim()),
+    dropboxClientId:Boolean(typeof env?.DROPBOX_CLIENT_ID==="string"&&env.DROPBOX_CLIENT_ID.trim()),dropboxClientSecret:Boolean(typeof env?.DROPBOX_CLIENT_SECRET==="string"&&env.DROPBOX_CLIENT_SECRET.trim()),
+    microsoftClientId:Boolean(typeof env?.MICROSOFT_CLIENT_ID==="string"&&env.MICROSOFT_CLIENT_ID.trim()),microsoftClientSecret:Boolean(typeof env?.MICROSOFT_CLIENT_SECRET==="string"&&env.MICROSOFT_CLIENT_SECRET.trim()),
       connectorDatabaseBinding:Boolean(Boolean(env?.JT_AUTH_DB))
     }
   }), {headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff"}});
