@@ -42,7 +42,7 @@ export async function onRequestGet({request,env}){
   }else if(provider==="slack"){
    tokenData=await fetchJson("https://slack.com/api/oauth.v2.access",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"SLACK_CLIENT_ID"),client_secret:secret(env,"SLACK_CLIENT_SECRET"),code,redirect_uri:callback})});
    const userToken=tokenData.authed_user?.access_token;if(!tokenData.ok||!userToken)throw new Error("Slack did not return a user token. Check user-scope configuration.");
-   tokenData.access_token=userToken;profile={id:tokenData.authed_user.id||tokenData.team?.id,name:tokenData.team?.name||"Slack workspace"};scopes=tokenData.authed_user?.scope||"search:read,users:read";
+   tokenData.access_token=userToken;tokenData.refresh_token=tokenData.authed_user.refresh_token||null;tokenData.expires_in=tokenData.authed_user.expires_in||null;profile={id:tokenData.authed_user.id||tokenData.team?.id,name:tokenData.team?.name||"Slack workspace"};scopes=tokenData.authed_user?.scope||"search:read,users:read";
   }else if(provider==="dropbox"){
    tokenData=await fetchJson("https://api.dropboxapi.com/oauth2/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"DROPBOX_CLIENT_ID"),client_secret:secret(env,"DROPBOX_CLIENT_SECRET"),code,grant_type:"authorization_code",redirect_uri:callback})});
    if(!tokenData.access_token)throw new Error("No Dropbox access token.");
