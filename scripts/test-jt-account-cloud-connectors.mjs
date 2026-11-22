@@ -50,6 +50,10 @@ test("Gmail, Google Drive and Google Calendar have separate least-privilege OAut
   assert.match(start, /"google-drive":\{[^}]*drive\.readonly/s);
   assert.match(start, /gmail:\{[^}]*gmail\.readonly/s);
   assert.match(start, /"google-calendar":\{[^}]*calendar\.events\.readonly/s);
+  assert.match(start, /notion:\{[^}]*api.notion.com\/v1\/oauth\/authorize/s);
+  assert.match(start, /slack:\{[^}]*slack.com\/oauth\/v2\/authorize/s);
+  assert.match(start, /dropbox:\{[^}]*dropbox.com\/oauth2\/authorize/s);
+  assert.match(start, /onedrive:\{[^}]*microsoftonline.com\/common\/oauth2\/v2.0\/authorize/s);
   assert.match(callback, /provider==="google-calendar"/);
   assert.match(start, /github:\{[^}]*read:user user:email/s);
   assert.doesNotMatch(start, /https:\/\/www\.googleapis\.com\/auth\/mail\.google\.com/);
@@ -57,11 +61,15 @@ test("Gmail, Google Drive and Google Calendar have separate least-privilege OAut
 
 test("connector tool API exposes only the approved read-only actions", async () => {
   const tools = await read("functions/api/connectors/tools.js");
-  for (const action of ["github.repositories", "drive.search", "gmail.search", "calendar.events"]) assert.ok(tools.includes(action));
+  for (const action of ["github.repositories", "drive.search", "gmail.search", "calendar.events", "notion.search", "slack.search", "dropbox.search", "onedrive.search"]) assert.ok(tools.includes(action));
   assert.match(tools, /currentUser\(request,env\)/);
   assert.match(tools, /sameOrigin\(request\)/);
   assert.match(tools, /connector_audit_events/);
   assert.match(tools, /calendar\/v3\/calendars\/primary\/events/);
+  assert.match(tools, /api.notion.com\/v1\/search/);
+  assert.match(tools, /api.slack.com\/api\/search.messages/);
+  assert.match(tools, /api.dropboxapi.com\/2\/files\/search_v2/);
+  assert.match(tools, /graph.microsoft.com\/v1.0\/me\/drive\/root\/search/);
   assert.doesNotMatch(tools, /events\.insert|messages\/send|files\.delete|repos\/[^ ]+\/contents/);
 });
 
