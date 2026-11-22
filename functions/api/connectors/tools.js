@@ -13,7 +13,13 @@ async function accessToken(row,env,d){
  if(!row.token_expires_at||row.token_expires_at>Date.now()/1000+60)return decrypt(row.encrypted_access_token,key);
  if(!row.encrypted_refresh_token)throw new Error("The access token expired. Disconnect and reconnect this account.");
  const refresh=await decrypt(row.encrypted_refresh_token,key);
- const data=await providerJson("https://oauth2.googleapis.com/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"GOOGLE_CLIENT_ID"),client_secret:secret(env,"GOOGLE_CLIENT_SECRET"),refresh_token:refresh,grant_type:"refresh_token"})});
+ let endpoint="https://oauth2.googleapis.com/token",form={client_id:secret(env,"GOOGLE_CLIENT_ID"),client_secret:secret(env,"GOOGLE_CLIENT_SECRET"),refresh_token:refresh,grant_type:"refresh_token"};
+ if(row.provider==="dropbox"){endpoint="https://api.dropbox.com/oauth2/token";form={client_id:secret(env,"DROPBOX_CLIENT_ID"),client_secret:secret(env,"DROPBOX_CLIENT_SECRET"),refresh_token:refresh,grant_type:"refresh_token"}}
+ else if(row.provider==="onedrive"){endpoint="https://login.microsoftonline.com/common/oauth2/v2.0/token";form={client_id:secret(env,"MICROSOFT_CLIENT_ID"),client_secret:secret(env,"MICROSOFT_CLIENT_SECRET"),refresh_token:refresh,grant_type:"refresh_token",scope:"User.Read Files.Read offline_access"}}
+ else if(row.provider==="slack"){endpoint="https://slack.com/api/oauth.v2.access";form={client_id:secret(env,"SLACK_CLIENT_ID"),client_secret:secret(env,"SLACK_CLIENT_SECRET"),refresh_token:refresh,grant_type:"refresh_token"}}
+ else if(row.provider!=="google-drive"&&row.provider!=="gmail"&&row.provider!=="google-calendar")throw new Error("Reconnect this connector to continue.");
+ const data=await providerJson(endpoint,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams(form)});
+ if(data.ok===false||!data.access_token)throw new Error("Reconnect this connector to continue.");
  const encrypted=await encrypt(data.access_token,key),expires=Math.floor(Date.now()/1000)+Number(data.expires_in||3600);
  await d.prepare("UPDATE connector_accounts SET encrypted_access_token=?,token_expires_at=?,updated_at=? WHERE id=?").bind(encrypted,expires,Math.floor(Date.now()/1000),row.id).run();
  return data.access_token;
