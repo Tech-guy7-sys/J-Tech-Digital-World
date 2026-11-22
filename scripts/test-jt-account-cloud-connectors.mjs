@@ -71,7 +71,7 @@ test("connector tool API exposes only the approved read-only actions", async () 
   assert.match(tools, /connector_audit_events/);
   assert.match(tools, /calendar\/v3\/calendars\/primary\/events/);
   assert.match(tools, /api.notion.com\/v1\/search/);
-  assert.match(tools, /api.slack.com\/api\/search.messages/);
+  assert.match(tools, /slack.com\/api\/search.messages/);
   assert.match(tools, /api.dropboxapi.com\/2\/files\/search_v2/);
   assert.match(tools, /graph.microsoft.com\/v1.0\/me\/drive\/root\/search/);
   assert.doesNotMatch(tools, /events\.insert|messages\/send|files\.delete|repos\/[^ ]+\/contents/);
