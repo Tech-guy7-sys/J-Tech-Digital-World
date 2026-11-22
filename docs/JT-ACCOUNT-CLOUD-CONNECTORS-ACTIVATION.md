@@ -23,7 +23,7 @@ Apply `db/cloud-schema.sql` to the same D1 database bound as `JT_AUTH_DB`. The c
 
 Apply `db/connectors-schema.sql` to the same D1 database. Configure `JT_CONNECTOR_ENCRYPTION_KEY` as a server-side secret using the deployment guide's supported format. Never put the key in website JavaScript, Git, issue comments, or chat.
 
-The current connector implementation supports the providers and scopes actually listed in the app's connector UI and OAuth routes. It does not yet include provider token refresh. Do not describe a connector as fully maintained if its provider token can expire without a refresh flow.
+The current connector implementation supports GitHub public-repository listing, Google Drive search, and Gmail message search through the Jeff AI Agent's Connected services panel. Google access tokens are refreshed server-side when a refresh token is available. The system does not yet include provider token refresh for GitHub; reconnect if a GitHub token is revoked. Private GitHub repository access requires a separately configured GitHub App with read-only repository permissions. Gmail uses the Gmail API read-only and compose scopes; Google may require OAuth consent-screen test-user setup or app verification before general use. Draft creation and sending are not exposed by the current tool endpoint.
 
 ## 4. Account security and launch limitations
 
@@ -46,3 +46,37 @@ The current connector implementation supports the providers and scopes actually 
 - [ ] Review Cloudflare logs for server-side failures using request references; redact email addresses and all secrets from shared screenshots.
 
 A successful website deployment does not prove that D1, R2, OAuth providers, or account workflows are correctly configured.
+
+## 6. Gmail, Google Drive and GitHub connector setup
+
+The OAuth callback for the JT website connectors is:
+
+`https://jt-digital-world-new.pages.dev/api/connectors/callback`
+
+This is separate from the Supabase Auth callback. Do not reuse the Supabase callback URL for these connector OAuth applications.
+
+### Google Cloud OAuth client
+
+1. In Google Cloud Console, select the project that will own the Gmail and Drive OAuth app.
+2. Configure the OAuth consent screen. While the app is in Testing, add the Google account used for testing as a test user.
+3. Create an OAuth client ID of type **Web application**.
+4. Add the callback above under **Authorized redirect URIs**.
+5. Add the client ID and client secret to Cloudflare Pages **Production** secrets named `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
+6. Enable the Google Drive API and Gmail API in that Google Cloud project.
+
+Google Drive asks for `drive.readonly`. Gmail asks for `gmail.readonly` and `gmail.compose`; Gmail scopes can trigger additional Google verification requirements. The current Gmail tool only searches and reads message metadata/snippets. It does not send messages or create drafts.
+
+### GitHub connector OAuth app
+
+1. Create a separate GitHub OAuth App for JT Connectors. Do not reuse the OAuth App whose callback is configured for Supabase sign-in, because a GitHub OAuth App has one callback URL.
+2. Set the authorization callback URL to the callback above.
+3. Add the app's client ID and client secret to Cloudflare Pages **Production** secrets named `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`.
+4. The connector requests `read:user`, `user:email`, and `public_repo`. It can list public repositories. It does not grant private repository access or write access.
+
+### Encryption key
+
+Keep the existing `JT_CONNECTOR_ENCRYPTION_KEY` as a Cloudflare Pages secret. It must be a base64-encoded 32-byte key. Never paste it into chat, source code, or browser JavaScript.
+
+### Jeff AI usage
+
+Sign in to JT Account, open the Connectors Hub, and connect each provider. In JT AI Agent, use **Connected services** to run a read-only search or list operation. The returned data is attached only to the next Jeff AI message as untrusted reference context. Review the results before asking Jeff AI to analyse them.
