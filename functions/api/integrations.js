@@ -9,7 +9,6 @@ const CONNECTORS = [
   ["google-drive","Google Drive","Google","Search and read files the user authorises","read","Google Cloud OAuth client + consent screen"],
   ["gmail","Gmail","Google","Search messages and prepare drafts; sending requires separate approval","read","Google Cloud OAuth client + Gmail scopes"],
   ["google-calendar","Google Calendar","Google","Search upcoming events on calendars the user authorises","read","Google Cloud OAuth client + Calendar API + calendar.events.readonly scope"],
-  ["google-calendar","Google Calendar","Google","Read calendars and create approved events","read-write","Google Cloud OAuth client + Calendar scopes"],
   ["discord","Discord","Messaging","Read approved server/channel context and send approved messages","read-write","Discord OAuth application + bot permissions"],
   ["slack","Slack","Messaging","Search workspace content and send approved messages","read-write","Slack app + OAuth scopes"],
   ["notion","Notion","Knowledge","Search and update pages explicitly shared with the integration","read-write","Notion public integration"],
@@ -53,6 +52,14 @@ export async function onRequestGet({env}) {
     providers,
     connectors,
     accountStorageConfigured:Boolean(env?.JT_AUTH_DB),
-    connectorStorageConfigured:Boolean(env?.JT_AUTH_DB)
+    connectorStorageConfigured:Boolean(env?.JT_AUTH_DB),
+    credentialPresence:{
+      googleClientId:Boolean(typeof env?.GOOGLE_CLIENT_ID==="string"&&env.GOOGLE_CLIENT_ID.trim()),
+      googleClientSecret:Boolean(typeof env?.GOOGLE_CLIENT_SECRET==="string"&&env.GOOGLE_CLIENT_SECRET.trim()),
+      githubClientId:Boolean(typeof env?.GITHUB_CLIENT_ID==="string"&&env.GITHUB_CLIENT_ID.trim()),
+      githubClientSecret:Boolean(typeof env?.GITHUB_CLIENT_SECRET==="string"&&env.GITHUB_CLIENT_SECRET.trim()),
+      connectorEncryptionKey:Boolean(typeof env?.JT_CONNECTOR_ENCRYPTION_KEY==="string"&&env.JT_CONNECTOR_ENCRYPTION_KEY.trim()),
+      connectorDatabaseBinding:Boolean(Boolean(env?.JT_AUTH_DB))
+    }
   }), {headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff"}});
 }
