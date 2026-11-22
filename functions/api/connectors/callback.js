@@ -29,12 +29,12 @@ export async function onRequestGet({request,env}){
    if(!tokenData.access_token)throw new Error("No access token.");
    profile=await fetchJson("https://api.github.com/user",{headers:{authorization:"Bearer "+tokenData.access_token,accept:"application/vnd.github+json","user-agent":"Jeff-AI-JT-Connectors"}});
    scopes=tokenData.scope||"read:user user:email";
-  }else if(provider==="google-drive"||provider==="gmail"){
+  }else if(provider==="google-drive"||provider==="gmail"||provider==="google-calendar"){
    tokenData=await fetchJson("https://oauth2.googleapis.com/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"GOOGLE_CLIENT_ID"),client_secret:secret(env,"GOOGLE_CLIENT_SECRET"),code,grant_type:"authorization_code",redirect_uri:callback})});
    if(!tokenData.access_token)throw new Error("No access token.");
    profile=await fetchJson("https://openidconnect.googleapis.com/v1/userinfo",{headers:{authorization:"Bearer "+tokenData.access_token}});
    if(!profile.sub)throw new Error("Google did not return a stable account identifier.");
-   scopes=tokenData.scope||(provider==="gmail"?"gmail.readonly":"drive.readonly");
+   scopes=tokenData.scope||(provider==="gmail"?"gmail.readonly":provider==="google-calendar"?"calendar.events.readonly":"drive.readonly");
   }else return go(origin+"/integrations.html?connection=unsupported");
   const encrypted=await encrypt(tokenData.access_token,secret(env,"JT_CONNECTOR_ENCRYPTION_KEY"));
   const encryptedRefresh=tokenData.refresh_token?await encrypt(tokenData.refresh_token,secret(env,"JT_CONNECTOR_ENCRYPTION_KEY")):null;

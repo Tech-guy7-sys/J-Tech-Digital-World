@@ -23,7 +23,7 @@ Apply `db/cloud-schema.sql` to the same D1 database bound as `JT_AUTH_DB`. The c
 
 Apply `db/connectors-schema.sql` to the same D1 database. Configure `JT_CONNECTOR_ENCRYPTION_KEY` as a server-side secret using the deployment guide's supported format. Never put the key in website JavaScript, Git, issue comments, or chat.
 
-The current connector implementation supports GitHub public-repository listing, Google Drive search, and Gmail message search through the Jeff AI Agent's Connected services panel. Google access tokens are refreshed server-side when a refresh token is available. The system does not yet include provider token refresh for GitHub; reconnect if a GitHub token is revoked. Private GitHub repository access requires a separately configured GitHub App with read-only repository permissions. Gmail uses the Gmail API read-only scope; Google may require OAuth consent-screen test-user setup or app verification before general use. Draft creation and sending are not exposed by the current tool endpoint.
+The current connector implementation supports GitHub public-repository listing, Google Drive search, Gmail message search, and read-only upcoming Google Calendar event lookup through the Jeff AI Agent's Connected services panel. Google access tokens are refreshed server-side when a refresh token is available. The system does not yet include provider token refresh for GitHub; reconnect if a GitHub token is revoked. Private GitHub repository access requires a separately configured GitHub App with read-only repository permissions. Gmail uses the Gmail API read-only scope; Google may require OAuth consent-screen test-user setup or app verification before general use. Draft creation and sending are not exposed by the current tool endpoint.
 
 ## 4. Account security and launch limitations
 
@@ -62,9 +62,9 @@ This is separate from the Supabase Auth callback. Do not reuse the Supabase call
 3. Create an OAuth client ID of type **Web application**.
 4. Add the callback above under **Authorized redirect URIs**.
 5. Add the client ID and client secret to Cloudflare Pages **Production** secrets named `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
-6. Enable the Google Drive API and Gmail API in that Google Cloud project.
+6. Enable the Google Drive API, Gmail API, and Google Calendar API in that Google Cloud project.
 
-Google Drive asks for `drive.readonly`. Gmail asks only for `gmail.readonly`; Gmail scopes can trigger additional Google verification requirements. The current Gmail tool only searches and reads message metadata/snippets. It does not send messages or create drafts.
+Google Drive asks for `drive.readonly`. Gmail asks only for `gmail.readonly`; Calendar asks for `calendar.events.readonly` and only lists upcoming events. Gmail and Calendar scopes can trigger additional Google verification requirements. The current Gmail tool only searches and reads message metadata/snippets. It does not send messages or create drafts.
 
 ### GitHub connector OAuth app
 

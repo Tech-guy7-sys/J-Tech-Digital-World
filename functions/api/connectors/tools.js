@@ -24,9 +24,9 @@ export async function onRequestPost({request,env}){
  const user=await currentUser(request,env);if(!user)return json({error:"Sign in to JT Account first."},401);
  let body;try{body=await request.json()}catch{return json({error:"Invalid JSON."},400)}
  const action=typeof body?.action==="string"?body.action:"",query=typeof body?.query==="string"?body.query.trim().slice(0,300):"";
- const spec={"github.repositories":{provider:"github"},"drive.search":{provider:"google-drive"},"gmail.search":{provider:"gmail"}}[action];
+ const spec={"github.repositories":{provider:"github"},"drive.search":{provider:"google-drive"},"gmail.search":{provider:"gmail"},"calendar.events":{provider:"google-calendar"}}[action];
  if(!spec)return json({error:"Unsupported connector action."},400);
- if(action!=="github.repositories"&&!query)return json({error:"A search query is required."},400);
+ if(!["github.repositories","calendar.events"].includes(action)&&!query)return json({error:"A search query is required."},400);
  const row=await d.prepare("SELECT * FROM connector_accounts WHERE user_id=? AND provider=? AND status='connected' ORDER BY updated_at DESC LIMIT 1").bind(user.id,spec.provider).first();
  if(!row)return json({error:"Connect "+spec.provider+" in the Connectors Hub first."},409);
  try{
@@ -39,6 +39,11 @@ export async function onRequestPost({request,env}){
    const params=new URLSearchParams({q, pageSize:"20",orderBy:"modifiedTime desc",fields:"files(id,name,mimeType,modifiedTime,webViewLink,size)"});
    const data=await providerJson("https://www.googleapis.com/drive/v3/files?"+params,{headers:{authorization:"Bearer "+token}});
    result=(data.files||[]).map(x=>({id:x.id,name:x.name,mimeType:x.mimeType,modifiedTime:x.modifiedTime,url:x.webViewLink,size:x.size}));
+  }else if(action==="calendar.events"){
+   const params=new URLSearchParams({timeMin:new Date().toISOString(),maxResults:"25",singleEvents:"true",orderBy:"startTime"});
+   if(query)params.set("q",query);
+   const data=await providerJson("https://www.googleapis.com/calendar/v3/calendars/primary/events?"+params,{headers:{authorization:"Bearer "+token}});
+   result=(data.items||[]).map(x=>({id:x.id,summary:x.summary||"(Untitled event)",description:x.description||"",start:x.start?.dateTime||x.start?.date||"",end:x.end?.dateTime||x.end?.date||"",location:x.location||"",htmlLink:x.htmlLink||""}));
   }else{
    const params=new URLSearchParams({q:query,maxResults:"20"});
    const data=await providerJson("https://gmail.googleapis.com/gmail/v1/users/me/messages?"+params,{headers:{authorization:"Bearer "+token}});
