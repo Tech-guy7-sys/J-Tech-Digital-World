@@ -37,9 +37,9 @@ export async function onRequestGet({env}) {
   }));
   const connectors = CONNECTORS.map(([id,name,category,description,access,setup]) => ({
     id,name,category,description,access,
-    status: id==="github" && Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) ? "oauth_configured" : id==="google-drive" && Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) ? "oauth_configured" : id==="cloudflare" && Boolean(env?.CLOUDFLARE_API_TOKEN && env?.CLOUDFLARE_ACCOUNT_ID) ? "credentials_configured" : "setup_required",
-    oauthSupported: id==="github" || id==="google-drive",
-    oauthConfigured: id==="github" ? Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) : id==="google-drive" ? Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) : false,
+    status: id==="github" && Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) ? "oauth_configured" : ["google-drive","gmail"].includes(id) && Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) ? "oauth_configured" : id==="cloudflare" && Boolean(env?.CLOUDFLARE_API_TOKEN && env?.CLOUDFLARE_ACCOUNT_ID) ? "credentials_configured" : "setup_required",
+    oauthSupported: id==="github" || id==="google-drive" || id==="gmail",
+    oauthConfigured: id==="github" ? Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) : ["google-drive","gmail"].includes(id) ? Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) : false,
     setup,
     available:false
   }));
