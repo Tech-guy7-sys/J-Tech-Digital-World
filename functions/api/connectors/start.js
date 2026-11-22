@@ -3,7 +3,8 @@ const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:
 const providers={
  github:{client:"GITHUB_CLIENT_ID",authorize:"https://github.com/login/oauth/authorize",scope:"read:user user:email"},
  "google-drive":{client:"GOOGLE_CLIENT_ID",authorize:"https://accounts.google.com/o/oauth2/v2/auth",scope:"openid email profile https://www.googleapis.com/auth/drive.readonly",extra:{access_type:"offline",prompt:"consent"}},
- gmail:{client:"GOOGLE_CLIENT_ID",authorize:"https://accounts.google.com/o/oauth2/v2/auth",scope:"openid email profile https://www.googleapis.com/auth/gmail.readonly",extra:{access_type:"offline",prompt:"consent"}}
+ gmail:{client:"GOOGLE_CLIENT_ID",authorize:"https://accounts.google.com/o/oauth2/v2/auth",scope:"openid email profile https://www.googleapis.com/auth/gmail.readonly",extra:{access_type:"offline",prompt:"consent"}},
+ "google-calendar":{client:"GOOGLE_CLIENT_ID",authorize:"https://accounts.google.com/o/oauth2/v2/auth",scope:"openid email profile https://www.googleapis.com/auth/calendar.events.readonly",extra:{access_type:"offline",prompt:"consent"}}
 };
 export async function onRequestGet({request,env}){
  const d=db(env);if(!d)return json({error:"JT_AUTH_DB is not configured."},503);
