@@ -55,6 +55,13 @@ test("Gmail, Google Drive and Google Calendar have separate least-privilege OAut
   assert.doesNotMatch(start, /https:\/\/www\.googleapis\.com\/auth\/mail\.google\.com/);
 });
 
+test("connector availability reflects configured OAuth and encrypted storage prerequisites", async () => {
+  const integrations = await read("functions/api/integrations.js");
+  assert.match(integrations, /available:Boolean\(\(id==="github" \|\| \["google-drive","gmail","google-calendar"\]\.includes\(id\)\)/);
+  assert.match(integrations, /env\?\.JT_AUTH_DB && env\?\.JT_CONNECTOR_ENCRYPTION_KEY/);
+  assert.doesNotMatch(integrations, /available:false/);
+});
+
 test("connector tool API exposes only the approved read-only actions", async () => {
   const tools = await read("functions/api/connectors/tools.js");
   for (const action of ["github.repositories", "drive.search", "gmail.search", "calendar.events"]) assert.ok(tools.includes(action));
