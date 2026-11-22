@@ -34,7 +34,23 @@ export async function onRequestGet({request,env}){
    if(!tokenData.access_token)throw new Error("No access token.");
    profile=await fetchJson("https://openidconnect.googleapis.com/v1/userinfo",{headers:{authorization:"Bearer "+tokenData.access_token}});
    if(!profile.sub)throw new Error("Google did not return a stable account identifier.");
-   scopes=tokenData.scope||(provider==="gmail"?"gmail.readonly":provider==="google-calendar"?"calendar.events.readonly":"drive.readonly");
+   scopes=tokenData.scope||(provider==="gmail"?"gmail.readonly":provider==="google-calendar"?"calendar.events.readonly":provider==="notion"?"workspace search":provider==="slack"?"search:read,users:read":provider==="dropbox"?"files.metadata.read":provider==="onedrive"?"User.Read Files.Read offline_access":"drive.readonly");
+  }else if(provider==="notion"){
+   tokenData=await fetchJson("https://api.notion.com/v1/oauth/token",{method:"POST",headers:{"authorization":"Basic "+btoa(secret(env,"NOTION_CLIENT_ID")+":"+secret(env,"NOTION_CLIENT_SECRET")),"content-type":"application/json"},body:JSON.stringify({grant_type:"authorization_code",code,redirect_uri:callback})});
+   if(!tokenData.access_token)throw new Error("No Notion access token.");
+   profile={id:tokenData.workspace_id||tokenData.owner?.user?.id||"notion-workspace",name:tokenData.workspace_name||tokenData.owner?.user?.name||"Notion workspace"};scopes="workspace search";
+  }else if(provider==="slack"){
+   tokenData=await fetchJson("https://slack.com/api/oauth.v2.access",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"SLACK_CLIENT_ID"),client_secret:secret(env,"SLACK_CLIENT_SECRET"),code,redirect_uri:callback})});
+   const userToken=tokenData.authed_user?.access_token;if(!tokenData.ok||!userToken)throw new Error("Slack did not return a user token. Check user-scope configuration.");
+   tokenData.access_token=userToken;profile={id:tokenData.authed_user.id||tokenData.team?.id,name:tokenData.team?.name||"Slack workspace"};scopes=tokenData.authed_user?.scope||"search:read,users:read";
+  }else if(provider==="dropbox"){
+   tokenData=await fetchJson("https://api.dropboxapi.com/oauth2/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"DROPBOX_CLIENT_ID"),client_secret:secret(env,"DROPBOX_CLIENT_SECRET"),code,grant_type:"authorization_code",redirect_uri:callback})});
+   if(!tokenData.access_token)throw new Error("No Dropbox access token.");
+   profile=await fetchJson("https://api.dropboxapi.com/2/users/get_current_account",{method:"POST",headers:{authorization:"Bearer "+tokenData.access_token}});scopes="files.metadata.read";
+  }else if(provider==="onedrive"){
+   tokenData=await fetchJson("https://login.microsoftonline.com/common/oauth2/v2.0/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"MICROSOFT_CLIENT_ID"),client_secret:secret(env,"MICROSOFT_CLIENT_SECRET"),code,grant_type:"authorization_code",redirect_uri:callback,scope:"User.Read Files.Read offline_access"})});
+   if(!tokenData.access_token)throw new Error("No Microsoft access token.");
+   profile=await fetchJson("https://graph.microsoft.com/v1.0/me?$select=id,displayName,userPrincipalName",{headers:{authorization:"Bearer "+tokenData.access_token}});scopes=tokenData.scope||"User.Read Files.Read offline_access";
   }else return go(origin+"/integrations.html?connection=unsupported");
   const encrypted=await encrypt(tokenData.access_token,secret(env,"JT_CONNECTOR_ENCRYPTION_KEY"));
   const encryptedRefresh=tokenData.refresh_token?await encrypt(tokenData.refresh_token,secret(env,"JT_CONNECTOR_ENCRYPTION_KEY")):null;
