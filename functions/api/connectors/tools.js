@@ -24,7 +24,7 @@ export async function onRequestPost({request,env}){
  const user=await currentUser(request,env);if(!user)return json({error:"Sign in to JT Account first."},401);
  let body;try{body=await request.json()}catch{return json({error:"Invalid JSON."},400)}
  const action=typeof body?.action==="string"?body.action:"",query=typeof body?.query==="string"?body.query.trim().slice(0,300):"";
- const spec={"github.repositories":{provider:"github"},"drive.search":{provider:"google-drive"},"gmail.search":{provider:"gmail"},"calendar.events":{provider:"google-calendar"}}[action];
+ const spec={"github.repositories":{provider:"github"},"drive.search":{provider:"google-drive"},"gmail.search":{provider:"gmail"},"calendar.events":{provider:"google-calendar"},"notion.search":{provider:"notion"},"slack.search":{provider:"slack"},"dropbox.search":{provider:"dropbox"},"onedrive.search":{provider:"onedrive"}}[action];
  if(!spec)return json({error:"Unsupported connector action."},400);
  if(!["github.repositories","calendar.events"].includes(action)&&!query)return json({error:"A search query is required."},400);
  const row=await d.prepare("SELECT * FROM connector_accounts WHERE user_id=? AND provider=? AND status='connected' ORDER BY updated_at DESC LIMIT 1").bind(user.id,spec.provider).first();
@@ -44,6 +44,20 @@ export async function onRequestPost({request,env}){
    if(query)params.set("q",query);
    const data=await providerJson("https://www.googleapis.com/calendar/v3/calendars/primary/events?"+params,{headers:{authorization:"Bearer "+token}});
    result=(data.items||[]).map(x=>({id:x.id,summary:x.summary||"(Untitled event)",description:x.description||"",start:x.start?.dateTime||x.start?.date||"",end:x.end?.dateTime||x.end?.date||"",location:x.location||"",htmlLink:x.htmlLink||""}));
+  }else if(action==="notion.search"){
+   const data=await providerJson("https://api.notion.com/v1/search",{method:"POST",headers:{authorization:"Bearer "+token,"content-type":"application/json","Notion-Version":"2022-06-28"},body:JSON.stringify({query,page_size:20,sort:{direction:"descending",timestamp:"last_edited_time"}})});
+   result=(data.results||[]).map(x=>({id:x.id,type:x.object,url:x.url,last_edited_time:x.last_edited_time,title:(x.title||x.properties?.title?.title||x.properties?.Name?.title||[]).map(t=>t.plain_text).join("")}));
+  }else if(action==="slack.search"){
+   const params=new URLSearchParams({query,count:"20",sort:"timestamp",sort_dir:"desc"});
+   const data=await providerJson("https://slack.com/api/search.messages?"+params,{headers:{authorization:"Bearer "+token}});if(!data.ok)throw new Error("Slack search failed. Check granted scopes.");
+   result=(data.messages?.matches||[]).map(x=>({text:x.text,permalink:x.permalink,ts:x.ts,user:x.user_name,channel:x.channel?.name}));
+  }else if(action==="dropbox.search"){
+   const data=await providerJson("https://api.dropboxapi.com/2/files/search_v2",{method:"POST",headers:{authorization:"Bearer "+token,"content-type":"application/json"},body:JSON.stringify({query,options:{max_results:20}})});
+   result=(data.matches||[]).map(x=>({id:x.metadata?.metadata?.id,name:x.metadata?.metadata?.name,path:x.metadata?.metadata?.path_display,modified:x.metadata?.metadata?.server_modified}));
+  }else if(action==="onedrive.search"){
+   const escaped=query.replace(/'/g,"''");const url="https://graph.microsoft.com/v1.0/me/drive/root/search(q="+encodeURIComponent("'"+escaped+"'")+")?$select=id,name,webUrl,lastModifiedDateTime,size,file,folder&$top=20";
+   const data=await providerJson(url,{headers:{authorization:"Bearer "+token}});
+   result=(data.value||[]).map(x=>({id:x.id,name:x.name,url:x.webUrl,modified:x.lastModifiedDateTime,size:x.size,type:x.folder?"folder":x.file?.mimeType||"file"}));
   }else{
    const params=new URLSearchParams({q:query,maxResults:"20"});
    const data=await providerJson("https://gmail.googleapis.com/gmail/v1/users/me/messages?"+params,{headers:{authorization:"Bearer "+token}});
