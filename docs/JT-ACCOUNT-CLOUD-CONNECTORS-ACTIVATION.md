@@ -71,7 +71,7 @@ Google Drive asks for `drive.readonly`. Gmail asks for `gmail.readonly` and `gma
 1. Create a separate GitHub OAuth App for JT Connectors. Do not reuse the OAuth App whose callback is configured for Supabase sign-in, because a GitHub OAuth App has one callback URL.
 2. Set the authorization callback URL to the callback above.
 3. Add the app's client ID and client secret to Cloudflare Pages **Production** secrets named `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`.
-4. The connector requests `read:user`, `user:email`, and `public_repo`. It can list public repositories. It does not grant private repository access or write access.
+4. The connector requests only `read:user` and `user:email`. It lists public repositories through the public user-repositories endpoint; it does not request repository scopes and cannot access private repositories. It does not perform repository writes.
 
 ### Encryption key
 
