@@ -17,9 +17,9 @@ test("GitHub OAuth connector does not claim unrequested repository scopes", asyn
     read("functions/api/connectors/start.js"),
     read("functions/api/connectors/callback.js")
   ]);
-  assert.match(start, /scope:"read:user user:email public_repo"/);
-  assert.match(callback, /scopes=tokenData\.scope\|\|"read:user user:email public_repo"/);
-  assert.doesNotMatch(callback, /scope:"[^"]*repo[^"]*write/i);
+  assert.match(start, /scope:"read:user user:email"/);
+  assert.match(callback, /scopes=tokenData\.scope\|\|"read:user user:email"/);
+  assert.doesNotMatch(start, /public_repo|repo:write/);
 });
 
 test("activation guide documents actual prerequisites and limitations", async () => {
@@ -49,7 +49,7 @@ test("Gmail and Google Drive have separate least-privilege OAuth grants", async 
   const start = await read("functions/api/connectors/start.js");
   assert.match(start, /"google-drive":\{[^}]*drive\.readonly/s);
   assert.match(start, /gmail:\{[^}]*gmail\.readonly[^}]*gmail\.compose/s);
-  assert.match(start, /github:\{[^}]*public_repo/s);
+  assert.match(start, /github:\{[^}]*read:user user:email/s);
   assert.doesNotMatch(start, /https:\/\/www\.googleapis\.com\/auth\/mail\.google\.com/);
 });
 
