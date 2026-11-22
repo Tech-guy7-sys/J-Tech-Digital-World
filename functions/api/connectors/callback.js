@@ -46,7 +46,7 @@ export async function onRequestGet({request,env}){
   }else if(provider==="dropbox"){
    tokenData=await fetchJson("https://api.dropboxapi.com/oauth2/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"DROPBOX_CLIENT_ID"),client_secret:secret(env,"DROPBOX_CLIENT_SECRET"),code,grant_type:"authorization_code",redirect_uri:callback})});
    if(!tokenData.access_token)throw new Error("No Dropbox access token.");
-   profile=await fetchJson("https://api.dropboxapi.com/2/users/get_current_account",{method:"POST",headers:{authorization:"Bearer "+tokenData.access_token}});scopes="files.metadata.read";
+   profile=await fetchJson("https://api.dropboxapi.com/2/users/get_current_account",{method:"POST",headers:{authorization:"Bearer "+tokenData.access_token}});profile.id=profile.account_id;profile.name=profile.name?.display_name||"Dropbox account";scopes="files.metadata.read";
   }else if(provider==="onedrive"){
    tokenData=await fetchJson("https://login.microsoftonline.com/common/oauth2/v2.0/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"MICROSOFT_CLIENT_ID"),client_secret:secret(env,"MICROSOFT_CLIENT_SECRET"),code,grant_type:"authorization_code",redirect_uri:callback,scope:"User.Read Files.Read offline_access"})});
    if(!tokenData.access_token)throw new Error("No Microsoft access token.");
