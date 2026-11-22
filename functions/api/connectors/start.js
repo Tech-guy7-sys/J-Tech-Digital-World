@@ -4,7 +4,11 @@ const providers={
  github:{client:"GITHUB_CLIENT_ID",authorize:"https://github.com/login/oauth/authorize",scope:"read:user user:email"},
  "google-drive":{client:"GOOGLE_CLIENT_ID",authorize:"https://accounts.google.com/o/oauth2/v2/auth",scope:"openid email profile https://www.googleapis.com/auth/drive.readonly",extra:{access_type:"offline",prompt:"consent"}},
  gmail:{client:"GOOGLE_CLIENT_ID",authorize:"https://accounts.google.com/o/oauth2/v2/auth",scope:"openid email profile https://www.googleapis.com/auth/gmail.readonly",extra:{access_type:"offline",prompt:"consent"}},
- "google-calendar":{client:"GOOGLE_CLIENT_ID",authorize:"https://accounts.google.com/o/oauth2/v2/auth",scope:"openid email profile https://www.googleapis.com/auth/calendar.events.readonly",extra:{access_type:"offline",prompt:"consent"}}
+ "google-calendar":{client:"GOOGLE_CLIENT_ID",authorize:"https://accounts.google.com/o/oauth2/v2/auth",scope:"openid email profile https://www.googleapis.com/auth/calendar.events.readonly",extra:{access_type:"offline",prompt:"consent"}},
+ notion:{client:"NOTION_CLIENT_ID",authorize:"https://api.notion.com/v1/oauth/authorize",scope:"",extra:{owner:"user"}},
+ slack:{client:"SLACK_CLIENT_ID",authorize:"https://slack.com/oauth/v2/authorize",scope:"",extra:{user_scope:"search:read,users:read"}},
+ dropbox:{client:"DROPBOX_CLIENT_ID",authorize:"https://www.dropbox.com/oauth2/authorize",scope:"",extra:{token_access_type:"offline"}},
+ onedrive:{client:"MICROSOFT_CLIENT_ID",authorize:"https://login.microsoftonline.com/common/oauth2/v2.0/authorize",scope:"User.Read Files.Read offline_access",extra:{}}
 };
 export async function onRequestGet({request,env}){
  const d=db(env);if(!d)return json({error:"JT_AUTH_DB is not configured."},503);

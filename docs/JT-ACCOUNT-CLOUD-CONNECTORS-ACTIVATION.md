@@ -23,7 +23,7 @@ Apply `db/cloud-schema.sql` to the same D1 database bound as `JT_AUTH_DB`. The c
 
 Apply `db/connectors-schema.sql` to the same D1 database. Configure `JT_CONNECTOR_ENCRYPTION_KEY` as a server-side secret using the deployment guide's supported format. Never put the key in website JavaScript, Git, issue comments, or chat.
 
-The current connector implementation supports GitHub public-repository listing, Google Drive search, Gmail message search, and read-only upcoming Google Calendar event lookup through the Jeff AI Agent's Connected services panel. Google access tokens are refreshed server-side when a refresh token is available. The system does not yet include provider token refresh for GitHub; reconnect if a GitHub token is revoked. Private GitHub repository access requires a separately configured GitHub App with read-only repository permissions. Gmail uses the Gmail API read-only scope; Google may require OAuth consent-screen test-user setup or app verification before general use. Draft creation and sending are not exposed by the current tool endpoint.
+The current connector implementation supports GitHub public-repository listing, Google Drive search, Gmail message search, read-only upcoming Google Calendar events, Notion search, Slack message search, Dropbox file search, and OneDrive file search through the Jeff AI Agent Connected services panel. Google access tokens are refreshed server-side when a refresh token is available. The system does not yet include provider token refresh for GitHub; reconnect if a GitHub token is revoked. Private GitHub repository access requires a separately configured GitHub App with read-only repository permissions. Gmail uses the Gmail API read-only scope; Google may require OAuth consent-screen test-user setup or app verification before general use. Draft creation and sending are not exposed by the current tool endpoint.
 
 ## 4. Account security and launch limitations
 
@@ -72,6 +72,17 @@ Google Drive asks for `drive.readonly`. Gmail asks only for `gmail.readonly`; Ca
 2. Set the authorization callback URL to the callback above.
 3. Add the app's client ID and client secret to Cloudflare Pages **Production** secrets named `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`.
 4. The connector requests only `read:user` and `user:email`. It lists public repositories through the public user-repositories endpoint; it does not request repository scopes and cannot access private repositories. It does not perform repository writes.
+
+### Notion, Slack, Dropbox and OneDrive setup
+
+Use the same JT callback URL above for each OAuth application. Add these secrets in Cloudflare Pages Production:
+
+- Notion: `NOTION_CLIENT_ID`, `NOTION_CLIENT_SECRET`. Create a public OAuth integration, add the JT callback as its redirect URI, and share only the pages/databases intended for the integration. Search returns page metadata; it does not edit pages.
+- Slack: `SLACK_CLIENT_ID`, `SLACK_CLIENT_SECRET`. Create a Slack app, add the JT callback to its OAuth redirect URLs, enable user scopes `search:read` and `users:read`, and install it in the intended workspace. Search is read-only.
+- Dropbox: `DROPBOX_CLIENT_ID`, `DROPBOX_CLIENT_SECRET`. Create a Dropbox OAuth app with the minimum `files.metadata.read` permission and add the JT callback. Search returns file metadata only.
+- OneDrive: `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET`. Register a Microsoft Entra application, add the JT callback as a Web redirect URI, and configure delegated `User.Read` and `Files.Read` permissions. Tenant admin consent may be required. Search returns file metadata only.
+
+All four integrations use encrypted server-side token storage and explicit user-invoked actions. Do not grant write scopes. Reconnect an account if its provider token expires or is revoked. Confirm provider token rotation settings in each developer console before production use.
 
 ### Encryption key
 
