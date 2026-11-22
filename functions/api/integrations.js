@@ -8,6 +8,7 @@ const CONNECTORS = [
   ["github","GitHub","Developer tools","Link your GitHub identity. Repository access will use a separate read-only GitHub App installation.","read","GitHub OAuth app for identity; GitHub App with read-only repository permissions for project access"],
   ["google-drive","Google Drive","Google","Search and read files the user authorises","read","Google Cloud OAuth client + consent screen"],
   ["gmail","Gmail","Google","Search messages and prepare drafts; sending requires separate approval","read","Google Cloud OAuth client + Gmail scopes"],
+  ["google-calendar","Google Calendar","Google","Search upcoming events on calendars the user authorises","read","Google Cloud OAuth client + Calendar API + calendar.events.readonly scope"],
   ["google-calendar","Google Calendar","Google","Read calendars and create approved events","read-write","Google Cloud OAuth client + Calendar scopes"],
   ["discord","Discord","Messaging","Read approved server/channel context and send approved messages","read-write","Discord OAuth application + bot permissions"],
   ["slack","Slack","Messaging","Search workspace content and send approved messages","read-write","Slack app + OAuth scopes"],
@@ -37,9 +38,9 @@ export async function onRequestGet({env}) {
   }));
   const connectors = CONNECTORS.map(([id,name,category,description,access,setup]) => ({
     id,name,category,description,access,
-    status: id==="github" && Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) ? "oauth_configured" : ["google-drive","gmail"].includes(id) && Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) ? "oauth_configured" : id==="cloudflare" && Boolean(env?.CLOUDFLARE_API_TOKEN && env?.CLOUDFLARE_ACCOUNT_ID) ? "credentials_configured" : "setup_required",
-    oauthSupported: id==="github" || id==="google-drive" || id==="gmail",
-    oauthConfigured: id==="github" ? Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) : ["google-drive","gmail"].includes(id) ? Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) : false,
+    status: id==="github" && Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) ? "oauth_configured" : ["google-drive","gmail","google-calendar"].includes(id) && Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) ? "oauth_configured" : id==="cloudflare" && Boolean(env?.CLOUDFLARE_API_TOKEN && env?.CLOUDFLARE_ACCOUNT_ID) ? "credentials_configured" : "setup_required",
+    oauthSupported: id==="github" || ["google-drive","gmail","google-calendar"].includes(id),
+    oauthConfigured: id==="github" ? Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) : ["google-drive","gmail","google-calendar"].includes(id) ? Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) : false,
     setup,
     available:false
   }));
