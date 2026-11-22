@@ -19,10 +19,11 @@ async function accessToken(row,env,d){
  else if(row.provider==="slack"){endpoint="https://slack.com/api/oauth.v2.access";form={client_id:secret(env,"SLACK_CLIENT_ID"),client_secret:secret(env,"SLACK_CLIENT_SECRET"),refresh_token:refresh,grant_type:"refresh_token"}}
  else if(row.provider!=="google-drive"&&row.provider!=="gmail"&&row.provider!=="google-calendar")throw new Error("Reconnect this connector to continue.");
  const data=await providerJson(endpoint,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams(form)});
- if(data.ok===false||!data.access_token)throw new Error("Reconnect this connector to continue.");
- const encrypted=await encrypt(data.access_token,key),expires=Math.floor(Date.now()/1000)+Number(data.expires_in||3600);
- await d.prepare("UPDATE connector_accounts SET encrypted_access_token=?,token_expires_at=?,updated_at=? WHERE id=?").bind(encrypted,expires,Math.floor(Date.now()/1000),row.id).run();
- return data.access_token;
+ const freshAccess=data.access_token||data.authed_user?.access_token,freshRefresh=data.refresh_token||data.authed_user?.refresh_token;
+ if(data.ok===false||!freshAccess)throw new Error("Reconnect this connector to continue.");
+ const encrypted=await encrypt(freshAccess,key),encryptedNextRefresh=freshRefresh?await encrypt(freshRefresh,key):row.encrypted_refresh_token,expires=Math.floor(Date.now()/1000)+Number(data.expires_in||data.authed_user?.expires_in||3600);
+ await d.prepare("UPDATE connector_accounts SET encrypted_access_token=?,encrypted_refresh_token=?,token_expires_at=?,updated_at=? WHERE id=?").bind(encrypted,encryptedNextRefresh,expires,Math.floor(Date.now()/1000),row.id).run();
+ return freshAccess;
 }
 export async function onRequestPost({request,env}){
  if(!sameOrigin(request))return json({error:"Origin not allowed."},403);
