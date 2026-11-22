@@ -45,7 +45,7 @@ export async function onRequestGet({request,env}){
   await d.prepare("INSERT INTO connector_audit_events (user_id,action,outcome,details_json,created_at) VALUES (?,?,?,?,?)").bind(saved.user_id,"connector.oauth.connect","success",JSON.stringify({provider,account:display}),now).run();
   return go(origin+"/integrations.html?connection=success&provider="+encodeURIComponent(provider));
  }catch(error){
-  await d.prepare("INSERT INTO connector_audit_events (user_id,action,outcome,details_json,created_at) VALUES (?,?,?,?,?,?)").bind(saved.user_id,"connector.oauth.connect","error",JSON.stringify({provider,reason:String(error?.message||"connection_failed").slice(0,180)}),now).run().catch(()=>{});
+  await d.prepare("INSERT INTO connector_audit_events (user_id,action,outcome,details_json,created_at) VALUES (?,?,?,?,?)").bind(saved.user_id,"connector.oauth.connect","error",JSON.stringify({provider,reason:String(error?.message||"connection_failed").slice(0,180)}),now).run().catch(()=>{});
   return go(origin+"/integrations.html?connection=error&provider="+encodeURIComponent(provider));
  }
 }
