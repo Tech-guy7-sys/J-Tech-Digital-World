@@ -32,7 +32,7 @@ export async function onRequestPost({request,env}){
  try{
   const token=await accessToken(row,env,d);let result;
   if(action==="github.repositories"){
-   const data=await providerJson("https://api.github.com/user/repos?sort=updated&per_page=30&visibility=public",{headers:{authorization:"Bearer "+token,accept:"application/vnd.github+json","user-agent":"Jeff-AI-JT-Connectors"}});
+   const data=await providerJson("https://api.github.com/users/"+encodeURIComponent(row.display_name)+"/repos?sort=updated&per_page=30&type=public",{headers:{authorization:"Bearer "+token,accept:"application/vnd.github+json","user-agent":"Jeff-AI-JT-Connectors"}});
    result=(Array.isArray(data)?data:[]).map(x=>({name:x.full_name,description:x.description||"",url:x.html_url,private:Boolean(x.private),updated_at:x.updated_at,default_branch:x.default_branch}));
   }else if(action==="drive.search"){
    const q="name contains '"+query.replace(/\\/g,"\\\\").replace(/'/g,"\\'")+"' and trashed = false";
