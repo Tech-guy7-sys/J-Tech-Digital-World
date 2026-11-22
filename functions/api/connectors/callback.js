@@ -28,7 +28,7 @@ export async function onRequestGet({request,env}){
    tokenData=await fetchJson("https://github.com/login/oauth/access_token",{method:"POST",headers:{"accept":"application/json","content-type":"application/json"},body:JSON.stringify({client_id:secret(env,"GITHUB_CLIENT_ID"),client_secret:secret(env,"GITHUB_CLIENT_SECRET"),code,redirect_uri:callback})});
    if(!tokenData.access_token)throw new Error("No access token.");
    profile=await fetchJson("https://api.github.com/user",{headers:{authorization:"Bearer "+tokenData.access_token,accept:"application/vnd.github+json","user-agent":"Jeff-AI-JT-Connectors"}});
-   scopes=tokenData.scope||"read:user user:email public_repo";
+   scopes=tokenData.scope||"read:user user:email";
   }else if(provider==="google-drive"||provider==="gmail"){
    tokenData=await fetchJson("https://oauth2.googleapis.com/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:secret(env,"GOOGLE_CLIENT_ID"),client_secret:secret(env,"GOOGLE_CLIENT_SECRET"),code,grant_type:"authorization_code",redirect_uri:callback})});
    if(!tokenData.access_token)throw new Error("No access token.");
@@ -38,7 +38,7 @@ export async function onRequestGet({request,env}){
   }else return go(origin+"/integrations.html?connection=unsupported");
   const encrypted=await encrypt(tokenData.access_token,secret(env,"JT_CONNECTOR_ENCRYPTION_KEY"));
   const encryptedRefresh=tokenData.refresh_token?await encrypt(tokenData.refresh_token,secret(env,"JT_CONNECTOR_ENCRYPTION_KEY")):null;
-  const accountId=String(profile.id||profile.sub||"unknown"),display=String(profile.name||profile.login||profile.email||"Connected account").slice(0,160);
+  const accountId=String(profile.id||profile.sub||"unknown"),display=String(profile.login||profile.name||profile.email||"Connected account").slice(0,160);
   const id=crypto.randomUUID();
   await d.prepare("INSERT INTO connector_accounts (id,user_id,provider,provider_account_id,display_name,status,granted_scopes,encrypted_access_token,encrypted_refresh_token,token_expires_at,created_at,updated_at) VALUES (?,?,?,?,?,'connected',?,?,?,?,?,?) ON CONFLICT(user_id,provider,provider_account_id) DO UPDATE SET display_name=excluded.display_name,status='connected',granted_scopes=excluded.granted_scopes,encrypted_access_token=excluded.encrypted_access_token,encrypted_refresh_token=COALESCE(excluded.encrypted_refresh_token,connector_accounts.encrypted_refresh_token),token_expires_at=excluded.token_expires_at,updated_at=excluded.updated_at")
    .bind(id,saved.user_id,provider,accountId,display,scopes,encrypted,encryptedRefresh,tokenData.expires_in?now+Number(tokenData.expires_in):null,now,now).run();
