@@ -34,7 +34,7 @@ export async function onRequestGet({request,env}){
    if(!tokenData.access_token)throw new Error("No access token.");
    profile=await fetchJson("https://openidconnect.googleapis.com/v1/userinfo",{headers:{authorization:"Bearer "+tokenData.access_token}});
    if(!profile.sub)throw new Error("Google did not return a stable account identifier.");
-   scopes=tokenData.scope||(provider==="gmail"?"gmail.readonly gmail.compose":"drive.readonly");
+   scopes=tokenData.scope||(provider==="gmail"?"gmail.readonly":"drive.readonly");
   }else return go(origin+"/integrations.html?connection=unsupported");
   const encrypted=await encrypt(tokenData.access_token,secret(env,"JT_CONNECTOR_ENCRYPTION_KEY"));
   const encryptedRefresh=tokenData.refresh_token?await encrypt(tokenData.refresh_token,secret(env,"JT_CONNECTOR_ENCRYPTION_KEY")):null;
