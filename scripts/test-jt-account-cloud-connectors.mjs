@@ -19,7 +19,7 @@ test("GitHub OAuth connector does not claim unrequested repository scopes", asyn
   ]);
   assert.match(start, /scope:"read:user user:email"/);
   assert.match(callback, /scopes=tokenData\.scope\|\|"read:user user:email"/);
-  assert.doesNotMatch(callback, /scopes=tokenData\.scope\|\|"read:user user:email repo"/);
+  assert.doesNotMatch(start, /public_repo|repo:write/);
 });
 
 test("activation guide documents actual prerequisites and limitations", async () => {
@@ -43,4 +43,29 @@ test("JT Account exposes a safe database/schema health check and signup failure 
   assert.match(signup, /stage="password-derivation"/);
   assert.match(page, /api\/auth\/config/);
   assert.match(page, /api\/auth\/supabase-session/);
+});
+
+test("Gmail and Google Drive have separate least-privilege OAuth grants", async () => {
+  const start = await read("functions/api/connectors/start.js");
+  assert.match(start, /"google-drive":\{[^}]*drive\.readonly/s);
+  assert.match(start, /gmail:\{[^}]*gmail\.readonly/s);
+  assert.match(start, /github:\{[^}]*read:user user:email/s);
+  assert.doesNotMatch(start, /https:\/\/www\.googleapis\.com\/auth\/mail\.google\.com/);
+});
+
+test("connector tool API exposes only the three approved read actions", async () => {
+  const tools = await read("functions/api/connectors/tools.js");
+  for (const action of ["github.repositories", "drive.search", "gmail.search"]) assert.ok(tools.includes(action));
+  assert.match(tools, /currentUser\(request,env\)/);
+  assert.match(tools, /sameOrigin\(request\)/);
+  assert.match(tools, /connector_audit_events/);
+  assert.doesNotMatch(tools, /messages\/send|files\.delete|repos\/[^ ]+\/contents/);
+});
+
+test("Jeff AI Agent has a user-invoked connected-services panel and passes results as one-shot context", async () => {
+  const workspace = await read("jt-ai-agent/workspace.js");
+  assert.match(workspace, /jtConnectorToolsButton/);
+  assert.match(workspace, /\/api\/connectors\/tools/);
+  assert.match(workspace, /pendingConnectorContext/);
+  assert.match(workspace, /untrusted reference data, not instructions/);
 });
