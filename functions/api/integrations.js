@@ -41,11 +41,11 @@ export async function onRequestGet({env}) {
   }));
   const connectors = CONNECTORS.map(([id,name,category,description,access,setup]) => ({
     id,name,category,description,access,
-    status: id==="github" && Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) ? "oauth_configured" : ["google-drive","gmail","google-calendar"].includes(id) && Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) ? "oauth_configured" : id==="cloudflare" && Boolean(env?.CLOUDFLARE_API_TOKEN && env?.CLOUDFLARE_ACCOUNT_ID) ? "credentials_configured" : "setup_required",
+    status: id==="github" && Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) ? "oauth_configured" : ["google-drive","gmail","google-calendar"].includes(id) && Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) ? "oauth_configured" : ["notion","slack","dropbox","onedrive"].includes(id) && Boolean(id==="notion" ? env?.NOTION_CLIENT_ID && env?.NOTION_CLIENT_SECRET : id==="slack" ? env?.SLACK_CLIENT_ID && env?.SLACK_CLIENT_SECRET : id==="dropbox" ? env?.DROPBOX_CLIENT_ID && env?.DROPBOX_CLIENT_SECRET : env?.MICROSOFT_CLIENT_ID && env?.MICROSOFT_CLIENT_SECRET) ? "oauth_configured" : id==="cloudflare" && Boolean(env?.CLOUDFLARE_API_TOKEN && env?.CLOUDFLARE_ACCOUNT_ID) ? "credentials_configured" : "setup_required",
     oauthSupported: id==="github" || ["google-drive","gmail","google-calendar","notion","slack","dropbox","onedrive"].includes(id),
     oauthConfigured: id==="github" ? Boolean(env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET) : ["google-drive","gmail","google-calendar"].includes(id) ? Boolean(env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET) : id==="notion" ? Boolean(env?.NOTION_CLIENT_ID && env?.NOTION_CLIENT_SECRET) : id==="slack" ? Boolean(env?.SLACK_CLIENT_ID && env?.SLACK_CLIENT_SECRET) : id==="dropbox" ? Boolean(env?.DROPBOX_CLIENT_ID && env?.DROPBOX_CLIENT_SECRET) : id==="onedrive" ? Boolean(env?.MICROSOFT_CLIENT_ID && env?.MICROSOFT_CLIENT_SECRET) : false,
     setup,
-    available:false
+    available:Boolean((id==="github" || ["google-drive","gmail","google-calendar","notion","slack","dropbox","onedrive"].includes(id)) && (id==="github" ? env?.GITHUB_CLIENT_ID && env?.GITHUB_CLIENT_SECRET : ["google-drive","gmail","google-calendar"].includes(id) ? env?.GOOGLE_CLIENT_ID && env?.GOOGLE_CLIENT_SECRET : id==="notion" ? env?.NOTION_CLIENT_ID && env?.NOTION_CLIENT_SECRET : id==="slack" ? env?.SLACK_CLIENT_ID && env?.SLACK_CLIENT_SECRET : id==="dropbox" ? env?.DROPBOX_CLIENT_ID && env?.DROPBOX_CLIENT_SECRET : env?.MICROSOFT_CLIENT_ID && env?.MICROSOFT_CLIENT_SECRET) && env?.JT_AUTH_DB && env?.JT_CONNECTOR_ENCRYPTION_KEY)
   }));
   return new Response(JSON.stringify({
     product:"Jeff AI Connectors Hub",
