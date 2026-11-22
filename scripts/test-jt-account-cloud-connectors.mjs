@@ -50,6 +50,10 @@ test("Gmail, Google Drive and Google Calendar have separate least-privilege OAut
   assert.match(start, /"google-drive":\{[^}]*drive\.readonly/s);
   assert.match(start, /gmail:\{[^}]*gmail\.readonly/s);
   assert.match(start, /"google-calendar":\{[^}]*calendar\.events\.readonly/s);
+  for (const provider of ["notion", "slack", "dropbox", "onedrive"]) assert.match(start, new RegExp(provider + ":\\{"));
+  const integrations = await read("functions/api/integrations.js");
+  for (const secret of ["NOTION_CLIENT_ID", "SLACK_CLIENT_ID", "DROPBOX_CLIENT_ID", "MICROSOFT_CLIENT_ID"]) assert.ok(integrations.includes(secret));
+  assert.match(integrations, /available:Boolean\(/);
   assert.match(start, /notion:\{[^}]*api.notion.com\/v1\/oauth\/authorize/s);
   assert.match(start, /slack:\{[^}]*slack.com\/oauth\/v2\/authorize/s);
   assert.match(start, /dropbox:\{[^}]*dropbox.com\/oauth2\/authorize/s);
